@@ -1,0 +1,61 @@
+#ifndef MAINWIDGET_H
+#define MAINWIDGET_H
+
+#include "TokenManager.h"
+#include "GoogleClient.h"
+
+#include <QWidget>
+#include <QSet>
+#include <QSystemTrayIcon>
+#include <QSettings>
+#include <QCloseEvent>
+
+class QCalendarWidget;
+class QTextEdit;
+class QLineEdit;
+class QDateTimeEdit;
+class QPushButton;
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWidget;
+}
+QT_END_NAMESPACE
+
+class MainWidget : public QWidget {
+    Q_OBJECT
+public:
+     MainWidget(QWidget *parent=nullptr);
+    ~MainWidget();
+    void onDeleteClickedId(QString id);
+ protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+   // void paintEvent(QPaintEvent *) override;
+    void closeEvent(QCloseEvent *event) override;
+private slots:
+    void onTokenReady(const QString &token);
+    void onEventsFetched(const QString &text, const QSet<QDate> &dates);
+    void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en);
+    void onCalendarPageChanged(int y,int m);
+    void onEventClicked();
+    void onAddClicked();
+    void onUpdateClicked();
+    void onDeleteClicked();
+    void onCalendarDateActivated(const QDate &date);
+    void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
+
+private:
+    Ui::MainWidget *ui;
+    QCalendarWidget *calendar;
+    QTextEdit     *textEdit;
+    QLineEdit     *titleInput;
+    QDateTimeEdit *startInput,*endInput;
+    TokenManager  *tokenManager;
+    GoogleClient  *googleClient;
+    QString        selectedLine;
+    QSystemTrayIcon *trayIcon;
+    QPoint dragPosition;
+};
+
+#endif // MAINWIDGET_H
