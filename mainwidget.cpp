@@ -14,6 +14,8 @@
 #include <QDateTimeEdit>
 #include <QPushButton>
 #include <QMenu>
+#include <QTableView>
+#include <QHeaderView>
 
 
 MainWidget::MainWidget(QWidget *parent)
@@ -30,13 +32,11 @@ MainWidget::MainWidget(QWidget *parent)
     restoreGeometry(settings.value("geometry").toByteArray());
 //| Qt::WindowStaysOnTopHint
     trayIcon = new QSystemTrayIcon(this);
-    //  ikonu z .qrc
     QIcon icon(":/icons/icon.png");
 
     if (!icon.isNull()) {
         trayIcon->setIcon(icon);
     } else {
-        // Fallback emoji
         trayIcon->setIcon(QIcon::fromTheme("face-smile")); // nebo něco, co systém najde
         trayIcon->setToolTip(QString::fromUtf8("📅Freelander"));
     }
@@ -65,6 +65,46 @@ MainWidget::MainWidget(QWidget *parent)
 
     auto *lay = new QVBoxLayout(this);
     calendar   = new QCalendarWidget(this);
+    calendar->setGridVisible(true);
+    //calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader); // ← tady
+
+    calendar->setStyleSheet(R"(
+        QCalendarWidget {
+            background: transparent;
+            color: white;
+            font-size: 9pt;
+        }
+        QCalendarWidget QWidget#qt_calendar_navigationbar {
+            background: transparent;
+            color: white;
+        }
+    )");
+
+    // Získání vnitřní tabulky
+    QTableView *tableView = calendar->findChild<QTableView *>();
+    if (tableView) {
+        tableView->viewport()->setAutoFillBackground(false);
+        tableView->setStyleSheet("background: transparent;");
+        //tableView->setItemDelegate(new TransparentItemDelegate(this));
+        QHeaderView *header = tableView->horizontalHeader();
+        if (header) {
+            header->setStyleSheet(R"(
+            background: transparent;
+            color: white;
+            font-size: 10pt;
+
+        )");
+        }
+    }
+    QWidget *navBar = calendar->findChild<QWidget *>("qt_calendar_navigationbar");
+    if (navBar) {
+        navBar->setStyleSheet(R"(
+        background: transparent;
+            color: white;
+            font-size: 12pt;
+    )");
+    }
+
     textEdit   = new QTextEdit(this); textEdit->setReadOnly(true);
     titleInput = new QLineEdit(this); titleInput->setPlaceholderText("Název události");
     startInput = new QDateTimeEdit(QDateTime::currentDateTime(), this);
@@ -100,21 +140,38 @@ MainWidget::~MainWidget()
 {
     delete ui;
 }
+void MainWidget::paintEvent(QPaintEvent *) {
 
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    QColor backgroundColor(0, 0, 0, 128);
+
+    painter.setBrush(backgroundColor);
+    painter.setPen(Qt::NoPen);
+    painter.drawRoundedRect(rect(), 10, 10);
+
+}
 void MainWidget::onTokenReady(const QString &token) {
-    qDebug() << "Access token ready:" << token;
+    //qDebug() << "Access token ready:" << token;
     googleClient->setAccessToken(token);
     googleClient->fetchEvents(calendar->selectedDate(), calendar);
 }
 
 void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) {
-     qDebug() << "Events:" << text;
-    for (const QDate &date : dates) {
-        qDebug() << "Datum:" << date.toString();
-    }
+    // qDebug() << "Events:" << text;
+    //for (const QDate &date : dates) {
+     //   qDebug() << "Datum:" << date.toString();
+    //}
+    QColor backgroundColor(255, 0, 0, 128);
     textEdit->setPlainText(text);
     calendar->setDateTextFormat(QDate(), QTextCharFormat());
-    QTextCharFormat fmt; fmt.setBackground(QColor(200,230,255));
+    QTextCharFormat fmt;
+    fmt.setBackground(backgroundColor);
+    fmt.setFontPointSize(12);
+    // Alternativně v pixelech: fmt.setFontPixelSize(16);
+    fmt.setFontWeight(QFont::Bold);
+
     for (auto d : dates) calendar->setDateTextFormat(d, fmt);
 }
 
@@ -168,7 +225,6 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
         }
     }
 
-
     EventDialog dialog(this);
     dialog.setDateTime(dateTime);
     dialog.setText(existingSummary);
@@ -178,26 +234,20 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
 
         dialog.setEventId(existingEventId);
         dialog.setWidget(this);
-
         qDebug() << "id exist:" << existingEventId;
 
     } else {
-        // Přidat novou událost
         dialog.deleteButton->hide();
         qDebug() << "id is null:" << existingEventId;
     }
-
-
 
     if (dialog.exec() == QDialog::Accepted) {
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
 
         if (!existingEventId.isEmpty()) {
-            // Upravit událost
            googleClient->updateEvent(existingEventId, summary, dt, dt,calendar);
         } else {
-            // Přidat novou událost
              googleClient->createEvent(summary, dt, dt,calendar);
         }
 

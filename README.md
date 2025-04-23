@@ -1,24 +1,9 @@
-#Freelander
+# Freelander
 
 To compile run:
 
-$qmake
+qmake
 
-$make (by platform)
-
-
+make (by platform)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Freelander

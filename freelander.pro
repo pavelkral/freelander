@@ -13,13 +13,15 @@ SOURCES += \
     googleclient.cpp \
     main.cpp \
     mainwidget.cpp \
-    tokenmanager.cpp
+    tokenmanager.cpp \
+    utils.cpp
 
 HEADERS += \
     eventdialog.h \
     googleclient.h \
     mainwidget.h \
-    tokenmanager.h
+    tokenmanager.h \
+    utils.h
 
 FORMS += \
     eventdialog.ui \

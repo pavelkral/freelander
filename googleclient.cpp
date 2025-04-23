@@ -1,4 +1,5 @@
 #include "googleclient.h"
+#include "utils.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -42,15 +43,20 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
     QNetworkRequest request(url);
     request.setRawHeader("Authorization", "Bearer " + m_token.toUtf8());
     //qDebug() << "Google req:" << request.url();
-
+const QString TOKEN_FILE = "result.json";
     QNetworkReply *reply = m_manager->get(request);
 
     connect(reply, &QNetworkReply::finished, [=]() {
         QByteArray data = reply->readAll();
-       // qDebug() << "Google API response:" << data;
+
 
         QJsonDocument doc = QJsonDocument::fromJson(data);
-        QJsonArray items = doc.object()["items"].toArray();
+
+        bool ok = Utils::saveJsonDocumentToFile(TOKEN_FILE,doc,QJsonDocument::Indented);
+        if(ok){
+              // qDebug() << "Json:" << doc.toJson();
+        }
+        QJsonArray items = doc.object().value("items").toArray();
 
         QSet<QDate> highlightDates;
         QSet<QDate> dates;
@@ -74,7 +80,7 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
                 startStr = eventDate.toString("dd.MM.yyyy");
             }
 
-            QString displayText = startStr + " - " + summary + "📌 ";
+            QString displayText = startStr + " - " + summary + "";
             eventIdMap[displayText] = id;
             highlightDates.insert(eventDate);
             lines << displayText;

@@ -9,6 +9,7 @@
 #include <QSystemTrayIcon>
 #include <QSettings>
 #include <QCloseEvent>
+#include <QPainter>
 
 class QCalendarWidget;
 class QTextEdit;
@@ -31,7 +32,7 @@ public:
  protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-   // void paintEvent(QPaintEvent *) override;
+    void paintEvent(QPaintEvent *) override;
     void closeEvent(QCloseEvent *event) override;
 private slots:
     void onTokenReady(const QString &token);
