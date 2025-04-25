@@ -45,6 +45,8 @@ private slots:
     void onDeleteClicked();
     void onCalendarDateActivated(const QDate &date);
     void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
+    void calendarContextMenuRequested(const QPoint &pos) ;
+    void handleDateClicked(const QDate &date);
 
 private:
     Ui::MainWidget *ui;
@@ -57,6 +59,7 @@ private:
     QString        selectedLine;
     QSystemTrayIcon *trayIcon;
     QPoint dragPosition;
+    QDate lastClickedDate;
 };
 
 #endif // MAINWIDGET_H

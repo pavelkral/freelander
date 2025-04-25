@@ -44,6 +44,7 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
     request.setRawHeader("Authorization", "Bearer " + m_token.toUtf8());
     //qDebug() << "Google req:" << request.url();
 const QString TOKEN_FILE = "result.json";
+
     QNetworkReply *reply = m_manager->get(request);
 
     connect(reply, &QNetworkReply::finished, [=]() {
@@ -194,5 +195,46 @@ void GoogleClient::deleteEvent(const QString &eventId,QCalendarWidget *calendar)
         QDate firstDateOfMonth(year, month, 1);
         fetchEvents(firstDateOfMonth, calendar);
         reply->deleteLater();
+    });
+}
+
+void GoogleClient::fetchEventsForDate(const QDate &date, std::function<void(const QList<QPair<QString, QString>>&)> callback) {
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager;
+
+    QDateTime startOfDay(date, QTime(0, 0, 0));
+    QDateTime endOfDay(date, QTime(23, 59, 59));
+
+    QUrl url("https://www.googleapis.com/calendar/v3/calendars/primary/events");
+    QUrlQuery query;
+    query.addQueryItem("timeMin", startOfDay.toUTC().toString(Qt::ISODate));
+    query.addQueryItem("timeMax", endOfDay.toUTC().toString(Qt::ISODate));
+    query.addQueryItem("singleEvents", "true");
+    query.addQueryItem("orderBy", "startTime");
+    url.setQuery(query);
+
+    QNetworkRequest request(url);
+
+    request.setRawHeader("Authorization", "Bearer "+m_token.toUtf8());
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject event;
+    QNetworkReply *reply = manager->get(request);
+    QObject::connect(reply, &QNetworkReply::finished, [=]() {
+        QList<QPair<QString, QString>> events;
+        if (reply->error() == QNetworkReply::NoError) {
+            QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+            QJsonArray items = doc.object()["items"].toArray();
+            for (const QJsonValue &item : items) {
+                QJsonObject obj = item.toObject();
+                QString summary = obj["summary"].toString("Bez názvu");
+                QString id = obj["id"].toString();
+                events.append(qMakePair(summary, id));
+            }
+        } else {
+            qDebug() << "Error fetching events for date:" << reply->errorString();
+        }
+        reply->deleteLater();
+        callback(events);
     });
 }

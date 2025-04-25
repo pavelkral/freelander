@@ -112,7 +112,7 @@ MainWidget::MainWidget(QWidget *parent)
     //addBtn     = new QPushButton("➕ Přidat", this);
     //updateBtn  = new QPushButton("💾 Uložit", this);
     //deleteBtn  = new QPushButton("❌ Smazat", this);
-
+textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
     lay->addWidget(calendar);
     lay->addWidget(textEdit);
     lay->addWidget(titleInput);
@@ -124,6 +124,8 @@ MainWidget::MainWidget(QWidget *parent)
     //hl->addWidget(deleteBtn);
     lay->addLayout(hl);
 
+    calendar->setContextMenuPolicy(Qt::CustomContextMenu);
+
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
 
@@ -132,6 +134,9 @@ MainWidget::MainWidget(QWidget *parent)
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
     connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);
+
+    connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
+    connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
 
     tokenManager->initialize();
 }
@@ -287,3 +292,102 @@ void MainWidget::closeEvent(QCloseEvent *event) {
     event->ignore();
 }
 
+void MainWidget::handleDateClicked(const QDate &date) {
+     qDebug() << "click:" << date;
+    lastClickedDate = date; // Store the clicked date
+}
+
+void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
+    // Get the date at the clicked position
+    qDebug() << "calendarContextMenuRequested called at pos:" << pos;
+
+    QDate date; // Date to be determined
+
+    // Attempt to get the date from the position using the internal view
+    QTableView *view = calendar->findChild<QTableView*>();
+    if (view) {
+        qDebug() << "Internal calendar view found.";
+        QModelIndex index = view->indexAt(pos);
+        if (index.isValid()) {
+            qDebug() << "Valid model index found at pos.";
+            // Get the date from the model data for the index
+            QVariant data = view->model()->data(index, Qt::DisplayRole); // Try DisplayRole first
+            if (data.isValid() && data.canConvert<QDate>()) {
+                date = data.toDate();
+                qDebug() << "Date obtained from model index (DisplayRole):" << date << "isValid:" << date.isValid();
+            } else {
+                qDebug() << "Data at index (DisplayRole) is not valid or cannot convert to QDate. Trying UserRole...";
+                // Try UserRole if DisplayRole fails
+                data = view->model()->data(index, Qt::UserRole);
+                if (data.isValid() && data.canConvert<QDate>()) {
+                    date = data.toDate();
+                    qDebug() << "Date obtained from model index (UserRole):" << date << "isValid:" << date.isValid();
+                } else {
+                    qDebug() << "Data at index (UserRole) is also not valid or cannot convert to QDate.";
+                }
+            }
+        } else {
+            qDebug() << "No valid model index found at pos.";
+        }
+    } else {
+        qDebug() << "Internal calendar view (QTableView) not found. Falling back to selectedDate.";
+    }
+
+    // Fallback if date was not obtained from the view
+    if (!date.isValid()) {
+        qDebug() << "Date not obtained from view. Falling back to selectedDate.";
+        date = calendar->selectedDate();
+        qDebug() << "Using selectedDate:" << date << "isValid:" << date.isValid();
+
+    }
+
+    if (!date.isValid()) {
+        qDebug() << "No valid date found. Returning from context menu slot.";
+        return; // Still no valid date, exit
+    }
+
+    qDebug() << "Using final determined date for context menu:" << date;
+
+    // Fetch events for the determined date - Call member fetchEventsForDate
+    googleClient->fetchEventsForDate(date, [&](const QList<QPair<QString, QString>>& events) {
+        qDebug() << "fetchEventsForDate callback called. Events count:" << events.count();
+        QMenu menu; // Create the context menu
+
+        // If no events found, add a disabled action
+        if (events.isEmpty()) {
+            qDebug() << "No events found for date:" << date;
+            QAction *noEventAction = new QAction("Žádné události", &menu);
+            noEventAction->setEnabled(false);
+            menu.addAction(noEventAction);
+        } else {
+            qDebug() << "Found" << events.count() << "events for date:" << date;
+            // For each event, add an action to the menu
+            for (const auto& event : events) {
+                qDebug() << "Adding event to menu:" << event.first << "(" << event.second << ")";
+                // Create an action with a delete icon and the event summary
+                // Using QIcon::fromTheme requires a theme engine, might need fallbacks
+                QAction *eventAction = new QAction(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete.png")), event.first, &menu);
+                eventAction->setData(event.second); // Store event ID in action data
+
+                // Connect the action's triggered signal to a lambda that calls deleteEvent
+                QObject::connect(eventAction, &QAction::triggered, [&,this]() { // Capture this for member access
+                    QString eventId = eventAction->data().toString(); // Get the event ID from action data
+                    qDebug() << "Delete action triggered for event ID:" << eventId;
+                    if (!eventId.isEmpty()) {
+                        // Call the existing deleteEvent function - Call member deleteEvent
+                       googleClient->deleteEvent(eventId,calendar);
+                    } else {
+                        qDebug() << "Event ID is empty, cannot delete.";
+                    }
+                });
+                menu.addAction(eventAction); // Add the action to the menu
+            }
+        }
+        // Display the context menu at the global position of the click - use -> on QScopedPointer
+        // Changed to use the alternative global position calculation
+        // QPoint globalPos = calendar->mapToGlobal(QPoint(0,0)) + pos;
+       // qDebug() << "Executing menu at global pos:" << globalPos;
+         menu.exec(calendar->mapToGlobal(pos));
+        qDebug() << "Menu execution finished.";
+    });
+}

@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QSet>
 #include <QMap>
+#include <QOAuth2AuthorizationCodeFlow>
 
 class QTextEdit;
 class QCalendarWidget;
@@ -20,7 +21,7 @@ public:
     void createEvent(const QString &summary, const QDateTime &start, const QDateTime &end ,QCalendarWidget *calendar);
     void updateEvent(const QString &eventId, const QString &summary, const QDateTime &start, const QDateTime &end,QCalendarWidget *calendar);
     void deleteEvent(const QString &eventId,QCalendarWidget *calendar);
-
+    void fetchEventsForDate(const QDate &date, std::function<void(const QList<QPair<QString, QString>>&)> callback) ;
     QMap<QString, QString> eventIdMap;
 
 signals:
