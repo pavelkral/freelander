@@ -9,6 +9,7 @@ NCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtOAuth
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    clickabletextedit.cpp \
     eventdialog.cpp \
     googleclient.cpp \
     main.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
+    clickabletextedit.h \
     eventdialog.h \
     googleclient.h \
     mainwidget.h \

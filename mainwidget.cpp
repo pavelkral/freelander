@@ -105,7 +105,8 @@ MainWidget::MainWidget(QWidget *parent)
     )");
     }
 
-    textEdit   = new QTextEdit(this); textEdit->setReadOnly(true);
+    textEdit   = new ClickableTextEdit(this);
+    textEdit->setReadOnly(true);
     textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
     titleInput = new QLineEdit(this); titleInput->setPlaceholderText("Název události");
     startInput = new QDateTimeEdit(QDateTime::currentDateTime(), this);
@@ -133,7 +134,7 @@ MainWidget::MainWidget(QWidget *parent)
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
 
-    connect(textEdit, &QTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
+   // connect(textEdit, &ClickableTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
 
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
@@ -142,6 +143,7 @@ MainWidget::MainWidget(QWidget *parent)
     connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
     connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
+    connect(textEdit, &ClickableTextEdit::lineDoubleClicked, this,&MainWidget::handleLineClick);
 
     tokenManager->initialize();
 }
@@ -185,10 +187,43 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     for (auto d : dates) calendar->setDateTextFormat(d, fmt);
 }
 
-void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en) {
+void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en ,const QString &enventId) {
+
     titleInput->setText(sum);
     startInput->setDateTime(st);
     endInput->setDateTime(en);
+
+
+    EventDialog dialog(this);
+    dialog.setDateTime(st);
+    dialog.setEndDateTime(en);
+    dialog.setText(sum);
+    dialog.setEditMode(!enventId.isEmpty());
+  dialog.deleteButton->hide();
+    if (!enventId.isEmpty()) {
+        //dialog.setEventId(existingEventId);
+        dialog.setWidget(this);
+        qDebug() << "id exist:" << enventId;
+
+    } else {
+
+
+        qDebug() << "id is null:" << enventId;
+    }
+
+    if (dialog.exec() == QDialog::Accepted) {
+        QString summary = dialog.text();
+        QDateTime dt = dialog.dateTime();
+        QDateTime enddt = dialog.dateEndTime();
+
+        googleClient->updateEvent(enventId, summary, dt, enddt,calendar);
+       // googleClient->createEvent(summary, dt, enddt,calendar);
+
+
+        // Obnovit události pro zobrazený měsíc
+        QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
+        googleClient->fetchEvents(currentPage, calendar);
+    }
 }
 
 
@@ -398,4 +433,15 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
         menu.exec(calendar->mapToGlobal(pos));
         qDebug() << "Menu execution finished.";
     });
+}
+void MainWidget::handleLineClick() {
+    //qDebug() << "Access token ready:" << token;
+    //googleClient->setAccessToken(token);
+    //googleClient->fetchEvents(calendar->selectedDate(), calendar);
+   // qDebug() << "Double clicked line:" << lineText;
+    QTextCursor c = textEdit->textCursor();
+    c.select(QTextCursor::LineUnderCursor);
+    selectedLine = c.selectedText();
+    QString id = googleClient->eventIdMap.value(selectedLine);
+    if (!id.isEmpty()) googleClient->fetchEventDetails(id);
 }

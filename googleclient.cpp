@@ -108,7 +108,7 @@ void GoogleClient::fetchEventDetails(const QString &eventId) {
             QString sum = obj["summary"].toString();
             QDateTime st = QDateTime::fromString(obj["start"].toObject()["dateTime"].toString(), Qt::ISODate);
             QDateTime en = QDateTime::fromString(obj["end"].toObject()["dateTime"].toString(), Qt::ISODate);
-            emit eventDetailsFetched(sum, st, en);
+            emit eventDetailsFetched(sum, st, en, eventId);
         }
         reply->deleteLater();
     });

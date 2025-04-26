@@ -3,7 +3,7 @@
 
 #include "TokenManager.h"
 #include "GoogleClient.h"
-
+#include "clickabletextedit.h"
 #include <QWidget>
 #include <QSet>
 #include <QSystemTrayIcon>
@@ -29,7 +29,9 @@ public:
      MainWidget(QWidget *parent=nullptr);
     ~MainWidget();
     void onDeleteClickedId(QString id);
- protected:
+
+
+protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *) override;
@@ -37,7 +39,7 @@ public:
 private slots:
     void onTokenReady(const QString &token);
     void onEventsFetched(const QString &text, const QSet<QDate> &dates);
-    void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en);
+    void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en,const QString &enventId);
     void onCalendarPageChanged(int y,int m);
     void onEventClicked();
     void onAddClicked();
@@ -47,11 +49,11 @@ private slots:
     void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void calendarContextMenuRequested(const QPoint &pos) ;
     void handleDateClicked(const QDate &date);
-
+    void handleLineClick();
 private:
     Ui::MainWidget *ui;
     QCalendarWidget *calendar;
-    QTextEdit     *textEdit;
+    ClickableTextEdit *textEdit;
     QLineEdit     *titleInput;
     QDateTimeEdit *startInput,*endInput;
     TokenManager  *tokenManager;
