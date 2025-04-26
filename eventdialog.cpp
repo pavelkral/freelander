@@ -9,25 +9,28 @@ EventDialog::EventDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::EventDialog) , m_textEdit(new QTextEdit(this)),
     m_dateEdit(new QDateTimeEdit(QDateTime::currentDateTime(), this)),
-    m_okButton(new QPushButton("Uložit", this))
+    m_dateEndEdit(new QDateTimeEdit(QDateTime::currentDateTime(), this)),
+    m_okButton(new QPushButton("Add Event", this))
 {
         ui->setupUi(this);
         m_dateEdit->setCalendarPopup(true);
         m_dateEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
 
+        m_dateEndEdit->setCalendarPopup(true);
+        m_dateEndEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
+
         auto *layout = new QVBoxLayout(this);
         layout->addWidget(m_dateEdit);
+        layout->addWidget(m_dateEndEdit);
         layout->addWidget(m_textEdit);
 
         auto *btnLayout = new QHBoxLayout;
         btnLayout->addStretch();
-        deleteButton = new QPushButton("Smazat");
-         btnLayout->addWidget(deleteButton);
-        btnLayout->addWidget(m_okButton);
-
-        QPushButton *cancelButton = new QPushButton("Zrušit", this);
+        QPushButton *cancelButton = new QPushButton("Cancel", this);
         btnLayout->addWidget(cancelButton);
-
+        deleteButton = new QPushButton("Smazat");
+        btnLayout->addWidget(deleteButton);
+        btnLayout->addWidget(m_okButton);
 
         layout->addLayout(btnLayout);
 
@@ -53,8 +56,14 @@ QString EventDialog::text() const {
 QDateTime EventDialog::dateTime() const {
     return m_dateEdit->dateTime();
 }
+QDateTime EventDialog::dateEndTime() const {
+    return m_dateEndEdit->dateTime();
+}
+void EventDialog::setEndDateTime(const QDateTime &dt) {
+    m_dateEndEdit->setDateTime(dt);
+}
 void EventDialog::setEditMode(bool edit) {
-    m_okButton->setText(edit ? "Upravit" : "Uložit");
+    m_okButton->setText(edit ? "Update" : "Add Event");
 }
 void EventDialog::setWidget(MainWidget *w)
 {

@@ -27,6 +27,8 @@ public:
     void setEventId(QString id);
     QPushButton *deleteButton ;
 
+    QDateTime dateEndTime() const;
+    void setEndDateTime(const QDateTime &dt);
 private slots:
     void onDeleteClicked();
 
@@ -36,6 +38,7 @@ private:
     Ui::EventDialog *ui;
     QTextEdit *m_textEdit;
     QDateTimeEdit *m_dateEdit;
+    QDateTimeEdit *m_dateEndEdit;
     QPushButton *m_okButton;
 
 

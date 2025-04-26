@@ -133,12 +133,13 @@ MainWidget::MainWidget(QWidget *parent)
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
 
-    connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(textEdit, &QTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
+
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
-    connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);
 
+    connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);  
+    connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
     connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
 
@@ -258,31 +259,33 @@ void MainWidget::handleDateClicked(const QDate &date) {
 }
 
 void MainWidget::onCalendarDateActivated(const QDate &date) {
-    QDateTime dateTime(date, QTime(8, 0)); // výchozí čas
 
+    QDateTime dateTime(date, QTime(8, 0)); // výchozí čas
+    //QDateTime dateTimeEnd(date, QTime(8, 0));
     QString existingSummary;
     QString existingEventId;
 
     for (const auto &entry : googleClient->eventIdMap.keys()) {
         if (entry.startsWith(date.toString("dd.MM.yyyy"))) {
-            existingSummary = entry.section(" - ", 1);
-            existingEventId = googleClient->eventIdMap.value(entry);
+            //existingSummary = entry.section(" - ", 1);
+            //existingEventId = googleClient->eventIdMap.value(entry);
             break;
         }
     }
 
     EventDialog dialog(this);
     dialog.setDateTime(dateTime);
+    dialog.setEndDateTime(dateTime);
     dialog.setText(existingSummary);
     dialog.setEditMode(!existingSummary.isEmpty());
 
     if (!existingEventId.isEmpty()) {
-
-        dialog.setEventId(existingEventId);
+        //dialog.setEventId(existingEventId);
         dialog.setWidget(this);
         qDebug() << "id exist:" << existingEventId;
 
     } else {
+
         dialog.deleteButton->hide();
         qDebug() << "id is null:" << existingEventId;
     }
@@ -290,11 +293,12 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
     if (dialog.exec() == QDialog::Accepted) {
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
+        QDateTime enddt = dialog.dateEndTime();
 
         if (!existingEventId.isEmpty()) {
-            googleClient->updateEvent(existingEventId, summary, dt, dt,calendar);
+            //googleClient->updateEvent(existingEventId, summary, dt, dt,calendar);
         } else {
-            googleClient->createEvent(summary, dt, dt,calendar);
+            googleClient->createEvent(summary, dt, enddt,calendar);
         }
 
         // Obnovit události pro zobrazený měsíc
