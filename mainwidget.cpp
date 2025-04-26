@@ -106,13 +106,17 @@ MainWidget::MainWidget(QWidget *parent)
     }
 
     textEdit   = new QTextEdit(this); textEdit->setReadOnly(true);
+    textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
     titleInput = new QLineEdit(this); titleInput->setPlaceholderText("Název události");
     startInput = new QDateTimeEdit(QDateTime::currentDateTime(), this);
     endInput   = new QDateTimeEdit(QDateTime::currentDateTime().addSecs(3600), this);
+    titleInput->setStyleSheet("QLineEdit { background-color: transparent; }");
+    startInput->setStyleSheet(" QDateTimeEdit { background-color: transparent; }");
+    endInput->setStyleSheet(" QDateTimeEdit{ background-color: transparent; }");
     //addBtn     = new QPushButton("➕ Přidat", this);
     //updateBtn  = new QPushButton("💾 Uložit", this);
     //deleteBtn  = new QPushButton("❌ Smazat", this);
-textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
+
     lay->addWidget(calendar);
     lay->addWidget(textEdit);
     lay->addWidget(titleInput);
@@ -216,51 +220,7 @@ void MainWidget::onDeleteClickedId(QString id) {
    // QString id = googleClient->eventIdMap.value(selectedLine);
     if (!id.isEmpty()) googleClient->deleteEvent(id,calendar);
 }
-void MainWidget::onCalendarDateActivated(const QDate &date) {
-    QDateTime dateTime(date, QTime(8, 0)); // výchozí čas
 
-    QString existingSummary;
-    QString existingEventId;
-
-    for (const auto &entry : googleClient->eventIdMap.keys()) {
-        if (entry.startsWith(date.toString("dd.MM.yyyy"))) {
-            existingSummary = entry.section(" - ", 1);
-            existingEventId = googleClient->eventIdMap.value(entry);
-            break;
-        }
-    }
-
-    EventDialog dialog(this);
-    dialog.setDateTime(dateTime);
-    dialog.setText(existingSummary);
-    dialog.setEditMode(!existingSummary.isEmpty());
-
-    if (!existingEventId.isEmpty()) {
-
-        dialog.setEventId(existingEventId);
-        dialog.setWidget(this);
-        qDebug() << "id exist:" << existingEventId;
-
-    } else {
-        dialog.deleteButton->hide();
-        qDebug() << "id is null:" << existingEventId;
-    }
-
-    if (dialog.exec() == QDialog::Accepted) {
-        QString summary = dialog.text();
-        QDateTime dt = dialog.dateTime();
-
-        if (!existingEventId.isEmpty()) {
-           googleClient->updateEvent(existingEventId, summary, dt, dt,calendar);
-        } else {
-             googleClient->createEvent(summary, dt, dt,calendar);
-        }
-
-        // Obnovit události pro zobrazený měsíc
-        QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
-        googleClient->fetchEvents(currentPage, calendar);
-    }
-}
 void MainWidget::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason) {
     if (reason == QSystemTrayIcon::Trigger) {
         if (isVisible())
@@ -297,12 +257,56 @@ void MainWidget::handleDateClicked(const QDate &date) {
     lastClickedDate = date; // Store the clicked date
 }
 
+void MainWidget::onCalendarDateActivated(const QDate &date) {
+    QDateTime dateTime(date, QTime(8, 0)); // výchozí čas
+
+    QString existingSummary;
+    QString existingEventId;
+
+    for (const auto &entry : googleClient->eventIdMap.keys()) {
+        if (entry.startsWith(date.toString("dd.MM.yyyy"))) {
+            existingSummary = entry.section(" - ", 1);
+            existingEventId = googleClient->eventIdMap.value(entry);
+            break;
+        }
+    }
+
+    EventDialog dialog(this);
+    dialog.setDateTime(dateTime);
+    dialog.setText(existingSummary);
+    dialog.setEditMode(!existingSummary.isEmpty());
+
+    if (!existingEventId.isEmpty()) {
+
+        dialog.setEventId(existingEventId);
+        dialog.setWidget(this);
+        qDebug() << "id exist:" << existingEventId;
+
+    } else {
+        dialog.deleteButton->hide();
+        qDebug() << "id is null:" << existingEventId;
+    }
+
+    if (dialog.exec() == QDialog::Accepted) {
+        QString summary = dialog.text();
+        QDateTime dt = dialog.dateTime();
+
+        if (!existingEventId.isEmpty()) {
+            googleClient->updateEvent(existingEventId, summary, dt, dt,calendar);
+        } else {
+            googleClient->createEvent(summary, dt, dt,calendar);
+        }
+
+        // Obnovit události pro zobrazený měsíc
+        QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
+        googleClient->fetchEvents(currentPage, calendar);
+    }
+}
+
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
     // Get the date at the clicked position
     qDebug() << "calendarContextMenuRequested called at pos:" << pos;
-
     QDate date; // Date to be determined
-
     // Attempt to get the date from the position using the internal view
     QTableView *view = calendar->findChild<QTableView*>();
     if (view) {
@@ -375,7 +379,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                     qDebug() << "Delete action triggered for event ID:" << eventId;
                     if (!eventId.isEmpty()) {
                         // Call the existing deleteEvent function - Call member deleteEvent
-                       googleClient->deleteEvent(eventId,calendar);
+                        googleClient->deleteEvent(eventId,calendar);
                     } else {
                         qDebug() << "Event ID is empty, cannot delete.";
                     }
@@ -386,8 +390,8 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
         // Display the context menu at the global position of the click - use -> on QScopedPointer
         // Changed to use the alternative global position calculation
         // QPoint globalPos = calendar->mapToGlobal(QPoint(0,0)) + pos;
-       // qDebug() << "Executing menu at global pos:" << globalPos;
-         menu.exec(calendar->mapToGlobal(pos));
+        // qDebug() << "Executing menu at global pos:" << globalPos;
+        menu.exec(calendar->mapToGlobal(pos));
         qDebug() << "Menu execution finished.";
     });
 }
