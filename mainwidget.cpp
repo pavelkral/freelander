@@ -28,9 +28,10 @@ MainWidget::MainWidget(QWidget *parent)
     setWindowTitle("Freelander");
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint );
+    //| Qt::WindowStaysOnTopHint
     QSettings settings("Freelander", "Freelander");
     restoreGeometry(settings.value("geometry").toByteArray());
-//| Qt::WindowStaysOnTopHint
+
     trayIcon = new QSystemTrayIcon(this);
     QIcon icon(":/icons/icon.png");
 
