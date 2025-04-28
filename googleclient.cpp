@@ -43,7 +43,7 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
     QNetworkRequest request(url);
     request.setRawHeader("Authorization", "Bearer " + m_token.toUtf8());
     //qDebug() << "Google req:" << request.url();
-const QString TOKEN_FILE = "result.json";
+    const QString TOKEN_FILE = "result.json";
 
     QNetworkReply *reply = m_manager->get(request);
 
@@ -53,10 +53,10 @@ const QString TOKEN_FILE = "result.json";
 
         QJsonDocument doc = QJsonDocument::fromJson(data);
 
-        bool ok = Utils::saveJsonDocumentToFile(TOKEN_FILE,doc,QJsonDocument::Indented);
-        if(ok){
+        //bool ok = Utils::saveJsonDocumentToFile(TOKEN_FILE,doc,QJsonDocument::Indented);
+       // if(ok){
               // qDebug() << "Json:" << doc.toJson();
-        }
+       // }
         QJsonArray items = doc.object().value("items").toArray();
 
         QSet<QDate> highlightDates;
