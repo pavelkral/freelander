@@ -115,6 +115,7 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
+
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
 
@@ -122,8 +123,9 @@ MainWidget::MainWidget(QWidget *parent)
     connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
     connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
+
     connect(textEdit, &ClickableTextEdit::lineDoubleClicked, this,&MainWidget::handleLineClick);
-       // connect(textEdit, &ClickableTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
+    // connect(textEdit, &ClickableTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
     tokenManager->initialize();
 }
 
@@ -260,7 +262,6 @@ void MainWidget::handleDateClicked(const QDate &date) {
 void MainWidget::onCalendarDateActivated(const QDate &date) {
 
     QDateTime dateTime(date, QTime(8, 0));
-
     QString existingSummary;
     QString existingEventId;
 
@@ -308,12 +309,15 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
     qDebug() << "calendarContextMenuRequested called at pos:" << pos;
+    qDebug().noquote() << "\033[1;31mČervená " << pos << " chyba!\033[0m";
+   // QPoint globalPos = QCursor::pos();
+    QPoint globalPos = calendar->mapToGlobal(QCursor::pos());
     QDate date;
     // Attempt to get the date from the position using the internal view
     QTableView *view = calendar->findChild<QTableView*>();
     if (view) {
         qDebug() << "Internal calendar view found.";
-        QModelIndex index = view->indexAt(pos);
+        QModelIndex index = view->indexAt(globalPos);
         if (index.isValid()) {
             qDebug() << "Valid model index found at pos.";
             // Get the date from the model data for the index
@@ -369,14 +373,11 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
             // For each event, add an action to the menu
             for (const auto& event : events) {
                 qDebug() << "Adding event to menu:" << event.first << "(" << event.second << ")";
-                // Create an action with a delete icon and the event summary
-                // Using QIcon::fromTheme requires a theme engine, might need fallbacks
                 QAction *eventAction = new QAction(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete.png")),"Delete " + event.first, &menu);
                 eventAction->setData(event.second); // Store event ID in action data
 
-                // Connect the action's triggered signal to a lambda that calls deleteEvent
-                QObject::connect(eventAction, &QAction::triggered, [&,this]() { // Capture this for member access
-                    QString eventId = eventAction->data().toString(); // Get the event ID from action data
+                QObject::connect(eventAction, &QAction::triggered, [&,this]() {
+                    QString eventId = eventAction->data().toString();
                     qDebug() << "Delete action triggered for event ID:" << eventId;
                     if (!eventId.isEmpty()) {
                         // Call the existing deleteEvent function - Call member deleteEvent
@@ -391,6 +392,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
         QPoint globalPos = QCursor::pos();
         // qDebug() << "Executing menu at global pos:" << globalPos;
         menu.exec(globalPos);
+
         qDebug() << "Menu execution finished.";
     });
 }

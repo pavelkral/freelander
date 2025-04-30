@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    qputenv("QT_SCALE_FACTOR", QByteArray("1"));  // nebo 2.0 pro dvojnásobek
+    qputenv("QT_SCALE_FACTOR", QByteArray("1"));
     qputenv("QT_ENABLE_HIGHDPI_SCALING", QByteArray("1"));
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     }
 
     MainWidget w;
-    w.resize(250,380);
+    w.resize(200,380);
     w.show();
     return a.exec();
 }

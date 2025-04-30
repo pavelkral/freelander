@@ -45,6 +45,27 @@ EventDialog::~EventDialog()
 {
     delete ui;
 }
+void EventDialog::onDeleteClicked()
+{
+    if(pointerToWidget && !eventId.isEmpty()){
+        QMessageBox::StandardButton reply;
+
+        reply = QMessageBox::question(this, "Confirm",
+                                      "Delete event?",
+                                      QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            pointerToWidget->onDeleteClickedId(eventId);
+            accept(); //  close()
+        }
+    }
+    else{
+
+    }  qDebug() << "id not exist:" << eventId;
+
+
+}
+
 void EventDialog::setDateTime(const QDateTime &dt) {
     m_dateEdit->setDateTime(dt);
 }
@@ -75,23 +96,4 @@ void EventDialog::setEventId(QString id)
     eventId = id;
 }
 
-void EventDialog::onDeleteClicked()
-{
-    if(pointerToWidget && !eventId.isEmpty()){
-        QMessageBox::StandardButton reply;
 
-        reply = QMessageBox::question(this, "Confirm",
-                                      "Delete event?",
-                                      QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes) {
-            pointerToWidget->onDeleteClickedId(eventId);
-            accept(); //  close()
-        }
-    }
-    else{
-
-    }  qDebug() << "id not exist:" << eventId;
-
-
-}
