@@ -16,6 +16,7 @@
 #include <QMenu>
 #include <QTableView>
 #include <QHeaderView>
+#include <QLabel>
 
 
 MainWidget::MainWidget(QWidget *parent)
@@ -38,8 +39,8 @@ MainWidget::MainWidget(QWidget *parent)
     trayIcon->setToolTip(QString::fromUtf8("📅Freelander"));
 
     QMenu *menu = new QMenu(this);
-    QAction *showAction = new QAction("📂 Zobrazit", this);
-    QAction *exitAction = new QAction("❌ Ukončit", this);
+    QAction *showAction = new QAction("⚙️ Settings", this);
+    QAction *exitAction = new QAction("❌ Exit", this);
     connect(showAction, &QAction::triggered, this, &QWidget::showNormal);
     connect(exitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     menu->addAction(showAction);
@@ -99,12 +100,17 @@ MainWidget::MainWidget(QWidget *parent)
             font-size: 12pt;
     )");
     }
+    QLabel *label = new QLabel("EVENTS",this);
+    label->setStyleSheet("background-color: #2a2a2a; color: white; font-size: 16px;");
+    label->setAlignment(Qt::AlignCenter);
+   // label->setAttribute(Qt::WA_TranslucentBackground);
 
     textEdit   = new ClickableTextEdit(this);
     textEdit->setReadOnly(true);
-
+    textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
 
     lay->addWidget(calendar);
+    lay->addWidget(label);
     lay->addWidget(textEdit);
 
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
@@ -129,9 +135,7 @@ void MainWidget::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-
     QColor backgroundColor(0, 0, 0, 128);
-
     painter.setBrush(backgroundColor);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(rect(), 10, 10);
@@ -150,37 +154,43 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     //}
     QColor backgroundColor(255, 0, 0, 128);
     textEdit->setPlainText(text);
+    QFontMetrics fm(textEdit->font());
+    int lineHeight = fm.lineSpacing();
+    int lineCount = textEdit->document()->blockCount();
+    lineCount = std::min(lineCount, 10);
+    int newHeight = lineCount * lineHeight + 20; // 10px na padding
+    //textEdit->setFixedHeight(newHeight);
+
     calendar->setDateTextFormat(QDate(), QTextCharFormat());
     QTextCharFormat fmt;
     fmt.setBackground(backgroundColor);
     fmt.setFontPointSize(12);
-    // Alternativně v pixelech: fmt.setFontPixelSize(16);
+    //  fmt.setFontPixelSize(16);
     fmt.setFontWeight(QFont::Bold);
 
-    for (auto d : dates) calendar->setDateTextFormat(d, fmt);
+    for (auto d : dates){
+        calendar->setDateTextFormat(d, fmt);
+    }
 }
 
-void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en ,const QString &enventId) {
+void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {
 
 
     EventDialog dialog(this);
     dialog.setDateTime(st);
     dialog.setEndDateTime(en);
     dialog.setText(sum);
-    dialog.setEditMode(!enventId.isEmpty());
-    dialog.setEventId(enventId);
+    dialog.setEditMode(!eventId.isEmpty());
+    dialog.setEventId(eventId);
     dialog.setWidget(this);
-    //dialog.deleteButton->hide();
 
-    if (!enventId.isEmpty()) {
-        //dialog.setEventId(existingEventId);
+    if (!eventId.isEmpty()) {
+        dialog.setEventId(eventId);
         dialog.setWidget(this);
-        qDebug() << "id exist:" << enventId;
-
+        qDebug() << "id exist:" << eventId;
     } else {
 
-
-        qDebug() << "id is null:" << enventId;
+        qDebug() << "id is null:" << eventId;
     }
 
     if (dialog.exec() == QDialog::Accepted) {
@@ -188,7 +198,7 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
         QDateTime enddt = dialog.dateEndTime();
-        googleClient->updateEvent(enventId, summary, dt, enddt,calendar);
+        googleClient->updateEvent(eventId, summary, dt, enddt,calendar);
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
         googleClient->fetchEvents(currentPage, calendar);
     }
@@ -361,7 +371,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                 qDebug() << "Adding event to menu:" << event.first << "(" << event.second << ")";
                 // Create an action with a delete icon and the event summary
                 // Using QIcon::fromTheme requires a theme engine, might need fallbacks
-                QAction *eventAction = new QAction(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete.png")), event.first, &menu);
+                QAction *eventAction = new QAction(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete.png")),"Delete " + event.first, &menu);
                 eventAction->setData(event.second); // Store event ID in action data
 
                 // Connect the action's triggered signal to a lambda that calls deleteEvent
@@ -388,6 +398,7 @@ void MainWidget::handleLineClick() {
 
     QTextCursor c = textEdit->textCursor();
     c.select(QTextCursor::LineUnderCursor);
+
     selectedLine = c.selectedText();
     QString id = googleClient->eventIdMap.value(selectedLine);
     if (!id.isEmpty()) googleClient->fetchEventDetails(id);

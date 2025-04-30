@@ -39,7 +39,7 @@ protected:
 private slots:
     void onTokenReady(const QString &token);
     void onEventsFetched(const QString &text, const QSet<QDate> &dates);
-    void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en,const QString &enventId);
+    void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en,const QString &eventId);
     void onCalendarPageChanged(int y,int m);
     void onEventClicked();
     void onCalendarDateActivated(const QDate &date);

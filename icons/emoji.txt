@@ -1,0 +1,16 @@
+Funkce	Emoji	Unicode	Popis
+Otevřít složku	📂	U+1F4C2	Otevřená složka
+Uložit	💾	U+1F4BE	Disketa (Save)
+Nový soubor	📄	U+1F4C4	Dokument
+Smazat	🗑️	U+1F5D1	Koš (Delete)
+Hledat	🔍	U+1F50D	Lupa
+Nastavení	⚙️	U+2699	Ozubené kolečko
+Info	ℹ️	U+2139	Informace
+Varování	⚠️	U+26A0	Výstraha
+Zpět	🔙	U+1F519	Šipka zpět
+Vpřed	🔜	U+1F51C	Šipka vpřed
+Zavřít	❌	U+274C	Červený křížek
+Přidat	➕	U+2795	Plus
+Odebrat	➖	U+2796	Mínus
+Hotovo / OK	✅	U+2705	Zelená fajfka
+Nápověda	❓	U+2753	Otazník
