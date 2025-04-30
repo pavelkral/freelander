@@ -34,14 +34,8 @@ MainWidget::MainWidget(QWidget *parent)
 
     trayIcon = new QSystemTrayIcon(this);
     QIcon icon(":/icons/icon.png");
-
-    if (!icon.isNull()) {
-        trayIcon->setIcon(icon);
-    } else {
-        trayIcon->setIcon(QIcon::fromTheme("face-smile")); // nebo něco, co systém najde
-        trayIcon->setToolTip(QString::fromUtf8("📅Freelander"));
-    }
-    trayIcon->setToolTip("📅 Freelander");
+    trayIcon->setIcon(icon);
+    trayIcon->setToolTip(QString::fromUtf8("📅Freelander"));
 
     QMenu *menu = new QMenu(this);
     QAction *showAction = new QAction("📂 Zobrazit", this);
@@ -67,8 +61,9 @@ MainWidget::MainWidget(QWidget *parent)
     auto *lay = new QVBoxLayout(this);
     calendar   = new QCalendarWidget(this);
     calendar->setGridVisible(true);
-    //calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader); // ← tady
+    //calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
+    calendar->setContextMenuPolicy(Qt::CustomContextMenu);
     calendar->setStyleSheet(R"(
         QCalendarWidget {
             background: transparent;
@@ -81,7 +76,6 @@ MainWidget::MainWidget(QWidget *parent)
         }
     )");
 
-    // Získání vnitřní tabulky
     QTableView *tableView = calendar->findChild<QTableView *>();
     if (tableView) {
         tableView->viewport()->setAutoFillBackground(false);
@@ -108,35 +102,13 @@ MainWidget::MainWidget(QWidget *parent)
 
     textEdit   = new ClickableTextEdit(this);
     textEdit->setReadOnly(true);
-    textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
-    titleInput = new QLineEdit(this); titleInput->setPlaceholderText("Název události");
-    startInput = new QDateTimeEdit(QDateTime::currentDateTime(), this);
-    endInput   = new QDateTimeEdit(QDateTime::currentDateTime().addSecs(3600), this);
-    titleInput->setStyleSheet("QLineEdit { background-color: transparent; }");
-    startInput->setStyleSheet(" QDateTimeEdit { background-color: transparent; }");
-    endInput->setStyleSheet(" QDateTimeEdit{ background-color: transparent; }");
-    //addBtn     = new QPushButton("➕ Přidat", this);
-    //updateBtn  = new QPushButton("💾 Uložit", this);
-    //deleteBtn  = new QPushButton("❌ Smazat", this);
+
 
     lay->addWidget(calendar);
     lay->addWidget(textEdit);
-    lay->addWidget(titleInput);
-    lay->addWidget(startInput);
-    lay->addWidget(endInput);
-    auto *hl = new QHBoxLayout;
-   // hl->addWidget(addBtn);
-   // hl->addWidget(updateBtn);
-    //hl->addWidget(deleteBtn);
-    lay->addLayout(hl);
-
-    calendar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
-
-   // connect(textEdit, &ClickableTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
-
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
 
@@ -145,7 +117,7 @@ MainWidget::MainWidget(QWidget *parent)
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
     connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
     connect(textEdit, &ClickableTextEdit::lineDoubleClicked, this,&MainWidget::handleLineClick);
-
+       // connect(textEdit, &ClickableTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
     tokenManager->initialize();
 }
 
@@ -190,17 +162,16 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
 
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en ,const QString &enventId) {
 
-    titleInput->setText(sum);
-    startInput->setDateTime(st);
-    endInput->setDateTime(en);
-
 
     EventDialog dialog(this);
     dialog.setDateTime(st);
     dialog.setEndDateTime(en);
     dialog.setText(sum);
     dialog.setEditMode(!enventId.isEmpty());
-  dialog.deleteButton->hide();
+    dialog.setEventId(enventId);
+    dialog.setWidget(this);
+    //dialog.deleteButton->hide();
+
     if (!enventId.isEmpty()) {
         //dialog.setEventId(existingEventId);
         dialog.setWidget(this);
@@ -213,15 +184,11 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
     }
 
     if (dialog.exec() == QDialog::Accepted) {
+
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
         QDateTime enddt = dialog.dateEndTime();
-
         googleClient->updateEvent(enventId, summary, dt, enddt,calendar);
-       // googleClient->createEvent(summary, dt, enddt,calendar);
-
-
-        // Obnovit události pro zobrazený měsíc
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
         googleClient->fetchEvents(currentPage, calendar);
     }
@@ -240,19 +207,7 @@ void MainWidget::onEventClicked() {
     if (!id.isEmpty()) googleClient->fetchEventDetails(id);
 }
 
-void MainWidget::onAddClicked() {
-    googleClient->createEvent(titleInput->text(), startInput->dateTime(), endInput->dateTime(),calendar);
-}
 
-void MainWidget::onUpdateClicked() {
-    QString id = googleClient->eventIdMap.value(selectedLine);
-    if (!id.isEmpty()) googleClient->updateEvent(id, titleInput->text(), startInput->dateTime(), endInput->dateTime(),calendar);
-}
-
-void MainWidget::onDeleteClicked() {
-    QString id = googleClient->eventIdMap.value(selectedLine);
-    if (!id.isEmpty()) googleClient->deleteEvent(id,calendar);
-}
 void MainWidget::onDeleteClickedId(QString id) {
    // QString id = googleClient->eventIdMap.value(selectedLine);
     if (!id.isEmpty()) googleClient->deleteEvent(id,calendar);
@@ -280,11 +235,9 @@ void MainWidget::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 void MainWidget::closeEvent(QCloseEvent *event) {
-    // Uložíme pozici a velikost
+
     QSettings settings("Freelander", "Freelander");
     settings.setValue("geometry", saveGeometry());
-
-    // Místo zavření okno jen schováme do tray
     hide();
     event->ignore();
 }
@@ -296,8 +249,8 @@ void MainWidget::handleDateClicked(const QDate &date) {
 
 void MainWidget::onCalendarDateActivated(const QDate &date) {
 
-    QDateTime dateTime(date, QTime(8, 0)); // výchozí čas
-    //QDateTime dateTimeEnd(date, QTime(8, 0));
+    QDateTime dateTime(date, QTime(8, 0));
+
     QString existingSummary;
     QString existingEventId;
 
@@ -337,16 +290,15 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
             googleClient->createEvent(summary, dt, enddt,calendar);
         }
 
-        // Obnovit události pro zobrazený měsíc
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
         googleClient->fetchEvents(currentPage, calendar);
     }
 }
 
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
-    // Get the date at the clicked position
+
     qDebug() << "calendarContextMenuRequested called at pos:" << pos;
-    QDate date; // Date to be determined
+    QDate date;
     // Attempt to get the date from the position using the internal view
     QTableView *view = calendar->findChild<QTableView*>();
     if (view) {
@@ -355,7 +307,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
         if (index.isValid()) {
             qDebug() << "Valid model index found at pos.";
             // Get the date from the model data for the index
-            QVariant data = view->model()->data(index, Qt::DisplayRole); // Try DisplayRole first
+            QVariant data = view->model()->data(index, Qt::DisplayRole);
             if (data.isValid() && data.canConvert<QDate>()) {
                 date = data.toDate();
                 qDebug() << "Date obtained from model index (DisplayRole):" << date << "isValid:" << date.isValid();
@@ -377,7 +329,6 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
         qDebug() << "Internal calendar view (QTableView) not found. Falling back to selectedDate.";
     }
 
-    // Fallback if date was not obtained from the view
     if (!date.isValid()) {
         qDebug() << "Date not obtained from view. Falling back to selectedDate.";
         date = calendar->selectedDate();
@@ -424,22 +375,17 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                         qDebug() << "Event ID is empty, cannot delete.";
                     }
                 });
-                menu.addAction(eventAction); // Add the action to the menu
+                menu.addAction(eventAction);
             }
         }
-        // Display the context menu at the global position of the click - use -> on QScopedPointer
-        // Changed to use the alternative global position calculation
-        // QPoint globalPos = calendar->mapToGlobal(QPoint(0,0)) + pos;
+        QPoint globalPos = QCursor::pos();
         // qDebug() << "Executing menu at global pos:" << globalPos;
-        menu.exec(calendar->mapToGlobal(pos));
+        menu.exec(globalPos);
         qDebug() << "Menu execution finished.";
     });
 }
 void MainWidget::handleLineClick() {
-    //qDebug() << "Access token ready:" << token;
-    //googleClient->setAccessToken(token);
-    //googleClient->fetchEvents(calendar->selectedDate(), calendar);
-   // qDebug() << "Double clicked line:" << lineText;
+
     QTextCursor c = textEdit->textCursor();
     c.select(QTextCursor::LineUnderCursor);
     selectedLine = c.selectedText();

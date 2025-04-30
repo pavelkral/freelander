@@ -14,16 +14,16 @@ TokenManager::TokenManager(QObject *parent)
     m_replyHandler(new QOAuthHttpServerReplyHandler(8080, this))
 {
 
-    QString configFilePath = "config.json"; // Nebo QCoreApplication::applicationDirPath() + "/config.json"
-    QJsonDocument configDoc = Utils::loadJsonDocumentFromFile(configFilePath);
+    //QString configFilePath = "config.json"; //  QCoreApplication::applicationDirPath() + "/config.json"
+    QJsonDocument configDoc = Utils::loadJsonDocumentFromFile(CONFIG_FILE);
     QString clientId;
     QString clientSecret;
 
     if (configDoc.isNull()) {
-        qWarning() << "Chyba: konfigurační soubor:" << configFilePath;
-        //  zpracovat chybu - např. ukončit aplikaci nebo použít výchozí hodnoty
+        qWarning() << "Error: Configuration file is null:" << CONFIG_FILE;
+        // handle the error - e.g., exit the application or use default values
     } else if (!configDoc.isObject()) {
-        qWarning() << "Chyba: Kořenový element není JSON objekt:" << configFilePath;
+        qWarning() << "Error: Root element is not a JSON object:" << CONFIG_FILE;
     } else {
         QJsonObject rootObj = configDoc.object();
         if (rootObj.contains("oauth_settings") && rootObj["oauth_settings"].isObject()) {
@@ -32,17 +32,17 @@ TokenManager::TokenManager(QObject *parent)
             if (oauthSettings.contains("client_id") && oauthSettings["client_id"].isString()) {
                 clientId = oauthSettings["client_id"].toString();
             } else {
-                qWarning() << " 'client_id' chybí nebo není řetězec v 'oauth_settings' v souboru:" << configFilePath;
+                qWarning() << "'client_id' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
             }
 
             if (oauthSettings.contains("client_secret") && oauthSettings["client_secret"].isString()) {
                 clientSecret = oauthSettings["client_secret"].toString();
             } else {
-                qWarning() << " 'client_secret' chybí nebo není řetězec v 'oauth_settings' v souboru:" << configFilePath;
+                qWarning() << "'client_secret' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
             }
 
         } else {
-            qWarning() << "Chyba: Objekt 'oauth_settings' chybí v konfiguračním souboru:" << configFilePath;
+            qWarning() << "Error: Object 'oauth_settings' is missing in configuration file:" << CONFIG_FILE;
         }
     }
 
@@ -53,15 +53,13 @@ TokenManager::TokenManager(QObject *parent)
     if (!clientId.isEmpty() && !clientSecret.isEmpty()) {
         m_oauth->setClientIdentifier(clientId);
         m_oauth->setClientIdentifierSharedKey(clientSecret);
-        qInfo() << "OAuth identifikátory načteny z" << configFilePath <<"OAuth identifikátory " << clientId << clientSecret;
+        qInfo() << "OAuth loade" << CONFIG_FILE <<"OAuth idetnification " << clientId << clientSecret;
 
     } else {
-        qCritical() << "Kritická chyba: Nepodařilo se načíst OAuth identifikátory z konfigurace. Aplikace nemůže pokračovat.";
-        // QCoreApplication::exit(-1); nebo zobrazení chybové zprávy uživateli.
+        qCritical() << "OAuth not loaded.";
+        // QCoreApplication::exit(-1);
     }
 
-   // m_oauth->setClientIdentifier("4373465227-k1nnjiou0l2kk9ndoj5cuivinchkdok5.apps.googleusercontent.com");
-   // m_oauth->setClientIdentifierSharedKey("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");
     m_oauth->setScope("https://www.googleapis.com/auth/calendar");
     m_oauth->setProperty("redirectUri", "http://localhost:8080");
 

@@ -27,6 +27,7 @@ private:
     QString m_accessToken;
     QString m_refreshToken;
     const QString TOKEN_FILE = "tokens.json";
+    const QString CONFIG_FILE = "config.json";
 };
 
 #endif // TOKENMANAGER_H

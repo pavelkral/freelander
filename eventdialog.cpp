@@ -13,6 +13,7 @@ EventDialog::EventDialog(QWidget *parent)
     m_okButton(new QPushButton("Add Event", this))
 {
         ui->setupUi(this);
+        setWindowTitle("Event");
         m_dateEdit->setCalendarPopup(true);
         m_dateEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
 
@@ -26,9 +27,9 @@ EventDialog::EventDialog(QWidget *parent)
 
         auto *btnLayout = new QHBoxLayout;
         btnLayout->addStretch();
-        QPushButton *cancelButton = new QPushButton("Cancel", this);
+        cancelButton = new QPushButton("Cancel", this);
         btnLayout->addWidget(cancelButton);
-        deleteButton = new QPushButton("Smazat");
+        deleteButton = new QPushButton("Delete",this);
         btnLayout->addWidget(deleteButton);
         btnLayout->addWidget(m_okButton);
 
@@ -79,13 +80,13 @@ void EventDialog::onDeleteClicked()
     if(pointerToWidget && !eventId.isEmpty()){
         QMessageBox::StandardButton reply;
 
-        reply = QMessageBox::question(this, "Potvrzení",
-                                      "Opravdu chcete událost smazat?",
+        reply = QMessageBox::question(this, "Confirm",
+                                      "Delete event?",
                                       QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes) {
             pointerToWidget->onDeleteClickedId(eventId);
-            accept(); // nebo close(), podle potřeby
+            accept(); //  close()
         }
     }
     else{

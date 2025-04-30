@@ -40,7 +40,7 @@ private:
     QDateTimeEdit *m_dateEdit;
     QDateTimeEdit *m_dateEndEdit;
     QPushButton *m_okButton;
-
+    QPushButton *cancelButton;
 
     MainWidget *pointerToWidget ;
     QString eventId;

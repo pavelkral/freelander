@@ -42,9 +42,6 @@ private slots:
     void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en,const QString &enventId);
     void onCalendarPageChanged(int y,int m);
     void onEventClicked();
-    void onAddClicked();
-    void onUpdateClicked();
-    void onDeleteClicked();
     void onCalendarDateActivated(const QDate &date);
     void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void calendarContextMenuRequested(const QPoint &pos) ;
@@ -54,8 +51,6 @@ private:
     Ui::MainWidget *ui;
     QCalendarWidget *calendar;
     ClickableTextEdit *textEdit;
-    QLineEdit     *titleInput;
-    QDateTimeEdit *startInput,*endInput;
     TokenManager  *tokenManager;
     GoogleClient  *googleClient;
     QString        selectedLine;
