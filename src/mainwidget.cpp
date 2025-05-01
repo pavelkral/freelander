@@ -79,7 +79,7 @@ MainWidget::MainWidget(QWidget *parent)
             color: white;
         }
     )");
-CalendarDelegate *delegate = new CalendarDelegate(this);
+    //CalendarDelegate *delegate = new CalendarDelegate(this);
     QTableView *tableView = calendar->findChild<QTableView *>();
     if (tableView) {
         tableView->viewport()->setAutoFillBackground(false);
@@ -188,11 +188,11 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     calendar->setDateTextFormat(QDate(), QTextCharFormat());
     QTextCharFormat fmt;
     fmt.setBackground(backgroundColor);
-   // fmt.setfon
     fmt.setFontPointSize(12);
     //  fmt.setFontPixelSize(16);
     fmt.setFontWeight(QFont::Bold);
-    QColor textColor = Qt::yellow;
+    QColor textColor(3, 232, 252, 255);
+
     fmt.setForeground(textColor);
     for (auto d : dates){
         calendar->setDateTextFormat(d, fmt);

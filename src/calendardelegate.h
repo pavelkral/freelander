@@ -12,7 +12,7 @@ class CalendarDelegate : public QStyledItemDelegate {
 public:
     CalendarDelegate(QObject *parent = nullptr) ;
 
-    // Nastavení dat pro zvýraznění
+
     void setHighlightedDates(const QMap<QDate, QString> &dates) {
         highlighted = dates;
         for (auto it = highlighted.begin(); it != highlighted.end(); ++it) {
@@ -25,6 +25,6 @@ public:
 
 
 private:
-    QMap<QDate, QString> highlighted; // Uložíme zvýrazněná data spolu s textem
+    QMap<QDate, QString> highlighted;
 };
 #endif // CUSTOMCALENDARDELEGATE_H

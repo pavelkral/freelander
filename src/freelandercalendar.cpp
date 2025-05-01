@@ -48,7 +48,7 @@ void FreelanderCalendar::setNavigationIcons(const QIcon &prevIcon, const QIcon &
         nextButton->setIcon(nextIcon);
         // nextButton->setIconSize(QSize(24, 24));
     } else {
-        qWarning("Nepodařilo se najít tlačítko dalšího měsíce.");
+        qWarning("arrow icons.");
     }
 
 }
