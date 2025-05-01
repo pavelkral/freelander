@@ -35,7 +35,7 @@ MainWidget::MainWidget(QWidget *parent)
     restoreGeometry(settings.value("geometry").toByteArray());
 
     trayIcon = new QSystemTrayIcon(this);
-    QIcon icon(":/icons/icon.png");
+    QIcon icon(":/icons/micon.png");
     trayIcon->setIcon(icon);
     trayIcon->setToolTip(QString::fromUtf8("📅Freelander"));
 
