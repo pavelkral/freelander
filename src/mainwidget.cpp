@@ -2,6 +2,7 @@
 #include "ui_mainwidget.h"
 #include "calendardelegate.h"
 #include "eventdialog.h"
+
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QHBoxLayout>
@@ -103,23 +104,16 @@ MainWidget::MainWidget(QWidget *parent)
             font-size: 12pt;
     )");
     }
-    QIcon prevIcon(":/icons/icon.png"); // Příklad použití Qt Resource System
-    QIcon nextIcon(":/icons/icon.png"); // Příklad použití Qt Resource System
-
-    // Pokud nepoužíváte Qt Resource System, použijte přímou cestu k souboru:
-    // QIcon prevIcon("cesta/k/vasim/ikonam/prev_arrow.png");
-    // QIcon nextIcon("cesta/k/vasim/ikonam/next_arrow.png");
+    QIcon prevIcon(":/icons/left-icon.png");
+    QIcon nextIcon(":/icons/right-icon.png");
 
 
     if (!prevIcon.isNull() && !nextIcon.isNull()) {
         calendar->setNavigationIcons(prevIcon, nextIcon);
     } else {
-        qWarning("Nepodařilo se načíst ikony pro kalendář.");
-        // Zde můžete případně nastavit nějaké výchozí chování nebo informovat uživatele
-    }
+        qWarning("icon error.");
 
-    // Důležité: Nastavte rodiče
-   // calendar->setItemDelegate(delegate);
+    }
 
 
     QLabel *label = new QLabel("EVENTS",this);
@@ -163,6 +157,7 @@ void MainWidget::paintEvent(QPaintEvent *) {
     painter.setBrush(backgroundColor);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(rect(), 10, 10);
+    //calendar->repaint();
 
 }
 void MainWidget::onTokenReady(const QString &token) {
@@ -197,7 +192,7 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     for (auto d : dates){
         calendar->setDateTextFormat(d, fmt);
     }
-    //calendar->repaint();
+    calendar->repaint();
 }
 
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {

@@ -1,5 +1,6 @@
 #ifndef GOOGLECLIENT_H
 #define GOOGLECLIENT_H
+
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QDate>

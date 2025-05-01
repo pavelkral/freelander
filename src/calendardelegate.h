@@ -1,5 +1,4 @@
-
-#ifndef CALENDARDELEGATE_H // <-- Krok 1: Zkontrolujte, zda tento symbol NENÍ definován
+#ifndef CALENDARDELEGATE_H
 #define CALENDARDELEGATE_H
 
 #include <QStyledItemDelegate>

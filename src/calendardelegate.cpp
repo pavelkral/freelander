@@ -29,10 +29,7 @@ void CalendarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         pen.setWidth(2);
         painter->setPen(pen);
         painter->setBrush(Qt::NoBrush);
-
-
         const QRect &rect = option.rect;
-
         int margin = 2;
         painter->drawEllipse(rect.adjusted(margin, margin, -margin, -margin));
     }
@@ -40,36 +37,32 @@ void CalendarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     painter->restore();
 
-
     QStyleOptionViewItem opt(option);
     initStyleOption(&opt, index);
 
     QDate date = index.data(Qt::UserRole).toDate();
 
     painter->save();
-
     QRect r = option.rect;
-
-    // Zvýraznění dat s připomínkami (na pozadí)
     if (highlighted.contains(date)) {
         qDebug() << "Vykresluji den:" << date << "Zvýrazněný:" << highlighted.contains(date);
-        painter->setBrush(QColor(255, 215, 0, 100));  // Světlá žlutá pro zvýraznění
+        painter->setBrush(QColor(255, 215, 0, 100));
         painter->setPen(Qt::NoPen);
-        painter->drawEllipse(r.center(), 6, 6);  // Elipsa kolem zvýrazněného data
+        painter->drawEllipse(r.center(), 6, 6);
     }
 
     // Výběr
     if (opt.state & QStyle::State_Selected) {
-        painter->setBrush(QColor(255, 255, 255, 30)); // Poloprůhledná bílá barva pro výběr
+        painter->setBrush(QColor(255, 255, 255, 30));
         painter->setPen(Qt::NoPen);
-        painter->drawRect(r); // Vykreslí obdélník pro výběr
+        painter->drawRect(r);
     }
 
     // Dnešní den
     if (date == QDate::currentDate()) {
-        painter->setBrush(QColor(0, 120, 255, 100)); // Modrá pro dnešní den
+        painter->setBrush(QColor(0, 120, 255, 100));
         painter->setPen(Qt::NoPen);
-        painter->drawEllipse(r.center(), 10, 10); // Vykreslí větší elipsu pro dnešní den
+        painter->drawEllipse(r.center(), 10, 10);
     }
 
     // Text

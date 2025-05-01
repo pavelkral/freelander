@@ -13,7 +13,7 @@ QJsonDocument Utils::loadJsonDocumentFromFile(const QString &filePath)
         return QJsonDocument(); //QJsonDocument::isNull()
     }
     QByteArray jsonData = file.readAll();
-    //  zavřeme ho (i když by se zavřel automaticky na konci funkce)
+
     file.close();
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);

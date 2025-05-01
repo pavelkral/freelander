@@ -11,7 +11,9 @@ FreelanderCalendar::FreelanderCalendar(QWidget *parent)
 
 void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, const QDate &date) const
 {
-    qDebug() << "Metoda paintCell:" << date;
+    //qDebug() << "Metoda paintCell:" << date;
+
+    qDebug().noquote() << "\033[1;31m Red " << date << " chyba!\033[0m";
     QCalendarWidget::paintCell(painter, rect, date);
 
 
@@ -55,5 +57,5 @@ void FreelanderCalendar::setNavigationIcons(const QIcon &prevIcon, const QIcon &
 
 void FreelanderCalendar::paintEvent(QPaintEvent *)
 {
-
+   // this->repaint();
 }

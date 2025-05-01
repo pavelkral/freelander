@@ -2,6 +2,8 @@
     <qresource prefix="/">
         
         <file>icons/fileopen.png</file>
-        <file>icons/icon.png</file>
+        <file>icons/left-icon.png</file>
+		<file>icons/right-icon.png</file>
+		<file>icons/icon.png</file>
     </qresource>
 </RCC>
