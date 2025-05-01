@@ -4,6 +4,7 @@
 #include "TokenManager.h"
 #include "GoogleClient.h"
 #include "clickabletextedit.h"
+#include "src/freelandercalendar.h"
 #include <QWidget>
 #include <QSet>
 #include <QSystemTrayIcon>
@@ -36,6 +37,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *) override;
     void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void onTokenReady(const QString &token);
     void onEventsFetched(const QString &text, const QSet<QDate> &dates);
@@ -49,7 +51,7 @@ private slots:
     void handleLineClick();
 private:
     Ui::MainWidget *ui;
-    QCalendarWidget *calendar;
+    FreelanderCalendar *calendar;
     ClickableTextEdit *textEdit;
     TokenManager  *tokenManager;
     GoogleClient  *googleClient;

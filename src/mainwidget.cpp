@@ -1,6 +1,6 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
-
+#include "calendardelegate.h"
 #include "eventdialog.h"
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -60,7 +60,10 @@ MainWidget::MainWidget(QWidget *parent)
     trayIcon->show();
 
     auto *lay = new QVBoxLayout(this);
-    calendar   = new QCalendarWidget(this);
+
+
+
+    calendar = new FreelanderCalendar(this);
     calendar->setGridVisible(true);
     //calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
@@ -76,12 +79,12 @@ MainWidget::MainWidget(QWidget *parent)
             color: white;
         }
     )");
-
+CalendarDelegate *delegate = new CalendarDelegate(this);
     QTableView *tableView = calendar->findChild<QTableView *>();
     if (tableView) {
         tableView->viewport()->setAutoFillBackground(false);
         tableView->setStyleSheet("background: transparent;");
-        //tableView->setItemDelegate(new TransparentItemDelegate(this));
+      //  tableView->setItemDelegate(delegate);
         QHeaderView *header = tableView->horizontalHeader();
         if (header) {
             header->setStyleSheet(R"(
@@ -100,6 +103,25 @@ MainWidget::MainWidget(QWidget *parent)
             font-size: 12pt;
     )");
     }
+    QIcon prevIcon(":/icons/icon.png"); // Příklad použití Qt Resource System
+    QIcon nextIcon(":/icons/icon.png"); // Příklad použití Qt Resource System
+
+    // Pokud nepoužíváte Qt Resource System, použijte přímou cestu k souboru:
+    // QIcon prevIcon("cesta/k/vasim/ikonam/prev_arrow.png");
+    // QIcon nextIcon("cesta/k/vasim/ikonam/next_arrow.png");
+
+
+    if (!prevIcon.isNull() && !nextIcon.isNull()) {
+        calendar->setNavigationIcons(prevIcon, nextIcon);
+    } else {
+        qWarning("Nepodařilo se načíst ikony pro kalendář.");
+        // Zde můžete případně nastavit nějaké výchozí chování nebo informovat uživatele
+    }
+
+    // Důležité: Nastavte rodiče
+   // calendar->setItemDelegate(delegate);
+
+
     QLabel *label = new QLabel("EVENTS",this);
     label->setStyleSheet("background-color: #2a2a2a; color: white; font-size: 16px;");
     label->setAlignment(Qt::AlignCenter);
@@ -154,7 +176,7 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     //for (const QDate &date : dates) {
      //   qDebug() << "Datum:" << date.toString();
     //}
-    QColor backgroundColor(255, 0, 0, 128);
+    QColor backgroundColor(255, 0, 0, 0);
     textEdit->setPlainText(text);
     QFontMetrics fm(textEdit->font());
     int lineHeight = fm.lineSpacing();
@@ -166,13 +188,16 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     calendar->setDateTextFormat(QDate(), QTextCharFormat());
     QTextCharFormat fmt;
     fmt.setBackground(backgroundColor);
+   // fmt.setfon
     fmt.setFontPointSize(12);
     //  fmt.setFontPixelSize(16);
     fmt.setFontWeight(QFont::Bold);
-
+    QColor textColor = Qt::yellow;
+    fmt.setForeground(textColor);
     for (auto d : dates){
         calendar->setDateTextFormat(d, fmt);
     }
+    //calendar->repaint();
 }
 
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {

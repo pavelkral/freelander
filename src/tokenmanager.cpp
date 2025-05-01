@@ -53,7 +53,7 @@ TokenManager::TokenManager(QObject *parent)
     if (!clientId.isEmpty() && !clientSecret.isEmpty()) {
         m_oauth->setClientIdentifier(clientId);
         m_oauth->setClientIdentifierSharedKey(clientSecret);
-        qInfo() << "OAuth loade" << CONFIG_FILE <<"OAuth idetnification " << clientId << clientSecret;
+       // qInfo() << "OAuth loade" << CONFIG_FILE <<"OAuth idetnification " << clientId << clientSecret;
 
     } else {
         qCritical() << "OAuth not loaded.";

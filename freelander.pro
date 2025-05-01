@@ -1,39 +1,43 @@
 QT += core gui widgets network networkauth
 CONFIG += c++17
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
 NCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtOAuth
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    clickabletextedit.cpp \
-    eventdialog.cpp \
-    googleclient.cpp \
-    main.cpp \
-    mainwidget.cpp \
-    tokenmanager.cpp \
-    utils.cpp
+    src/calendardelegate.cpp \
+    src/clickabletextedit.cpp \
+    src/eventdialog.cpp \
+    src/freelandercalendar.cpp \
+    src/googleclient.cpp \
+    src/main.cpp \
+    src/mainwidget.cpp \
+    src/tokenmanager.cpp \
+    src/utils.cpp
 
 HEADERS += \
-    clickabletextedit.h \
-    eventdialog.h \
-    googleclient.h \
-    mainwidget.h \
-    tokenmanager.h \
-    utils.h
+    src/calendardelegate.h \
+    src/clickabletextedit.h \
+    src/eventdialog.h \
+    src/freelandercalendar.h \
+    src/googleclient.h \
+    src/mainwidget.h \
+    src/tokenmanager.h \
+    src/utils.h
 
 FORMS += \
-    eventdialog.ui \
-    mainwidget.ui
+    forms/eventdialog.ui \
+    forms/mainwidget.ui
 
-RESOURCES += calendar.qrc
+RESOURCES += resource/calendar.qrc
 
 
-RC_FILE = calendar.rc
-# Default rules for deployment.
+RC_FILE = resource/calendar.rc
+
+# deployment
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+      .gitignore \
+      README.md
