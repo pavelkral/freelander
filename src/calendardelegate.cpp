@@ -43,7 +43,9 @@ void CalendarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QDate date = index.data(Qt::UserRole).toDate();
 
     painter->save();
+
     QRect r = option.rect;
+
     if (highlighted.contains(date)) {
         qDebug() << "Vykresluji den:" << date << "Zvýrazněný:" << highlighted.contains(date);
         painter->setBrush(QColor(255, 215, 0, 100));

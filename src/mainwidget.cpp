@@ -80,7 +80,9 @@ MainWidget::MainWidget(QWidget *parent)
             color: white;
         }
     )");
+
     //CalendarDelegate *delegate = new CalendarDelegate(this);
+
     QTableView *tableView = calendar->findChild<QTableView *>();
     if (tableView) {
         tableView->viewport()->setAutoFillBackground(false);
@@ -203,8 +205,8 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
     dialog.setEndDateTime(en);
     dialog.setText(sum);
     dialog.setEditMode(!eventId.isEmpty());
-    dialog.setEventId(eventId);
-    dialog.setWidget(this);
+    //dialog.setEventId(eventId);
+    //dialog.setWidget(this);
 
     if (!eventId.isEmpty()) {
         dialog.setEventId(eventId);
@@ -328,8 +330,8 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
 
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
-    qDebug() << "calendarContextMenuRequested called at pos:" << pos;
-    qDebug().noquote() << "\033[1;31mČervená " << pos << " chyba!\033[0m";
+    //qDebug() << "calendarContextMenuRequested called at pos:" << pos;
+    qDebug().noquote() << "\033[1;31mRight click " << pos << " call \033[0m";
    // QPoint globalPos = QCursor::pos();
     QPoint globalPos = calendar->mapToGlobal(QCursor::pos());
     QDate date;
@@ -420,7 +422,6 @@ void MainWidget::handleLineClick() {
 
     QTextCursor c = textEdit->textCursor();
     c.select(QTextCursor::LineUnderCursor);
-
     selectedLine = c.selectedText();
     QString id = googleClient->eventIdMap.value(selectedLine);
     if (!id.isEmpty()) googleClient->fetchEventDetails(id);

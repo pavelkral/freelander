@@ -17,9 +17,9 @@ public:
     FreelanderCalendar(QWidget *parent = nullptr);
 
     void setNavigationIcons(const QIcon &prevIcon, const QIcon &nextIcon);
+
 protected:
-     void paintEvent(QPaintEvent *) override;
-     virtual void paintCell(QPainter *painter, const QRect &rect, const QDate &date) const ;
+     void paintCell(QPainter *painter, const QRect &rect, QDate date) const;
 };
 
 #endif // FREELANDERCALENDAR_H
