@@ -49,6 +49,7 @@ private slots:
     void calendarContextMenuRequested(const QPoint &pos) ;
     void handleDateClicked(const QDate &date);
     void handleLineClick();
+
 private:
     Ui::MainWidget *ui;
     FreelanderCalendar *calendar;

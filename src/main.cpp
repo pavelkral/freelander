@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    qputenv("QT_SCALE_FACTOR", QByteArray("1"));
+    qputenv("QT_SCALE_FACTOR", QByteArray("0.8"));
     qputenv("QT_ENABLE_HIGHDPI_SCALING", QByteArray("1"));
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
