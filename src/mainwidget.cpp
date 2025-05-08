@@ -1,7 +1,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
-
 #include "eventdialog.h"
+#include "settingsdialog.h"
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -40,11 +40,12 @@ MainWidget::MainWidget(QWidget *parent)
     trayIcon->setToolTip(QString::fromUtf8("📅Freelander"));
 
     QMenu *menu = new QMenu(this);
-    QAction *showAction = new QAction("⚙️ Settings", this);
+    QAction *SettingsAction = new QAction("⚙️ Settings", this);
     QAction *exitAction = new QAction("❌ Exit", this);
-    connect(showAction, &QAction::triggered, this, &QWidget::showNormal);
+    connect(SettingsAction, &QAction::triggered, this, &MainWidget::openSettings);
     connect(exitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
-    menu->addAction(showAction);
+
+    menu->addAction(SettingsAction);
     menu->addSeparator();
     menu->addAction(exitAction);
 
@@ -110,12 +111,10 @@ MainWidget::MainWidget(QWidget *parent)
 
     }
 
-
     QLabel *label = new QLabel("EVENTS",this);
     label->setStyleSheet("background-color: #2a2a2a; color: white; font-size: 16px;");
     label->setAlignment(Qt::AlignCenter);
    // label->setAttribute(Qt::WA_TranslucentBackground);
-
     textEdit   = new ClickableTextEdit(this);
     textEdit->setReadOnly(true);
     textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
@@ -126,15 +125,12 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(tokenManager, &TokenManager::tokenReady,this, &MainWidget::onTokenReady);
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
-
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
-
     connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);  
     connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
     connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
-
     connect(textEdit, &ClickableTextEdit::lineDoubleClicked, this,&MainWidget::handleLineClick);
     // connect(textEdit, &ClickableTextEdit::cursorPositionChanged,this, &MainWidget::onEventClicked);
     tokenManager->initialize();
@@ -144,17 +140,19 @@ MainWidget::~MainWidget()
 {
     delete ui;
 }
+
 void MainWidget::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QColor backgroundColor(0, 0, 0, 28);
+    QColor backgroundColor(0, 0, 0, 1);
     painter.setBrush(backgroundColor);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(rect(), 10, 10);
     //calendar->repaint();
 
 }
+
 void MainWidget::onTokenReady(const QString &token) {
     //qDebug() << "Access token ready:" << token;
     googleClient->setAccessToken(token);
@@ -164,7 +162,7 @@ void MainWidget::onTokenReady(const QString &token) {
 void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) {
     // qDebug() << "Events:" << text;
     //for (const QDate &date : dates) {
-     //   qDebug() << "Datum:" << date.toString();
+    //   qDebug() << "Datum:" << date.toString();
     //}
     QColor backgroundColor(255, 0, 0, 0);
     textEdit->setPlainText(text);
@@ -174,7 +172,6 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     lineCount = std::min(lineCount, 10);
     int newHeight = lineCount * lineHeight + 20; // 10px na padding
     //textEdit->setFixedHeight(newHeight);
-
     calendar->setDateTextFormat(QDate(), QTextCharFormat());
     QTextCharFormat fmt;
     fmt.setBackground(backgroundColor);
@@ -188,7 +185,6 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
         calendar->setDateTextFormat(d, fmt);
     }
 
-
     //QMap<QDate, QString> highlighted; // Vaše cílová QMap
     //QString highlightMessage = "Speciální datum";
     //for (const QDate &date : dates) {
@@ -197,37 +193,6 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     //tableWiewDelegate->setHighlightedDates(highlighted);
     //calendar->repaint();
     //tableWiewDelegate->paint();
-}
-
-void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {
-
-
-    EventDialog dialog(this);
-    dialog.setDateTime(st);
-    dialog.setEndDateTime(en);
-    dialog.setText(sum);
-    dialog.setEditMode(!eventId.isEmpty());
-    //dialog.setEventId(eventId);
-    //dialog.setWidget(this);
-
-    if (!eventId.isEmpty()) {
-        dialog.setEventId(eventId);
-        dialog.setWidget(this);
-        qDebug() << "id exist:" << eventId;
-    } else {
-
-        qDebug() << "id is null:" << eventId;
-    }
-
-    if (dialog.exec() == QDialog::Accepted) {
-
-        QString summary = dialog.text();
-        QDateTime dt = dialog.dateTime();
-        QDateTime enddt = dialog.dateEndTime();
-        googleClient->updateEvent(eventId, summary, dt, enddt,calendar);
-        QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
-        googleClient->fetchEvents(currentPage, calendar);
-    }
 }
 
 
@@ -282,6 +247,70 @@ void MainWidget::handleDateClicked(const QDate &date) {
      qDebug() << "click:" << date;
     lastClickedDate = date; // Store the clicked date
 }
+void MainWidget::handleLineClick() {
+
+    QTextCursor c = textEdit->textCursor();
+    c.select(QTextCursor::LineUnderCursor);
+    selectedLine = c.selectedText();
+    QString id = googleClient->eventIdMap.value(selectedLine);
+    if (!id.isEmpty()) googleClient->fetchEventDetails(id);
+}
+
+void MainWidget::openSettings()
+{
+
+    // Vytvoření instance dialogu nastavení
+    SettingsDialog settingsDialog(this);
+    // Nastavení počátečního stavu dialogu podle načteného nastavení
+    // Zobrazení dialogu jako modálního (blokuje zbytek aplikace, dokud není zavřen)
+    int result = settingsDialog.exec();
+    // Po zavření dialogu zkontrolujeme výsledek
+    if (result == QDialog::Accepted) {
+        // Uživatel kliknul na Accept (OK)
+        bool finalFeatureState = settingsDialog.isFeatureEnabled();
+        qDebug() << "Dialog uzavřen s Accepted.";
+        qDebug() << "Uložit finální nastavení: Povolit super funkci X =" << finalFeatureState;
+        settingsDialog.applySettings();
+        // Zde byste normálně uložili nastavení trvale (např. do souboru)
+        // saveSettingsToFile(finalFeatureState);
+
+    } else if (result == QDialog::Rejected) {
+        // Uživatel kliknul na Cancel
+        qDebug() << "Dialog uzavřen s Rejected. Změny nebudou uloženy.";
+        // Změny provedené tlačítkem Apply zůstanou pro tuto session,
+        // ale nebudou uloženy trvale, pokud jste je v applySettings() uložili jen dočasně.
+    } else {
+        // Jiný výsledek (např. zavřeno křížkem okna, což obvykle vrací Rejected)
+        qDebug() << "Dialog uzavřen s jiným výsledkem než Accepted/Rejected.";
+    }
+}
+void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {
+
+    EventDialog dialog(this);
+    dialog.setDateTime(st);
+    dialog.setEndDateTime(en);
+    dialog.setText(sum);
+    dialog.setEditMode(!eventId.isEmpty());
+
+    if (!eventId.isEmpty()) {
+        dialog.setEventId(eventId);
+        dialog.setWidget(this);
+        qDebug() << "id :" << eventId;
+    } else {
+
+        qDebug() << "id is null:" << eventId;
+    }
+
+    if (dialog.exec() == QDialog::Accepted) {
+
+        QString summary = dialog.text();
+        QDateTime dt = dialog.dateTime();
+        QDateTime enddt = dialog.dateEndTime();
+        googleClient->updateEvent(eventId, summary, dt, enddt,calendar);
+        QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
+        googleClient->fetchEvents(currentPage, calendar);
+    }
+}
 
 void MainWidget::onCalendarDateActivated(const QDate &date) {
 
@@ -331,7 +360,6 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
 }
 
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
-
     //qDebug() << "calendarContextMenuRequested called at pos:" << pos;
     qDebug().noquote() << "\033[1;31mRight click " << pos << " call \033[0m";
    // QPoint globalPos = QCursor::pos();
@@ -385,7 +413,6 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
     googleClient->fetchEventsForDate(date, [&](const QList<QPair<QString, QString>>& events) {
         qDebug() << "fetchEventsForDate callback called. Events count:" << events.count();
         QMenu menu; // Create the context menu
-
         // If no events found, add a disabled action
         if (events.isEmpty()) {
             qDebug() << "No events found for date:" << date;
@@ -419,12 +446,4 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
         qDebug() << "Menu execution finished.";
     });
-}
-void MainWidget::handleLineClick() {
-
-    QTextCursor c = textEdit->textCursor();
-    c.select(QTextCursor::LineUnderCursor);
-    selectedLine = c.selectedText();
-    QString id = googleClient->eventIdMap.value(selectedLine);
-    if (!id.isEmpty()) googleClient->fetchEventDetails(id);
 }

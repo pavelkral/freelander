@@ -50,6 +50,7 @@ private slots:
     void calendarContextMenuRequested(const QPoint &pos) ;
     void handleDateClicked(const QDate &date);
     void handleLineClick();
+    void openSettings();
 
 private:
     Ui::MainWidget *ui;

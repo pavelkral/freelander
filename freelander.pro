@@ -11,6 +11,7 @@ SOURCES += \
     src/googleclient.cpp \
     src/main.cpp \
     src/mainwidget.cpp \
+    src/settingsdialog.cpp \
     src/tokenmanager.cpp \
     src/utils.cpp
 
@@ -21,12 +22,14 @@ HEADERS += \
     src/freelandercalendar.h \
     src/googleclient.h \
     src/mainwidget.h \
+    src/settingsdialog.h \
     src/tokenmanager.h \
     src/utils.h
 
 FORMS += \
-    forms/eventdialog.ui \
-    forms/mainwidget.ui
+    src/forms/eventdialog.ui \
+    src/forms/mainwidget.ui \
+    src/forms/settingsdialog.ui
 
 RESOURCES += resource/calendar.qrc
 
