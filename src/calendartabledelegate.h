@@ -1,21 +1,21 @@
-#ifndef CALENDARDELEGATE_H
-#define CALENDARDELEGATE_H
+#ifndef CALENDARTABLEDELEGATE_H
+#define CALENDARTABLEDELEGATE_H
 
 #include <QStyledItemDelegate>
 #include <QPainter>
 #include <QDate>
 #include <QAbstractItemModel>
 
-class CalendarDelegate : public QStyledItemDelegate {
+class CalendarTableDelegate : public QStyledItemDelegate {
     Q_OBJECT
 public:
-    CalendarDelegate(QObject *parent = nullptr) ;
+    CalendarTableDelegate(QObject *parent = nullptr) ;
 
 
     void setHighlightedDates(const QMap<QDate, QString> &dates) {
         highlighted = dates;
         for (auto it = highlighted.begin(); it != highlighted.end(); ++it) {
-            qDebug() << "Datum:" << it.key().toString(Qt::ISODate) << "Text:" << it.value();
+          //  qDebug() << "Datum:" << it.key().toString(Qt::ISODate) << "Text:" << it.value();
         }
     }
 

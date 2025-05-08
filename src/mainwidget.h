@@ -5,6 +5,7 @@
 #include "GoogleClient.h"
 #include "clickabletextedit.h"
 #include "src/freelandercalendar.h"
+#include "calendartabledelegate.h"
 #include <QWidget>
 #include <QSet>
 #include <QSystemTrayIcon>
@@ -53,6 +54,7 @@ private slots:
 private:
     Ui::MainWidget *ui;
     FreelanderCalendar *calendar;
+    CalendarTableDelegate *tableWiewDelegate;    // wDelegate *delegate;
     ClickableTextEdit *textEdit;
     TokenManager  *tokenManager;
     GoogleClient  *googleClient;

@@ -40,20 +40,37 @@ void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate d
     qDebug().noquote() << "\033[1;31m Call Paint cell " << date << " paint !\033[0m";
 
     QCalendarWidget::paintCell(painter, rect, date);
+    QColor backgroundColor(0, 0, 0, 8);
+    painter->setBrush(backgroundColor);
 
     if (date == QDate::currentDate()) {
         qDebug() <<"paint calendar." << date;
+
         painter->save();
         QPen pen(Qt::red);
         pen.setWidth(2);
         painter->setPen(pen);
 
-        int margin = 2;
-        painter->drawEllipse(rect.adjusted(margin, margin, -margin, -margin));
+        int margin = 2; // Okraj od kraje buňky
+        // Spočítáme velikost strany kruhu na základě menšího rozměru buňky
+        int side = qMin(rect.width(), rect.height()) - 2 * margin;
+
+        // Zajistíme, že velikost strany není záporná
+        if (side < 0) side = 0;
+
+        // Vytvoříme čtvercový obdélník pro kreslení kruhu
+        QRect square(0, 0, side, side);
+        // Vycentrujeme čtverec uprostřed původního obdélníku buňky
+        square.moveCenter(rect.center());
+
+        // Nakreslíme elipsu (která je kruhem) do spočítaného čtverce
+        painter->drawEllipse(square);
+
         painter->restore();
     }
     else{
-        qDebug() <<"paint current date error." << date;
+
+        // qDebug() <<"paint current date error." << date;
     }
 }
 

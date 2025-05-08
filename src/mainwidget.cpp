@@ -1,6 +1,6 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
-#include "calendardelegate.h"
+
 #include "eventdialog.h"
 
 #include <QVBoxLayout>
@@ -62,11 +62,9 @@ MainWidget::MainWidget(QWidget *parent)
 
     auto *lay = new QVBoxLayout(this);
 
-
-
     calendar = new FreelanderCalendar(this);
     calendar->setGridVisible(true);
-    //calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
+    calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
 
     calendar->setContextMenuPolicy(Qt::CustomContextMenu);
     calendar->setStyleSheet(R"(
@@ -81,21 +79,16 @@ MainWidget::MainWidget(QWidget *parent)
         }
     )");
 
-    //CalendarDelegate *delegate = new CalendarDelegate(this);
+    tableWiewDelegate = new CalendarTableDelegate(this);
 
     QTableView *tableView = calendar->findChild<QTableView *>();
     if (tableView) {
         tableView->viewport()->setAutoFillBackground(false);
         tableView->setStyleSheet("background: transparent;");
-      //  tableView->setItemDelegate(delegate);
+        //.tableView->setItemDelegate(tableWiewDelegate);
         QHeaderView *header = tableView->horizontalHeader();
         if (header) {
-            header->setStyleSheet(R"(
-            background: transparent;
-            color: white;
-            font-size: 10pt;
-
-        )");
+            header->setStyleSheet(R"(background: transparent;color: white;font-size: 4pt;)");
         }
     }
     QWidget *navBar = calendar->findChild<QWidget *>("qt_calendar_navigationbar");
@@ -155,7 +148,7 @@ void MainWidget::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QColor backgroundColor(0, 0, 0, 128);
+    QColor backgroundColor(0, 0, 0, 28);
     painter.setBrush(backgroundColor);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(rect(), 10, 10);
@@ -194,7 +187,16 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     for (auto d : dates){
         calendar->setDateTextFormat(d, fmt);
     }
-    calendar->repaint();
+
+
+    //QMap<QDate, QString> highlighted; // Vaše cílová QMap
+    //QString highlightMessage = "Speciální datum";
+    //for (const QDate &date : dates) {
+        //highlighted.insert(date, highlightMessage);
+    //}
+    //tableWiewDelegate->setHighlightedDates(highlighted);
+    //calendar->repaint();
+    //tableWiewDelegate->paint();
 }
 
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {

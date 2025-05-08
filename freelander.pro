@@ -4,7 +4,7 @@ CONFIG += c++17
 NCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtOAuth
 
 SOURCES += \
-    src/calendardelegate.cpp \
+    src/calendartabledelegate.cpp \
     src/clickabletextedit.cpp \
     src/eventdialog.cpp \
     src/freelandercalendar.cpp \
@@ -15,7 +15,7 @@ SOURCES += \
     src/utils.cpp
 
 HEADERS += \
-    src/calendardelegate.h \
+    src/calendartabledelegate.h \
     src/clickabletextedit.h \
     src/eventdialog.h \
     src/freelandercalendar.h \
