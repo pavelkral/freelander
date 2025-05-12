@@ -259,28 +259,25 @@ void MainWidget::handleLineClick() {
 void MainWidget::openSettings()
 {
 
-    // Vytvoření instance dialogu nastavení
     SettingsDialog settingsDialog(this);
-    // Nastavení počátečního stavu dialogu podle načteného nastavení
-    // Zobrazení dialogu jako modálního (blokuje zbytek aplikace, dokud není zavřen)
+
     int result = settingsDialog.exec();
-    // Po zavření dialogu zkontrolujeme výsledek
+
     if (result == QDialog::Accepted) {
-        // Uživatel kliknul na Accept (OK)
+
         bool finalFeatureState = settingsDialog.isFeatureEnabled();
         qDebug() << "Dialog uzavřen s Accepted.";
         qDebug() << "Uložit finální nastavení: Povolit super funkci X =" << finalFeatureState;
         settingsDialog.applySettings();
-        // Zde byste normálně uložili nastavení trvale (např. do souboru)
+
         // saveSettingsToFile(finalFeatureState);
 
     } else if (result == QDialog::Rejected) {
-        // Uživatel kliknul na Cancel
+
         qDebug() << "Dialog uzavřen s Rejected. Změny nebudou uloženy.";
-        // Změny provedené tlačítkem Apply zůstanou pro tuto session,
-        // ale nebudou uloženy trvale, pokud jste je v applySettings() uložili jen dočasně.
+
     } else {
-        // Jiný výsledek (např. zavřeno křížkem okna, což obvykle vrací Rejected)
+
         qDebug() << "Dialog uzavřen s jiným výsledkem než Accepted/Rejected.";
     }
 }
