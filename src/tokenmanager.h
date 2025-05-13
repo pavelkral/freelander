@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QOAuth2AuthorizationCodeFlow>
 #include <QOAuthHttpServerReplyHandler>
+#include <QCoreApplication>
+#include <QDir>
 
 class TokenManager : public QObject {
     Q_OBJECT
@@ -26,8 +28,8 @@ private:
     QOAuthHttpServerReplyHandler *m_replyHandler;
     QString m_accessToken;
     QString m_refreshToken;
-    const QString TOKEN_FILE = "tokens.json";
-    const QString CONFIG_FILE = "config.json";
+    const QString TOKEN_FILE = QCoreApplication::applicationDirPath() + QDir::separator() + "tokens.json";
+    const QString CONFIG_FILE = QCoreApplication::applicationDirPath() + QDir::separator() + "config.json";
 };
 
 #endif // TOKENMANAGER_H

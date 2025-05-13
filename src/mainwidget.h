@@ -12,6 +12,7 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QPainter>
+#include <QDir>
 
 class QCalendarWidget;
 class QTextEdit;
@@ -31,7 +32,8 @@ public:
      MainWidget(QWidget *parent=nullptr);
     ~MainWidget();
     void onDeleteClickedId(QString id);
-
+    QSettings settings;
+    QString settingsFilePath = QCoreApplication::applicationDirPath() + QDir::separator() + "settings.ini";
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

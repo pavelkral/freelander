@@ -9,18 +9,17 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setWindowTitle("Settings");
     setMinimumWidth(300);
     featureCheckbox = new QCheckBox("Strat with windows");
-    QSettings settings("Freelander", "Freelander");
-    bool isEnabled = settings.value(FeatureSettingKey, false).toBool();
+
+    QSettings settings(settingsFilePath, QSettings::IniFormat);
+    bool isEnabled = settings.value(autoStartKey, false).toBool();
     featureCheckbox->setChecked(isEnabled);
-    qDebug() << " QSettings: " << FeatureSettingKey << "=" << isEnabled;
-    // ----------------------------------------------------------
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
-                                     QDialogButtonBox::Cancel );
+    qDebug() << " QSettings: " << autoStartKey << "=" << isEnabled;
+
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
- //   connect(buttonBox, &QDialogButtonBox::apply, this, &SettingsDialog::applySettings);
     mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(featureCheckbox);
     mainLayout->addStretch();
@@ -46,15 +45,18 @@ void SettingsDialog::applySettings()
 {
 
     bool enabled = featureCheckbox->isChecked();
-    QSettings settings("Freelander", "Freelander");
-    settings.setValue(FeatureSettingKey, enabled);
-    qDebug() << "Nastavení použito (Apply) a uloženo do QSettings: " << FeatureSettingKey << "=" << enabled;
-    QString appName = "MojeAplikace"; // Název, pod kterým bude v registru
-    QString appPath = QCoreApplication::applicationFilePath(); // Cesta k vaší .exe aplikaci
+   QSettings settings(settingsFilePath, QSettings::IniFormat);
+    settings.setValue(autoStartKey, enabled);
+    qDebug() << " QSettings: " << autoStartKey << "=" << enabled;
+    QString appName = "Freelander"; //  register name
+    QString appPath = QCoreApplication::applicationFilePath(); // path
+    if (enabled) {
+         //addToStartup(appName, appPath);
+    } else {
+         //removeFromStartup(appName);
+    }
 
-    // addToStartup(appName, appPath);
 
-    // removeFromStartup(appName);
 
 }
 

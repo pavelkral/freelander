@@ -26,9 +26,7 @@ public:
     bool isFeatureEnabled() const;
     void setFeatureEnabled(bool enabled);
     void applySettings();
-
     void addToStartup(const QString& appName, const QString& appPath);
-
     void removeFromStartup(const QString& appName);
 
 
@@ -36,8 +34,8 @@ private:
     QCheckBox *featureCheckbox;
     QDialogButtonBox *buttonBox;
     QVBoxLayout *mainLayout;
-
-    const QString FeatureSettingKey = "feature/enable_super_feature";
+    QString settingsFilePath = QCoreApplication::applicationDirPath() + QDir::separator() + "settings.ini";
+    const QString autoStartKey = "autostart/enable_start";
 private:
     Ui::SettingsDialog *ui;
 };

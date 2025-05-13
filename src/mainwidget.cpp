@@ -30,8 +30,11 @@ MainWidget::MainWidget(QWidget *parent)
     setWindowTitle("Freelander");
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint );
+
+
+    QSettings settings(settingsFilePath, QSettings::IniFormat);
     //| Qt::WindowStaysOnTopHint
-    QSettings settings("Freelander", "Freelander");
+    //QSettings settings("Freelander", "Freelander");
     restoreGeometry(settings.value("geometry").toByteArray());
 
     trayIcon = new QSystemTrayIcon(this);
@@ -237,7 +240,7 @@ void MainWidget::mouseMoveEvent(QMouseEvent *event) {
 }
 void MainWidget::closeEvent(QCloseEvent *event) {
 
-    QSettings settings("Freelander", "Freelander");
+    QSettings settings(settingsFilePath, QSettings::IniFormat);
     settings.setValue("geometry", saveGeometry());
     hide();
     event->ignore();
@@ -336,7 +339,7 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
 
     } else {
 
-        dialog.deleteButton->hide();
+        dialog.hideDeleteButton();
         qDebug() << "id is null:" << existingEventId;
     }
 

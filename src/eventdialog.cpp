@@ -10,7 +10,7 @@ EventDialog::EventDialog(QWidget *parent)
     , ui(new Ui::EventDialog) , m_textEdit(new QTextEdit(this)),
     m_dateEdit(new QDateTimeEdit(QDateTime::currentDateTime(), this)),
     m_dateEndEdit(new QDateTimeEdit(QDateTime::currentDateTime(), this)),
-    m_okButton(new QPushButton("Add Event", this))
+    saveButton(new QPushButton("Add Event", this))
 {
         ui->setupUi(this);
         setWindowTitle("Event");
@@ -31,14 +31,12 @@ EventDialog::EventDialog(QWidget *parent)
         btnLayout->addWidget(cancelButton);
         deleteButton = new QPushButton("Delete",this);
         btnLayout->addWidget(deleteButton);
-        btnLayout->addWidget(m_okButton);
-
+        btnLayout->addWidget(saveButton);
         layout->addLayout(btnLayout);
 
-        connect(m_okButton, &QPushButton::clicked, this, &QDialog::accept);
+        connect(saveButton, &QPushButton::clicked, this, &QDialog::accept);
         connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
         connect(deleteButton, &QPushButton::clicked, this, &EventDialog::onDeleteClicked);
-
 }
 
 EventDialog::~EventDialog()
@@ -47,25 +45,20 @@ EventDialog::~EventDialog()
 }
 void EventDialog::onDeleteClicked()
 {
-    if(pointerToWidget && !eventId.isEmpty()){
+    if(pointerToMainWidget && !eventId.isEmpty()){
         QMessageBox::StandardButton reply;
-
         reply = QMessageBox::question(this, "Confirm",
                                       "Delete event?",
                                       QMessageBox::Yes | QMessageBox::No);
-
         if (reply == QMessageBox::Yes) {
-            pointerToWidget->onDeleteClickedId(eventId);
+            pointerToMainWidget->onDeleteClickedId(eventId);
             accept(); //  close()
         }
     }
     else{
-
-    }  qDebug() << "id not exist:" << eventId;
-
-
+        qDebug() << "event id not exist:" << eventId;
+    }
 }
-
 void EventDialog::setDateTime(const QDateTime &dt) {
     m_dateEdit->setDateTime(dt);
 }
@@ -85,15 +78,20 @@ void EventDialog::setEndDateTime(const QDateTime &dt) {
     m_dateEndEdit->setDateTime(dt);
 }
 void EventDialog::setEditMode(bool edit) {
-    m_okButton->setText(edit ? "Update" : "Add Event");
+    saveButton->setText(edit ? "Update" : "Add Event");
 }
 void EventDialog::setWidget(MainWidget *w)
 {
-    pointerToWidget = w;
+    pointerToMainWidget = w;
 }
 void EventDialog::setEventId(QString id)
 {
     eventId = id;
+}
+
+void EventDialog::hideDeleteButton()
+{
+    deleteButton->hide();
 }
 
 

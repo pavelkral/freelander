@@ -18,20 +18,20 @@ class EventDialog : public QDialog
 public:
     explicit EventDialog(QWidget *parent = nullptr);
     ~EventDialog();
-    void setDateTime(const QDateTime &dt);
-    void setText(const QString &text);
+
     QString text() const;
     QDateTime dateTime() const;
+    QDateTime dateEndTime() const;
+    void setDateTime(const QDateTime &dt);
+    void setText(const QString &text);
     void setEditMode(bool edit);
     void setWidget(MainWidget *w);
     void setEventId(QString id);
-    QPushButton *deleteButton ;
-
-    QDateTime dateEndTime() const;
+    void hideDeleteButton();
     void setEndDateTime(const QDateTime &dt);
+
 private slots:
     void onDeleteClicked();
-
 
 private:
 
@@ -39,10 +39,10 @@ private:
     QTextEdit *m_textEdit;
     QDateTimeEdit *m_dateEdit;
     QDateTimeEdit *m_dateEndEdit;
-    QPushButton *m_okButton;
+    QPushButton *saveButton;
     QPushButton *cancelButton;
-
-    MainWidget *pointerToWidget ;
+    QPushButton *deleteButton ;
+    MainWidget *pointerToMainWidget ;
     QString eventId;
 
 };

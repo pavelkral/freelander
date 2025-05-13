@@ -14,14 +14,14 @@ TokenManager::TokenManager(QObject *parent)
     m_replyHandler(new QOAuthHttpServerReplyHandler(8080, this))
 {
 
-    //QString configFilePath = "config.json"; //  QCoreApplication::applicationDirPath() + "/config.json"
     QJsonDocument configDoc = Utils::loadJsonDocumentFromFile(CONFIG_FILE);
     QString clientId;
     QString clientSecret;
 
     if (configDoc.isNull()) {
         qWarning() << "Error: Configuration file is null:" << CONFIG_FILE;
-        // handle the error - e.g., exit the application or use default values
+        // handle the error - exit the application or use default values
+
     } else if (!configDoc.isObject()) {
         qWarning() << "Error: Root element is not a JSON object:" << CONFIG_FILE;
     } else {
@@ -93,10 +93,10 @@ void TokenManager::onGranted() {
 }
 
 void TokenManager::loadTokens() {
-    QFile f(TOKEN_FILE);
-    if (f.open(QIODevice::ReadOnly)) {
-        auto doc = QJsonDocument::fromJson(f.readAll());
-        f.close();
+
+    auto doc = Utils::loadJsonDocumentFromFile(TOKEN_FILE);
+    if (!doc.isNull()) {
+
         auto obj = doc.object();
         m_accessToken  = obj.value("access_token").toString();
         m_refreshToken = obj.value("refresh_token").toString();
@@ -104,12 +104,18 @@ void TokenManager::loadTokens() {
 }
 
 void TokenManager::saveTokens() {
+
     QJsonObject obj;
     obj["access_token"]  = m_accessToken;
     obj["refresh_token"] = m_refreshToken;
-    QFile f(TOKEN_FILE);
-    if (f.open(QIODevice::WriteOnly)) {
-        f.write(QJsonDocument(obj).toJson());
-        f.close();
+    QJsonDocument jsonDocument(obj);
+    bool success = Utils::saveJsonDocumentToFile(TOKEN_FILE, jsonDocument, QJsonDocument::Indented);
+
+    if (success) {
+        qDebug() << "Tokens saved:" << TOKEN_FILE;
+    } else {
+        qWarning() << "Tokens not saved:" << TOKEN_FILE;
     }
+
+
 }
