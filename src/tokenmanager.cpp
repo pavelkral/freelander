@@ -6,6 +6,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDebug>
+#include <QMessageBox>
 #include "utils.h"
 
 TokenManager::TokenManager(QObject *parent)
@@ -96,7 +97,6 @@ void TokenManager::loadTokens() {
 
     auto doc = Utils::loadJsonDocumentFromFile(TOKEN_FILE);
     if (!doc.isNull()) {
-
         auto obj = doc.object();
         m_accessToken  = obj.value("access_token").toString();
         m_refreshToken = obj.value("refresh_token").toString();
@@ -112,8 +112,10 @@ void TokenManager::saveTokens() {
     bool success = Utils::saveJsonDocumentToFile(TOKEN_FILE, jsonDocument, QJsonDocument::Indented);
 
     if (success) {
+        //QMessageBox::information(nullptr,"Token"," saved",QMessageBox::Ok);
         qDebug() << "Tokens saved:" << TOKEN_FILE;
     } else {
+       // QMessageBox::information(nullptr,"Token","not saved",QMessageBox::Ok);
         qWarning() << "Tokens not saved:" << TOKEN_FILE;
     }
 
