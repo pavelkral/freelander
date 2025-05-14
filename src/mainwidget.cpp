@@ -29,12 +29,9 @@ MainWidget::MainWidget(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("Freelander");
     setAttribute(Qt::WA_TranslucentBackground);
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint );
-
+    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint );   //| Qt::WindowStaysOnTopHint
 
     QSettings settings(settingsFilePath, QSettings::IniFormat);
-    //| Qt::WindowStaysOnTopHint
-    //QSettings settings("Freelander", "Freelander");
     restoreGeometry(settings.value("geometry").toByteArray());
 
     trayIcon = new QSystemTrayIcon(this);
@@ -105,7 +102,6 @@ MainWidget::MainWidget(QWidget *parent)
     }
     QIcon prevIcon(":/icons/left-icon.png");
     QIcon nextIcon(":/icons/right-icon.png");
-
 
     if (!prevIcon.isNull() && !nextIcon.isNull()) {
         calendar->setNavigationIcons(prevIcon, nextIcon);
@@ -247,7 +243,7 @@ void MainWidget::closeEvent(QCloseEvent *event) {
 }
 
 void MainWidget::handleDateClicked(const QDate &date) {
-     qDebug() << "click:" << date;
+     qDebug() << "Click to Set Date:" << date;
     lastClickedDate = date; // Store the clicked date
 }
 void MainWidget::handleLineClick() {
@@ -259,9 +255,7 @@ void MainWidget::handleLineClick() {
     if (!id.isEmpty()) googleClient->fetchEventDetails(id);
 }
 
-void MainWidget::openSettings()
-{
-
+void MainWidget::openSettings(){
     SettingsDialog settingsDialog(this);
 
     int result = settingsDialog.exec();
@@ -269,19 +263,17 @@ void MainWidget::openSettings()
     if (result == QDialog::Accepted) {
 
         bool finalFeatureState = settingsDialog.isFeatureEnabled();
-        qDebug() << "Dialog uzavřen s Accepted.";
-        qDebug() << "Uložit finální nastavení: Povolit super funkci X =" << finalFeatureState;
-        settingsDialog.applySettings();
 
-        // saveSettingsToFile(finalFeatureState);
+        qDebug() << "Save after System Startup =" << finalFeatureState;
+        settingsDialog.applySettings();
 
     } else if (result == QDialog::Rejected) {
 
-        qDebug() << "Dialog uzavřen s Rejected. Změny nebudou uloženy.";
+        qDebug() << "Dialog Rejected.";
 
     } else {
 
-        qDebug() << "Dialog uzavřen s jiným výsledkem než Accepted/Rejected.";
+        qDebug() << "Dialog not Accepted/Rejected.";
     }
 }
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {
@@ -365,21 +357,18 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
    // QPoint globalPos = QCursor::pos();
     QPoint globalPos = calendar->mapToGlobal(QCursor::pos());
     QDate date;
-    // Attempt to get the date from the position using the internal view
     QTableView *view = calendar->findChild<QTableView*>();
     if (view) {
         qDebug() << "Internal calendar view found.";
         QModelIndex index = view->indexAt(globalPos);
         if (index.isValid()) {
             qDebug() << "Valid model index found at pos.";
-            // Get the date from the model data for the index
             QVariant data = view->model()->data(index, Qt::DisplayRole);
             if (data.isValid() && data.canConvert<QDate>()) {
                 date = data.toDate();
                 qDebug() << "Date obtained from model index (DisplayRole):" << date << "isValid:" << date.isValid();
             } else {
                 qDebug() << "Data at index (DisplayRole) is not valid or cannot convert to QDate. Trying UserRole...";
-                // Try UserRole if DisplayRole fails
                 data = view->model()->data(index, Qt::UserRole);
                 if (data.isValid() && data.canConvert<QDate>()) {
                     date = data.toDate();
@@ -409,10 +398,9 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
     qDebug() << "Using final determined date for context menu:" << date;
 
-    // Fetch events for the determined date - Call member fetchEventsForDate
     googleClient->fetchEventsForDate(date, [&](const QList<QPair<QString, QString>>& events) {
         qDebug() << "fetchEventsForDate callback called. Events count:" << events.count();
-        QMenu menu; // Create the context menu
+        QMenu menu;
         // If no events found, add a disabled action
         if (events.isEmpty()) {
             qDebug() << "No events found for date:" << date;
@@ -431,7 +419,6 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                     QString eventId = eventAction->data().toString();
                     qDebug() << "Delete action triggered for event ID:" << eventId;
                     if (!eventId.isEmpty()) {
-                        // Call the existing deleteEvent function - Call member deleteEvent
                         googleClient->deleteEvent(eventId,calendar);
                     } else {
                         qDebug() << "Event ID is empty, cannot delete.";

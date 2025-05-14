@@ -10,6 +10,8 @@ qmake
 make (by platform)
 ```
 
+![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png)
+
 ![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander2.png)
 
-![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png)
+

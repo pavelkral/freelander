@@ -21,7 +21,7 @@ protected:
             cursor.select(QTextCursor::LineUnderCursor);
             emit lineDoubleClicked(cursor.selectedText().trimmed());
         }
-        QTextEdit::mouseDoubleClickEvent(event); // Call base class implementation
+        QTextEdit::mouseDoubleClickEvent(event);
     }
 };
 #endif // CLICKABLETEXTEDIT_H

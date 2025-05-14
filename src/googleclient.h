@@ -28,9 +28,7 @@ public:
 
 signals:
     void eventsFetched(const QString &text, const QSet<QDate> &dates);
-    void eventDetailsFetched(const QString &summary, const QDateTime &start, const QDateTime &end
-                             ,const QString &enventId);
-
+    void eventDetailsFetched(const QString &summary, const QDateTime &start, const QDateTime &end,const QString &enventId);
 
 private:
     QString m_token;

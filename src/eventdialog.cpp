@@ -88,7 +88,6 @@ void EventDialog::setEventId(QString id)
 {
     eventId = id;
 }
-
 void EventDialog::hideDeleteButton()
 {
     deleteButton->hide();

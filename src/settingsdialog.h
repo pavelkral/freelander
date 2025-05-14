@@ -31,7 +31,7 @@ public:
 
 
 private:
-    QCheckBox *featureCheckbox;
+    QCheckBox *startUpCheckbox;
     QDialogButtonBox *buttonBox;
     QVBoxLayout *mainLayout;
     QString settingsFilePath = QCoreApplication::applicationDirPath() + QDir::separator() + "settings.ini";

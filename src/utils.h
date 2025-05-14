@@ -13,12 +13,8 @@ class Utils : public QObject
 public:
 
     Utils() = delete;
-
     static QJsonDocument loadJsonDocumentFromFile(const QString &filePath);
-
-    static bool saveJsonDocumentToFile(const QString &filePath,
-                                       const QJsonDocument &jsonDocument,
-                                       QJsonDocument::JsonFormat format = QJsonDocument::Indented);
+    static bool saveJsonDocumentToFile(const QString &filePath,const QJsonDocument &jsonDocument,QJsonDocument::JsonFormat format = QJsonDocument::Indented);
 
 private:
 

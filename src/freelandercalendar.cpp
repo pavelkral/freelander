@@ -7,15 +7,11 @@
 #include <QRect>
 #include <QDebug>
 
-FreelanderCalendar::FreelanderCalendar(QWidget *parent)
-    : QCalendarWidget(parent)
-{
+FreelanderCalendar::FreelanderCalendar(QWidget *parent) : QCalendarWidget(parent){
 
 }
 
-
-void FreelanderCalendar::setNavigationIcons(const QIcon &prevIcon, const QIcon &nextIcon)
-{
+void FreelanderCalendar::setNavigationIcons(const QIcon &prevIcon, const QIcon &nextIcon){
     QToolButton *prevButton = findChild<QToolButton*>("qt_calendar_prevmonth");
     QToolButton *nextButton = findChild<QToolButton*>("qt_calendar_nextmonth");
 
@@ -23,21 +19,20 @@ void FreelanderCalendar::setNavigationIcons(const QIcon &prevIcon, const QIcon &
         prevButton->setIcon(prevIcon);
 
     } else {
-        qWarning(".");
+        qWarning("arrow icons err.");
     }
 
     if (nextButton) {
         nextButton->setIcon(nextIcon);
         // nextButton->setIconSize(QSize(24, 24));
     } else {
-        qWarning("arrow icons.");
+        qWarning("arrow icons err.");
     }
 
 }
 
-void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate date) const
-{
-    //qDebug().noquote() << "\033[1;31m Call Paint cell " << date << " paint !\033[0m";
+void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate date) const {
+    //qDebug().noquote() << "\033[1;31m Call Paint cell " << date << " !\033[0m";
     QCalendarWidget::paintCell(painter, rect, date);
     QColor backgroundColor(0, 0, 0, 8);
     painter->setBrush(backgroundColor);

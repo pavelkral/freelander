@@ -11,7 +11,6 @@ class CalendarTableDelegate : public QStyledItemDelegate {
 public:
     CalendarTableDelegate(QObject *parent = nullptr) ;
 
-
     void setHighlightedDates(const QMap<QDate, QString> &dates) {
         highlighted = dates;
         for (auto it = highlighted.begin(); it != highlighted.end(); ++it) {
@@ -19,9 +18,7 @@ public:
         }
     }
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override ;
-
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const override ;
 
 private:
     QMap<QDate, QString> highlighted;

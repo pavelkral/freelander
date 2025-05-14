@@ -21,7 +21,6 @@ TokenManager::TokenManager(QObject *parent)
 
     if (configDoc.isNull()) {
         qWarning() << "Error: Configuration file is null:" << CONFIG_FILE;
-        // handle the error - exit the application or use default values
 
     } else if (!configDoc.isObject()) {
         qWarning() << "Error: Root element is not a JSON object:" << CONFIG_FILE;
@@ -54,7 +53,7 @@ TokenManager::TokenManager(QObject *parent)
     if (!clientId.isEmpty() && !clientSecret.isEmpty()) {
         m_oauth->setClientIdentifier(clientId);
         m_oauth->setClientIdentifierSharedKey(clientSecret);
-       // qInfo() << "OAuth loade" << CONFIG_FILE <<"OAuth idetnification " << clientId << clientSecret;
+       // qInfo() << "OAuth loaded" << CONFIG_FILE <<"OAuth idetnification " << clientId << clientSecret;
 
     } else {
         qCritical() << "OAuth not loaded.";

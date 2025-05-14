@@ -15,7 +15,6 @@ class FreelanderCalendar : public QCalendarWidget
 
 public:
     FreelanderCalendar(QWidget *parent = nullptr);
-
     void setNavigationIcons(const QIcon &prevIcon, const QIcon &nextIcon);
 
 protected:

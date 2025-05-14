@@ -8,11 +8,11 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("Settings");
     setMinimumWidth(300);
-    featureCheckbox = new QCheckBox("Strat with windows");
+    startUpCheckbox = new QCheckBox("Strat with windows");
 
     QSettings settings(settingsFilePath, QSettings::IniFormat);
     bool isEnabled = settings.value(autoStartKey, false).toBool();
-    featureCheckbox->setChecked(isEnabled);
+    startUpCheckbox->setChecked(isEnabled);
     qDebug() << " QSettings: " << autoStartKey << "=" << isEnabled;
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
@@ -21,7 +21,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(featureCheckbox);
+    mainLayout->addWidget(startUpCheckbox);
     mainLayout->addStretch();
     mainLayout->addWidget(buttonBox);
 }
@@ -33,27 +33,27 @@ SettingsDialog::~SettingsDialog()
 
 bool SettingsDialog::isFeatureEnabled() const
 {
-    return featureCheckbox->isChecked();
+    return startUpCheckbox->isChecked();
 }
 
 void SettingsDialog::setFeatureEnabled(bool enabled)
 {
-    featureCheckbox->setChecked(enabled);
+    startUpCheckbox->setChecked(enabled);
 }
 
 void SettingsDialog::applySettings()
 {
 
-    bool enabled = featureCheckbox->isChecked();
-   QSettings settings(settingsFilePath, QSettings::IniFormat);
+    bool enabled = startUpCheckbox->isChecked();
+    QSettings settings(settingsFilePath, QSettings::IniFormat);
     settings.setValue(autoStartKey, enabled);
     qDebug() << " QSettings: " << autoStartKey << "=" << enabled;
     QString appName = "Freelander"; //  register name
     QString appPath = QCoreApplication::applicationFilePath(); // path
     if (enabled) {
-         //addToStartup(appName, appPath);
+         addToStartup(appName, appPath);
     } else {
-         //removeFromStartup(appName);
+         removeFromStartup(appName);
     }
 
 

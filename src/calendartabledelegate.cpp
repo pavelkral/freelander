@@ -1,12 +1,10 @@
 #include "calendartabledelegate.h"
 
-CalendarTableDelegate::CalendarTableDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
-{
+CalendarTableDelegate::CalendarTableDelegate(QObject *parent) : QStyledItemDelegate(parent){
 }
 
-void CalendarTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
+void CalendarTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+
     painter->save();
 
     QStyleOptionViewItem opt(option);
@@ -33,7 +31,7 @@ void CalendarTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
     QRect r = opt.rect;
 
     if (cellDate.isValid() && highlighted.contains(cellDate)) {
-        qDebug() << "Vykresluji den:" << cellDate << "Zvýrazněný:" << highlighted.contains(cellDate);
+        qDebug() << "day:" << cellDate << "highlite:" << highlighted.contains(cellDate);
         painter->setBrush(QColor(255, 215, 0, 200));
         int indicatorSize = 6;
         painter->drawEllipse(QPoint(r.right() - indicatorSize - 2, r.bottom() - indicatorSize - 2), indicatorSize / 2, indicatorSize / 2);
@@ -54,8 +52,6 @@ void CalendarTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
         painter->drawRect(r);
         painter->setOpacity(1.0);
     }
-
-
 
     painter->restore();
 }

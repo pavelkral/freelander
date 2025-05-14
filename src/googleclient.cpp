@@ -1,5 +1,5 @@
 #include "googleclient.h"
-#include "utils.h"
+//#include "utils.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -185,7 +185,7 @@ void GoogleClient::deleteEvent(const QString &eventId,QCalendarWidget *calendar)
     auto *reply = m_manager->deleteResource(req);
     connect(reply,&QNetworkReply::finished,this,[=](){
 
-        bool ok = reply->error()==QNetworkReply::NoError;
+        //bool ok = reply->error()==QNetworkReply::NoError;
        // QMessageBox::information(nullptr, ok?"OK":"Error", reply->errorString());
         int year = calendar->yearShown();
         int month = calendar->monthShown();
