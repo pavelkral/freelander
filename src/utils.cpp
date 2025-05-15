@@ -3,6 +3,7 @@
 #include <QIODevice>
 #include <QJsonParseError>
 #include <QDebug>
+#include <QColor>
 
 QJsonDocument Utils::loadJsonDocumentFromFile(const QString &filePath)
 {
@@ -47,4 +48,33 @@ bool Utils::saveJsonDocumentToFile(const QString &filePath, const QJsonDocument 
     }
 
     return true;
+}
+
+void Utils::Log(const QString &str,const QColor &col)
+{
+
+    if (col == Qt::red) {
+        // Červená  (ANSI kód 31)
+        qDebug().noquote() << "\033[1;31m"<< str << " \033[0m";
+    } else if (col == Qt::green) {
+        // Zelená  (ANSI kód 32)
+        qDebug().noquote() << "\033[1;32m" << str << " \033[0m";
+    } else if (col == Qt::blue) {
+        // Modrá barva v terminálu (ANSI kód 34)
+        qDebug().noquote() << "\033[1;34m" << str << " \033[0m";
+    } else if (col == Qt::yellow) {
+        // Žlutá  (ANSI kód 33)
+        qDebug().noquote() << "\033[1;33m" << str << " \033[0m";
+    } else if (col == Qt::cyan) {
+        // Azurová  (ANSI kód 36)
+        qDebug().noquote() << "\033[1;36m" << str << " \033[0m";
+    } else if (col == Qt::magenta) {
+        // Purpurová (ANSI kód 35)
+        qDebug().noquote() << "\033[1;35m" << str << " \033[0m";
+    }
+
+    else {
+  // (bílá/šedá ANSI kód 37)
+        qDebug().noquote() << "\033[1;37m" << str << " \033[0m";
+    }
 }

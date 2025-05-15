@@ -2,6 +2,7 @@
 #include "ui_mainwidget.h"
 #include "eventdialog.h"
 #include "settingsdialog.h"
+#include "utils.h"
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -66,7 +67,7 @@ MainWidget::MainWidget(QWidget *parent)
     calendar = new FreelanderCalendar(this);
     calendar->setGridVisible(true);
     calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
-
+    calendar->setAttribute(Qt::WA_TranslucentBackground);
     calendar->setContextMenuPolicy(Qt::CustomContextMenu);
     calendar->setStyleSheet(R"(
         QCalendarWidget {
@@ -75,7 +76,7 @@ MainWidget::MainWidget(QWidget *parent)
             font-size: 9pt;
         }
         QCalendarWidget QWidget#qt_calendar_navigationbar {
-            background: transparent;
+            background: white;
             color: white;
         }
     )");
@@ -85,11 +86,11 @@ MainWidget::MainWidget(QWidget *parent)
     QTableView *tableView = calendar->findChild<QTableView *>();
     if (tableView) {
         tableView->viewport()->setAutoFillBackground(false);
-        tableView->setStyleSheet("background: transparent;");
+        tableView->setStyleSheet(R"(background-color: transparent;color: white;)");
         //.tableView->setItemDelegate(tableWiewDelegate);
         QHeaderView *header = tableView->horizontalHeader();
         if (header) {
-            header->setStyleSheet(R"(background: transparent;color: white;font-size: 4pt;)");
+            header->setStyleSheet(R"(background-color: ;color: white;font-size: 14pt;)");
         }
     }
     QWidget *navBar = calendar->findChild<QWidget *>("qt_calendar_navigationbar");
@@ -163,7 +164,7 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     //for (const QDate &date : dates) {
     //   qDebug() << "Datum:" << date.toString();
     //}
-    QColor backgroundColor(255, 0, 0, 0);
+    QColor backgroundColor(0, 0, 0, 0);
     textEdit->setPlainText(text);
     QFontMetrics fm(textEdit->font());
     int lineHeight = fm.lineSpacing();
@@ -180,9 +181,11 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     QColor textColor(3, 232, 252, 255);
 
     fmt.setForeground(textColor);
+
     for (auto d : dates){
         calendar->setDateTextFormat(d, fmt);
     }
+
 
     //QMap<QDate, QString> highlighted; // Vaše cílová QMap
     //QString highlightMessage = "Speciální datum";
@@ -350,10 +353,11 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
         googleClient->fetchEvents(currentPage, calendar);
     }
 }
-
+    //need fix rclick set lastclicked
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
-    //qDebug() << "calendarContextMenuRequested called at pos:" << pos;
-    qDebug().noquote() << "\033[1;31mRight click " << pos << " call \033[0m";
+
+    //qDebug().noquote()  << pos << " call \033[0m";
+    Utils::Log("Right click",Qt::red);
    // QPoint globalPos = QCursor::pos();
     QPoint globalPos = calendar->mapToGlobal(QCursor::pos());
     QDate date;

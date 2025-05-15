@@ -15,7 +15,7 @@ public:
     Utils() = delete;
     static QJsonDocument loadJsonDocumentFromFile(const QString &filePath);
     static bool saveJsonDocumentToFile(const QString &filePath,const QJsonDocument &jsonDocument,QJsonDocument::JsonFormat format = QJsonDocument::Indented);
-
+    static void Log(const QString &str,const QColor &col);
 private:
 
 
