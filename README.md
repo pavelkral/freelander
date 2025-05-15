@@ -24,6 +24,10 @@ qmake
 make (by platform)
 ```
 
+<p align=center>
+  <img src="https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png">
+</p>
+
 ![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png)
 
 ![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander2.png)
