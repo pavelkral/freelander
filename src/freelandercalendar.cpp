@@ -36,6 +36,7 @@ void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate d
 
     QTextCharFormat format = dateTextFormat(date);
     format.setFontPointSize(12);
+
     if (format.hasProperty(QTextFormat::BackgroundBrush)) {
         painter->fillRect(rect, format.background());
     } else {
@@ -51,11 +52,9 @@ void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate d
         finalTextColor = format.foreground().color();
         colorSetByFormat = true;
     }
-
-    if (!colorSetByFormat && date.dayOfWeek() == Qt::Sunday) {
-        finalTextColor = Qt::red;
+    if((date.dayOfWeek() == Qt::Sunday || date.dayOfWeek() == Qt::Saturday) && !colorSetByFormat){
+         finalTextColor = Qt::red;
     }
-
     else if (!colorSetByFormat) {
         bool isCurrentMonthDate = (date.month() == monthShown() && date.year() == yearShown());
         if (!isCurrentMonthDate) {
@@ -64,6 +63,7 @@ void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate d
             finalTextColor = Qt::white;
         }
     }
+
     painter->setPen(finalTextColor);
 
     QFont cellFont = this->font();
@@ -77,12 +77,13 @@ void FreelanderCalendar::paintCell(QPainter *painter, const QRect &rect, QDate d
         if (format.hasProperty(QTextFormat::FontStrikeOut)) cellFont.setStrikeOut(format.fontStrikeOut());
         if (format.hasProperty(QTextFormat::FontWeight)) cellFont.setWeight(static_cast<QFont::Weight>(format.fontWeight()));
     }
+
     painter->setFont(cellFont);
-
     painter->drawText(rect, Qt::AlignCenter, QString::number(date.day()));
-
     painter->restore();
+
     bool isCurrentMonthDate = (date.month() == monthShown() && date.year() == yearShown());
+
     if (date == QDate::currentDate() && isCurrentMonthDate) {
         painter->save();
         QPen ellipsePen(Qt::red);

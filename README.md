@@ -17,7 +17,7 @@ Alternative for Rainlendar which use Google Calendar api.
 
 - Qt 5 (minimal tested version is 5.15), support of Qt 6
 
-### Compile
+### Build Steps
 ```
 qmake
 ```
