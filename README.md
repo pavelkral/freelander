@@ -17,6 +17,7 @@ Alternative for Rainlendar which use Google Calendar api.
 
 - Qt 5 (minimal tested version is 5.15), support of Qt 6
 
+### Compile
 ```
 qmake
 ```
@@ -26,8 +27,6 @@ make (by platform)
 
 <p align=center>
   <img src="https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png">
-  ![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png)
-
 </p>
 
 
