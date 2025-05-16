@@ -8,7 +8,7 @@ Alternative for Rainlendar which use Google Calendar api.
 
 ## Download Binaries
 
-- Windows: [freelander-alpha-win64.zip](https://github.com/freelander-alpha2-win64.zip)
+- Windows: [freelander-alpha-win64.zip](https://github.com/freelander-alpha-win64.zip)
 - Linux: *in progress*
 
 ## Build from Source
