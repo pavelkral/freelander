@@ -14,6 +14,7 @@ EventDialog::EventDialog(QWidget *parent)
 {
         ui->setupUi(this);
         setWindowTitle("Event");
+
         m_dateEdit->setCalendarPopup(true);
         m_dateEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
 
