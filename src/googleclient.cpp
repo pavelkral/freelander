@@ -18,6 +18,11 @@ void GoogleClient::setAccessToken(const QString &token) {
     m_token = token;
 }
 
+void GoogleClient::fetchEventsOld(const QDate &monthDate, QCalendarWidget *calendar)
+{
+
+}
+
 QPair<QDateTime,QDateTime> GoogleClient::monthRange(const QDate &monthDate) const {
     QDate first(monthDate.year(), monthDate.month(), 1);
     QDate last = first.addMonths(1).addDays(-1);
@@ -58,31 +63,57 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
 
         QSet<QDate> highlightDates;
         QSet<QDate> dates;
-        QStringList lines;
+        QList<QPair<QDate, QString>> upcomingEvents;
         eventIdMap.clear();
 
         for (const QJsonValue &item : items) {
             QJsonObject obj = item.toObject();
             QString summary = obj["summary"].toString("Bez názvu");
             QString id = obj["id"].toString();
+
             QJsonObject startObj = obj["start"].toObject();
-            QDate eventDate;
+            QJsonObject endObj = obj["end"].toObject();
+
+            QDate startDate, endDate;
             QString startStr;
 
             if (startObj.contains("dateTime")) {
-                QDateTime dt = QDateTime::fromString(startObj["dateTime"].toString(), Qt::ISODate);
-                eventDate = dt.date();
-                startStr = dt.toString("dd.MM.yyyy HH:mm");
+                QDateTime startDT = QDateTime::fromString(startObj["dateTime"].toString(), Qt::ISODate);
+                QDateTime endDT = QDateTime::fromString(endObj["dateTime"].toString(), Qt::ISODate);
+                startDate = startDT.date();
+                endDate = endDT.date();
+                startStr = startDT.toString("dd.MM.yyyy HH:mm");
             } else {
-                eventDate = QDate::fromString(startObj["date"].toString(), Qt::ISODate);
-                startStr = eventDate.toString("dd.MM.yyyy");
+                startDate = QDate::fromString(startObj["date"].toString(), Qt::ISODate);
+                endDate = QDate::fromString(endObj["date"].toString(), Qt::ISODate);
+                startStr = startDate.toString("dd.MM.yyyy");
             }
 
-            QString displayText =  "📌  "+ startStr + " - " + summary + "";
+            QString displayText = "📌  " + startStr + " - " + summary;
             eventIdMap[displayText] = id;
-            highlightDates.insert(eventDate);
-            lines << displayText;
-            dates.insert(eventDate);
+
+            // current or futur
+            if (startDate >= QDate::currentDate()) {
+                upcomingEvents.append({startDate, displayText});
+            }
+
+            //start to endDate highlite
+            for (QDate d = startDate; d <= endDate; d = d.addDays(1)) {
+                dates.insert(d);
+            }
+        }
+
+        //date filter
+        std::sort(upcomingEvents.begin(), upcomingEvents.end(), [](const auto &a, const auto &b) {
+            return a.first < b.first;
+        });
+
+        // first 5
+        QStringList lines;
+        int count = 0;
+        for (const auto &pair : upcomingEvents) {
+            lines << pair.second;
+            if (++count >= 5) break;
         }
 
         emit eventsFetched(lines.join("\n"), dates);

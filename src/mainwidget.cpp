@@ -164,6 +164,7 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     //for (const QDate &date : dates) {
     //   qDebug() << "Datum:" << date.toString();
     //}
+
     QColor backgroundColor(0, 0, 0, 0);
     textEdit->setPlainText(text);
     QFontMetrics fm(textEdit->font());

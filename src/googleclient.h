@@ -17,7 +17,7 @@ class GoogleClient : public QObject {
 public:
     explicit GoogleClient(QObject *parent = nullptr);
     void setAccessToken(const QString &token);
-    void fetchEvents(const QDate &monthDate, QCalendarWidget *calendar);
+    void fetchEventsOld(const QDate &monthDate, QCalendarWidget *calendar);
     void fetchEventDetails(const QString &eventId);
     void createEvent(const QString &summary, const QDateTime &start, const QDateTime &end ,QCalendarWidget *calendar);
     void updateEvent(const QString &eventId, const QString &summary, const QDateTime &start, const QDateTime &end,QCalendarWidget *calendar);
@@ -26,6 +26,7 @@ public:
     QMap<QString, QString> eventIdMap;
     QString getToken(){return m_token;}
 
+    void fetchEvents(const QDate &monthDate, QCalendarWidget *calendar);
 signals:
     void eventsFetched(const QString &text, const QSet<QDate> &dates);
     void eventDetailsFetched(const QString &summary, const QDateTime &start, const QDateTime &end,const QString &enventId);
