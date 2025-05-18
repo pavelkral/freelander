@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QLabel>
 
 
 EventDialog::EventDialog(QWidget *parent)
@@ -17,15 +18,24 @@ EventDialog::EventDialog(QWidget *parent)
 
         m_dateEdit->setCalendarPopup(true);
         m_dateEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
-
         m_dateEndEdit->setCalendarPopup(true);
         m_dateEndEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
+
+
 
         auto *layout = new QVBoxLayout(this);
         layout->addWidget(m_dateEdit);
         layout->addWidget(m_dateEndEdit);
         layout->addWidget(m_textEdit);
 
+        layout->addWidget(new QLabel("Start Date & Time:", this));
+        layout->addWidget(m_dateEdit);
+
+        layout->addWidget(new QLabel("End Date & Time:", this));
+        layout->addWidget(m_dateEndEdit);
+
+        layout->addWidget(new QLabel("Event Description:", this));
+        layout->addWidget(m_textEdit);
         auto *btnLayout = new QHBoxLayout;
         btnLayout->addStretch();
         cancelButton = new QPushButton("Cancel", this);
