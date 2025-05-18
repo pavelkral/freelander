@@ -112,7 +112,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
 
     QLabel *label = new QLabel("EVENTS",this);
-    label->setStyleSheet("background-color: #2a2a2a; color: white; font-size: 16px;");
+    label->setStyleSheet("background-color: #2a2a2a; color: white;font-weight: bold; font-size: 16px;");
     label->setAlignment(Qt::AlignCenter);
    // label->setAttribute(Qt::WA_TranslucentBackground);
     textEdit   = new ClickableTextEdit(this);
@@ -149,7 +149,7 @@ void MainWidget::paintEvent(QPaintEvent *) {
     painter.setBrush(backgroundColor);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(rect(), 10, 10);
-    //calendar->repaint();
+
 
 }
 

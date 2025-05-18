@@ -25,8 +25,14 @@ qmake
 make (by platform)
 ```
 
+### Run
+```
+Update your Google id in config.json in root directory and start app.
+```
+
+
 <p align=center>
-  <img src="https://github.com/pavelkral/Freelander/raw/main/media/freelander1.png">
+  <img src="https://github.com/pavelkral/Freelander/raw/main/media/freelander-alpha.png">
 </p>
 
 
@@ -36,4 +42,4 @@ make (by platform)
 ## References
 
 - https://qt.io
-- https://google.com
+- https://developers.google.com/workspace/calendar/api/guides/overview
