@@ -33,12 +33,14 @@ TokenManager::TokenManager(QObject *parent)
                 clientId = oauthSettings["client_id"].toString();
             } else {
                 qWarning() << "'client_id' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
+                  QMessageBox::information(nullptr,"Client","not saved",QMessageBox::Ok);
             }
 
             if (oauthSettings.contains("client_secret") && oauthSettings["client_secret"].isString()) {
                 clientSecret = oauthSettings["client_secret"].toString();
             } else {
                 qWarning() << "'client_secret' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
+                 QMessageBox::information(nullptr,"Secret","not saved",QMessageBox::Ok);
             }
 
         } else {

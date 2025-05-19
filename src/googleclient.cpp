@@ -163,7 +163,7 @@ void GoogleClient::createEvent(const QString &summary, const QDateTime &start, c
     auto *reply = m_manager->post(req, QJsonDocument(event).toJson());
 
     connect(reply,&QNetworkReply::finished,this,[=](){
-        bool ok = reply->error()==QNetworkReply::NoError;
+        //bool ok = reply->error()==QNetworkReply::NoError;
 
         int year = calendar->yearShown();
         int month = calendar->monthShown();
