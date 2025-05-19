@@ -3,7 +3,7 @@
 Alternative for Rainlendar which use Google Calendar api.
 
 > [!WARNING]
-> This software is unfinished. 
+> This application is still in development. 
 
 
 ## Download Binaries

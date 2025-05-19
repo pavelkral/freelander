@@ -21,8 +21,6 @@ EventDialog::EventDialog(QWidget *parent)
     m_dateEndEdit->setCalendarPopup(true);
     m_dateEndEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
 
-
-
     auto *layout = new QVBoxLayout(this);
     layout->addWidget(m_dateEdit);
     layout->addWidget(m_dateEndEdit);
@@ -36,6 +34,7 @@ EventDialog::EventDialog(QWidget *parent)
 
     layout->addWidget(new QLabel("Event Description:", this));
     layout->addWidget(m_textEdit);
+
     auto *btnLayout = new QHBoxLayout;
     btnLayout->addStretch();
     cancelButton = new QPushButton("Cancel", this);
