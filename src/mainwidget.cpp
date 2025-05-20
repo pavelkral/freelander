@@ -117,7 +117,7 @@ MainWidget::MainWidget(QWidget *parent)
    // label->setAttribute(Qt::WA_TranslucentBackground);
     textEdit   = new ClickableTextEdit(this);
     textEdit->setReadOnly(true);
-    textEdit->setStyleSheet("QTextEdit { background-color: transparent; }");
+    textEdit->setStyleSheet("QTextEdit { background-color: transparent;font-size: 14px; }");
 
     lay->addWidget(calendar);
     lay->addWidget(label);
@@ -416,6 +416,26 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
             qDebug() << "Found" << events.count() << "events for date:" << date;
             // For each event, add an action to the menu
             for (const auto& event : events) {
+
+
+                // Edit Action
+                QAction *editAction = new QAction(QIcon::fromTheme("document-edit", QIcon(":/icons/edit.png")), "Edit " + event.first, &menu);
+                editAction->setData(event.second); // Store event ID
+
+                QObject::connect(editAction, &QAction::triggered, [&, this]() {
+                    QString eventId = editAction->data().toString();
+                    qDebug() << "Edit action triggered for event ID:" << eventId;
+                    if (!eventId.isEmpty()) {
+                        // Call your edit logic here, maybe open a dialog or call googleClient->editEvent(eventId);
+                        // For example:
+                        googleClient->fetchEventDetails(eventId);
+                    } else {
+                        qDebug() << "Event ID is empty, cannot edit.";
+                    }
+                });
+                menu.addAction(editAction);
+
+                // delete action
                 qDebug() << "Adding event to menu:" << event.first << "(" << event.second << ")";
                 QAction *eventAction = new QAction(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete.png")),"Delete " + event.first, &menu);
                 eventAction->setData(event.second); // Store event ID in action data
