@@ -33,14 +33,20 @@ TokenManager::TokenManager(QObject *parent)
                 clientId = oauthSettings["client_id"].toString();
             } else {
                 qWarning() << "'client_id' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
-                  QMessageBox::information(nullptr,"Client","not saved",QMessageBox::Ok);
+                 // QMessageBox::information(nullptr,"Client","not saved",QMessageBox::Ok);
+                QMessageBox::critical(0, qApp->tr("Cannot read client id"),
+                                      qApp->tr("Please setup your id in config.json.\n"
+                                               "Click Cancel to exit."), QMessageBox::Cancel);
             }
 
             if (oauthSettings.contains("client_secret") && oauthSettings["client_secret"].isString()) {
                 clientSecret = oauthSettings["client_secret"].toString();
             } else {
                 qWarning() << "'client_secret' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
-                 QMessageBox::information(nullptr,"Secret","not saved",QMessageBox::Ok);
+                QMessageBox::critical(0, qApp->tr("Cannot read client secret"),
+                                      qApp->
+                                      qApp->tr("Please setup your id in config.json.\n"
+                                               "Click Cancel to exit."), QMessageBox::Cancel);
             }
 
         } else {
@@ -59,7 +65,10 @@ TokenManager::TokenManager(QObject *parent)
 
     } else {
         qCritical() << "OAuth not loaded.";
-        // QCoreApplication::exit(-1);
+        QMessageBox::critical(0, qApp->tr("Cannot read client id or secret"),
+                              qApp->
+                              qApp->tr("Please setup your config.json.\n"
+                                       "Click Cancel to exit."), QMessageBox::Cancel);
     }
 
     m_oauth->setScope("https://www.googleapis.com/auth/calendar");
