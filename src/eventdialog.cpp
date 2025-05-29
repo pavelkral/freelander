@@ -15,25 +15,31 @@ EventDialog::EventDialog(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowTitle("Event");
-
     m_dateEdit->setCalendarPopup(true);
     m_dateEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
     m_dateEndEdit->setCalendarPopup(true);
     m_dateEndEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
 
-    auto *layout = new QVBoxLayout(this);
-    layout->addWidget(m_dateEdit);
-    layout->addWidget(m_dateEndEdit);
-    layout->addWidget(m_textEdit);
+    auto *mainLayout = new QVBoxLayout(this);
 
-    layout->addWidget(new QLabel("Start Date & Time:", this));
-    layout->addWidget(m_dateEdit);
+    auto *datesLayout = new QHBoxLayout;
 
-    layout->addWidget(new QLabel("End Date & Time:", this));
-    layout->addWidget(m_dateEndEdit);
+    auto *startDateLayout = new QHBoxLayout;
+    startDateLayout->addWidget(new QLabel("Start Date & Time:", this));
+    startDateLayout->addWidget(m_dateEdit);
 
-    layout->addWidget(new QLabel("Event Description:", this));
-    layout->addWidget(m_textEdit);
+    auto *endDateLayout = new QHBoxLayout;
+    endDateLayout->addWidget(new QLabel("End Date & Time:", this));
+    endDateLayout->addWidget(m_dateEndEdit);
+
+    datesLayout->addLayout(startDateLayout);
+    datesLayout->addLayout(endDateLayout);
+    datesLayout->addStretch();
+
+    mainLayout->addLayout(datesLayout);
+
+    mainLayout->addWidget(new QLabel("Event Description:", this));
+    mainLayout->addWidget(m_textEdit);
 
     auto *btnLayout = new QHBoxLayout;
     btnLayout->addStretch();
@@ -42,13 +48,14 @@ EventDialog::EventDialog(QWidget *parent)
     deleteButton = new QPushButton("Delete",this);
     btnLayout->addWidget(deleteButton);
     btnLayout->addWidget(saveButton);
-    layout->addLayout(btnLayout);
+    mainLayout->addLayout(btnLayout);
+
     this->setStyleSheet(R"(
-        QLabel {
-            font-weight: bold;
-            font-size: 14px;
-        }
-        )");
+    QLabel {
+        font-weight: bold;
+        font-size: 14px;
+    }
+)");
     connect(saveButton, &QPushButton::clicked, this, &QDialog::accept);
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
     connect(deleteButton, &QPushButton::clicked, this, &EventDialog::onDeleteClicked);

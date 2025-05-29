@@ -260,6 +260,7 @@ void MainWidget::handleLineClick() {
 }
 
 void MainWidget::openSettings(){
+
     SettingsDialog settingsDialog(this);
 
     int result = settingsDialog.exec();
@@ -282,11 +283,19 @@ void MainWidget::openSettings(){
 }
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {
 
+
+    QSettings settings(settingsFilePath, QSettings::IniFormat);
+
     EventDialog dialog(this);
     dialog.setDateTime(st);
     dialog.setEndDateTime(en);
     dialog.setText(sum);
     dialog.setEditMode(!eventId.isEmpty());
+   // dialog.restoreGeometry(settings.value("dlggeometry").toByteArray());
+    QByteArray loadedGeometry = settings.value("dlggeometry").toByteArray();
+    //qDebug() << "Nacitam geometrii: " << loadedGeometry.toHex();
+    dialog.restoreGeometry(loadedGeometry);
+
 
     if (!eventId.isEmpty()) {
         dialog.setEventId(eventId);
@@ -296,8 +305,15 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
 
         qDebug() << "id is null:" << eventId;
     }
+   // settings.setValue("dlggeometry", dialog.saveGeometry());
+    int result = dialog.exec();
 
-    if (dialog.exec() == QDialog::Accepted) {
+    QByteArray geometryData = dialog.saveGeometry();
+    settings.setValue("dlggeometry", geometryData);
+    //qDebug() << "save : " << geometryData.toHex();
+
+    if (result == QDialog::Accepted) {
+        //dialog.restoreGeometry(settings.value("dlggeometry").toByteArray());
 
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
@@ -313,6 +329,7 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
     QDateTime dateTime(date, QTime(8, 0));
     QString existingSummary;
     QString existingEventId;
+    QSettings settings(settingsFilePath, QSettings::IniFormat);
 
     for (const auto &entry : googleClient->eventIdMap.keys()) {
         if (entry.startsWith(date.toString("dd.MM.yyyy"))) {
@@ -328,6 +345,10 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
     dialog.setText(existingSummary);
     dialog.setEditMode(!existingSummary.isEmpty());
 
+    QByteArray loadedGeometry = settings.value("dlggeometry").toByteArray();
+   // qDebug() << "load geometry: " << loadedGeometry.toHex();
+    dialog.restoreGeometry(loadedGeometry);
+
     if (!existingEventId.isEmpty()) {
         //dialog.setEventId(existingEventId);
         dialog.setWidget(this);
@@ -339,7 +360,13 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
         qDebug() << "id is null:" << existingEventId;
     }
 
-    if (dialog.exec() == QDialog::Accepted) {
+    int result = dialog.exec();
+
+    QByteArray geometryData = dialog.saveGeometry();
+    settings.setValue("dlggeometry", geometryData);
+    //qDebug() << "save : " << geometryData.toHex();
+
+    if (result == QDialog::Accepted) {
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
         QDateTime enddt = dialog.dateEndTime();
