@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(freelander LANGUAGES CXX)
 
-set(CMAKE_AUTOUIC ON) 
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -16,8 +16,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
 
 qt_standard_project_setup()
 
-qt_add_executable(qt-cmake
-    WIN32 MACOSX_BUNDLE
+qt_add_executable(freelander
     src/calendartabledelegate.cpp
     src/clickabletextedit.cpp
     src/eventdialog.cpp
@@ -41,10 +40,13 @@ qt_add_executable(qt-cmake
     src/mainwidget.ui
     src/settingsdialog.ui
     resource/calendar.qrc
+    resource/calendar.rc
+    README.md
+    .gitignore LICENSE.txt
 
 )
 
-target_link_libraries(qt-cmake
+target_link_libraries(freelander
     PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -56,21 +58,21 @@ target_link_libraries(qt-cmake
 
 include(GNUInstallDirs)
 
-install(TARGETS qt-cmake
+install(TARGETS freelander
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 qt_generate_deploy_app_script(
-    TARGET qt-cmake
+    TARGET freelander
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})
 
 
-# 
+# libs debug
 # message(STATUS "Qt6_DIR: ${Qt6_DIR}")
 # message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 # message(STATUS "CMAKE_AUTOMOC: ${CMAKE_AUTOMOC}")

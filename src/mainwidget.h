@@ -4,7 +4,7 @@
 #include "TokenManager.h"
 #include "GoogleClient.h"
 #include "clickabletextedit.h"
-#include "src/freelandercalendar.h"
+#include "freelandercalendar.h"
 #include "calendartabledelegate.h"
 #include <QWidget>
 #include <QSet>
