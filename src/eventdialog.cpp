@@ -13,6 +13,7 @@ EventDialog::EventDialog(QWidget *parent)
     m_dateEndEdit(new QDateTimeEdit(QDateTime::currentDateTime(), this)),
     saveButton(new QPushButton("Add Event", this))
 {
+
     ui->setupUi(this);
     setWindowTitle("Event");
     m_dateEdit->setCalendarPopup(true);
@@ -21,23 +22,18 @@ EventDialog::EventDialog(QWidget *parent)
     m_dateEndEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
 
     auto *mainLayout = new QVBoxLayout(this);
-
     auto *datesLayout = new QHBoxLayout;
-
     auto *startDateLayout = new QHBoxLayout;
     startDateLayout->addWidget(new QLabel("Start Date & Time:", this));
     startDateLayout->addWidget(m_dateEdit);
-
     auto *endDateLayout = new QHBoxLayout;
     endDateLayout->addWidget(new QLabel("End Date & Time:", this));
     endDateLayout->addWidget(m_dateEndEdit);
-
     datesLayout->addLayout(startDateLayout);
     datesLayout->addLayout(endDateLayout);
     datesLayout->addStretch();
 
     mainLayout->addLayout(datesLayout);
-
     mainLayout->addWidget(new QLabel("Event Description:", this));
     mainLayout->addWidget(m_textEdit);
 
@@ -51,11 +47,12 @@ EventDialog::EventDialog(QWidget *parent)
     mainLayout->addLayout(btnLayout);
 
     this->setStyleSheet(R"(
-    QLabel {
-        font-weight: bold;
-        font-size: 14px;
-    }
-)");
+        QLabel {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        )");
+
     connect(saveButton, &QPushButton::clicked, this, &QDialog::accept);
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
     connect(deleteButton, &QPushButton::clicked, this, &EventDialog::onDeleteClicked);
@@ -74,7 +71,7 @@ void EventDialog::onDeleteClicked()
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             pointerToMainWidget->onDeleteClickedId(eventId);
-            accept(); //  close()
+            accept(); 
         }
     }
     else{
