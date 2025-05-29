@@ -5,7 +5,6 @@
 #include <QMessageBox>
 #include <QLabel>
 
-
 EventDialog::EventDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::EventDialog) , m_textEdit(new QTextEdit(this)),
@@ -24,9 +23,10 @@ EventDialog::EventDialog(QWidget *parent)
     auto *mainLayout = new QVBoxLayout(this);
     auto *datesLayout = new QHBoxLayout;
     auto *startDateLayout = new QHBoxLayout;
+    auto* endDateLayout = new QHBoxLayout;
+
     startDateLayout->addWidget(new QLabel("Start Date & Time:", this));
-    startDateLayout->addWidget(m_dateEdit);
-    auto *endDateLayout = new QHBoxLayout;
+    startDateLayout->addWidget(m_dateEdit); 
     endDateLayout->addWidget(new QLabel("End Date & Time:", this));
     endDateLayout->addWidget(m_dateEndEdit);
     datesLayout->addLayout(startDateLayout);
