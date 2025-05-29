@@ -27,9 +27,9 @@ HEADERS += \
     src/utils.h
 
 FORMS += \
-    src/forms/eventdialog.ui \
-    src/forms/mainwidget.ui \
-    src/forms/settingsdialog.ui
+    src/eventdialog.ui \
+    src/mainwidget.ui \
+    src/settingsdialog.ui
 
 RESOURCES += resource/calendar.qrc
 

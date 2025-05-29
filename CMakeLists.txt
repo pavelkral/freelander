@@ -12,7 +12,8 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     Gui
     Widgets
     Network
-    NetworkAuth)
+    NetworkAuth
+)
 
 qt_standard_project_setup()
 
