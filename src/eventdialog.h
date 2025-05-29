@@ -8,7 +8,7 @@
 #include "mainwidget.h"
 
 namespace Ui {
-class EventDialog;
+    class EventDialog;
 }
 
 class EventDialog : public QDialog
