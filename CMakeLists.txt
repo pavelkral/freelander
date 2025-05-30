@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_AUTOUIC_SEARCH_PATHS src/forms)
 find_package(Qt6 6.5 REQUIRED COMPONENTS
     Core
     Gui
@@ -38,9 +38,9 @@ qt_add_executable(freelander
     src/settingsdialog.h
     src/tokenmanager.h
     src/utils.h
-    src/eventdialog.ui
-    src/mainwidget.ui
-    src/settingsdialog.ui
+    src/forms/eventdialog.ui
+    src/forms/mainwidget.ui
+    src/forms/settingsdialog.ui
     resource/calendar.qrc
     resource/calendar.rc
     README.md
