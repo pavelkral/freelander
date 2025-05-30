@@ -1,5 +1,5 @@
 #include "tokenmanager.h"
-
+#include <QAbstractOAuth2>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include "utils.h"
-
+#include <chrono>
 TokenManager::TokenManager(QObject *parent)
     : QObject(parent),
     m_oauth(new QOAuth2AuthorizationCodeFlow(this)),
@@ -73,12 +73,19 @@ TokenManager::TokenManager(QObject *parent)
 
     m_oauth->setScope("https://www.googleapis.com/auth/calendar");
     m_oauth->setProperty("redirectUri", "http://localhost:8080");
-
+    m_oauth->setAutoRefresh(true); 
+    m_oauth->setRefreshLeadTime(std::chrono::seconds(300));
 
     connect(m_oauth, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
             [](const QUrl &url){ QDesktopServices::openUrl(url); });
     connect(m_oauth, &QOAuth2AuthorizationCodeFlow::granted,
             this, &TokenManager::onGranted);
+
+    connect(m_oauth, &QOAuth2AuthorizationCodeFlow::tokenChanged,
+        [](const QString& accessToken) {
+            qDebug() << "Access Token changed (likely refreshed):" << accessToken;
+            // Update client objects that use the access token here
+        });
 
     loadTokens();
 }
