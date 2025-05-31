@@ -1,3 +1,8 @@
+<!-- PROJECT SHIELDS -->
+
+[![License][license-shield]][license-url]
+
+
 # Freelander 
 
 Alternative for Rainlendar which use Google Calendar api.
@@ -15,7 +20,8 @@ Alternative for Rainlendar which use Google Calendar api.
 
 ### Build Dependencies
 
-- Qt 5 (minimal tested version is 5.15), support of Qt 6
+- Qt 5 (min tested version 5.15)
+- support of Qt 6 and cmake 
 
 ### Build Steps
 ```
