@@ -191,7 +191,7 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
     }
 
 
-    //QMap<QDate, QString> highlighted; // Vaše cílová QMap
+    //QMap<QDate, QString> highlighted; 
     //QString highlightMessage = "Speciální datum";
     //for (const QDate &date : dates) {
         //highlighted.insert(date, highlightMessage);

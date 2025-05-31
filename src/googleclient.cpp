@@ -121,12 +121,15 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
 
 
         if (reply->error() == QNetworkReply::NoError) {  
-            QMessageBox::information(parentWidget, "OK", "Operation completed successfully.");
-            
+            emit eventsFetched(lines.join("\n"), dates);
+            QMessageBox::information(parentWidget, "API", "Fetch completed.");
+            qDebug() << "API call successful! Data received.";
+            //qDebug() << "Response:" << reply->readAll();
+          
         } else {  
-            QMessageBox::critical(parentWidget, "Error", "Operation failed: " + reply->errorString());
+            QMessageBox::critical(parentWidget, "Error", "Fetch failed: " + reply->errorString());
         } 
-        emit eventsFetched(lines.join("\n"), dates);
+        
         reply->deleteLater();
     });
 }
@@ -177,7 +180,8 @@ void GoogleClient::createEvent(const QString &summary, const QDateTime &start, c
                int year = calendar->yearShown();  
                int month = calendar->monthShown();  
                QDate firstDateOfMonth(year, month, 1);  
-               fetchEvents(firstDateOfMonth, calendar);  
+               fetchEvents(firstDateOfMonth, calendar);
+               //QMessageBox::information(parentWidget, "Success", "Add completed.");
            } else {  
                qDebug() << "Error occurred:" << reply->errorString();  
            }  
@@ -229,16 +233,17 @@ void GoogleClient::deleteEvent(const QString &eventId,QCalendarWidget *calendar)
 
     connect(reply,&QNetworkReply::finished,this,[=](){
   
-        if (reply->error() == QNetworkReply::NoError) {  
-          //  QMessageBox::information(parentWidget, "OK", "Delete completed.");  
+        if (reply->error() == QNetworkReply::NoError) {   
+            int year = calendar->yearShown();  
+            int month = calendar->monthShown();  
+            QDate firstDateOfMonth(year, month, 1);  
+            fetchEvents(firstDateOfMonth, calendar);  
+       
+           // QMessageBox::information(parentWidget, "Success", "Delete completed.");
         } else {  
            // QMessageBox::critical(parentWidget, "Error", "Operation failed: " + reply->errorString());  
         } 
 
-        int year = calendar->yearShown();  
-        int month = calendar->monthShown();  
-        QDate firstDateOfMonth(year, month, 1);  
-        fetchEvents(firstDateOfMonth, calendar);  
         reply->deleteLater();
     });
 }

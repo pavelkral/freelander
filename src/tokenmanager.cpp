@@ -84,6 +84,7 @@ TokenManager::TokenManager(QObject *parent)
     connect(m_oauth, &QOAuth2AuthorizationCodeFlow::tokenChanged,
         [](const QString& accessToken) {
             qDebug() << "Access Token changed (likely refreshed):" << accessToken;
+        //    QMessageBox::critical(this->parentWidget(), "Error", "Fetch failed: " + r));
             // Update client objects that use the access token here
         });
 
