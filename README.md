@@ -1,5 +1,9 @@
 <!-- PROJECT SHIELDS -->
-
+[![Build status][build-shield]][build-url]
+[![Translation status][weblate-shield]][weblate-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Contributors][contributors-shield]][contributors-url]
+[![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
 
 
@@ -20,8 +24,7 @@ Alternative for Rainlendar which use Google Calendar api.
 
 ### Build Dependencies
 
-- Qt 5 (min tested version 5.15)
-- support of Qt 6 and cmake 
+- Qt 5 (minimal tested version is 5.15), support of Qt 6
 
 ### Build Steps
 ```
