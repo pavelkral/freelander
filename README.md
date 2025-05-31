@@ -1,3 +1,8 @@
+<!-- PROJECT SHIELDS -->
+[![Build status][build-shield]][build-url]
+
+[build-shield]: https://img.shields.io/github/actions/workflow/status/VášUserName/VášRepo/build.yml?branch=main 
+[build-url]: https://github.com/VášUserName/VášRepo/actions/workflows/build.yml  
 
 # Freelander 
 
