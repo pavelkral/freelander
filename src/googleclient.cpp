@@ -122,8 +122,8 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
 
         if (reply->error() == QNetworkReply::NoError) {  
             emit eventsFetched(lines.join("\n"), dates);
-            QMessageBox::information(parentWidget, "API", "Fetch completed.");
-            qDebug() << "API call successful! Data received.";
+           // QMessageBox::information(parentWidget, "API", "Fetch completed.");
+            //qDebug() << "API call successful! Data received.";
             //qDebug() << "Response:" << reply->readAll();
           
         } else {  

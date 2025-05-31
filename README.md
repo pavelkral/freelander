@@ -1,11 +1,3 @@
-<!-- PROJECT SHIELDS -->
-[![Build status][build-shield]][build-url]
-[![Translation status][weblate-shield]][weblate-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Contributors][contributors-shield]][contributors-url]
-[![Issues][issues-shield]][issues-url]
-[![License][license-shield]][license-url]
-
 
 # Freelander 
 
