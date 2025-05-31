@@ -12,15 +12,18 @@
 #include <QCalendarWidget>
 
 GoogleClient::GoogleClient(QObject *parent)
-    : QObject(parent), m_manager(new QNetworkAccessManager(this)) {}
+    : QObject(parent), m_manager(new QNetworkAccessManager(this)) {
+
+    parentWidget = qobject_cast<QWidget*>(this->parent());
+
+    if (!parentWidget) {
+        parentWidget = nullptr;
+        qDebug() << "No parent widget";
+    }
+}
 
 void GoogleClient::setAccessToken(const QString &token) {
     m_token = token;
-}
-
-void GoogleClient::fetchEventsOld(const QDate &monthDate, QCalendarWidget *calendar)
-{
-
 }
 
 QPair<QDateTime,QDateTime> GoogleClient::monthRange(const QDate &monthDate) const {
@@ -116,6 +119,13 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
             if (++count >= 5) break;
         }
 
+
+        if (reply->error() == QNetworkReply::NoError) {  
+            QMessageBox::information(parentWidget, "OK", "Operation completed successfully.");
+            
+        } else {  
+            QMessageBox::critical(parentWidget, "Error", "Operation failed: " + reply->errorString());
+        } 
         emit eventsFetched(lines.join("\n"), dates);
         reply->deleteLater();
     });
@@ -162,15 +172,17 @@ void GoogleClient::createEvent(const QString &summary, const QDateTime &start, c
 
     auto *reply = m_manager->post(req, QJsonDocument(event).toJson());
 
-    connect(reply,&QNetworkReply::finished,this,[=](){
-        //bool ok = reply->error()==QNetworkReply::NoError;
-
-        int year = calendar->yearShown();
-        int month = calendar->monthShown();
-        QDate firstDateOfMonth(year, month, 1);
-        fetchEvents(firstDateOfMonth, calendar);
-        reply->deleteLater();
-    });
+    connect(reply, &QNetworkReply::finished, this, [=]() {  
+           if (reply->error() == QNetworkReply::NoError) {  
+               int year = calendar->yearShown();  
+               int month = calendar->monthShown();  
+               QDate firstDateOfMonth(year, month, 1);  
+               fetchEvents(firstDateOfMonth, calendar);  
+           } else {  
+               qDebug() << "Error occurred:" << reply->errorString();  
+           }  
+           reply->deleteLater();  
+       });
 }
 
 void GoogleClient::updateEvent(const QString &eventId, const QString &summary, const QDateTime &start, const QDateTime &end,QCalendarWidget *calendar) {
@@ -214,14 +226,19 @@ void GoogleClient::deleteEvent(const QString &eventId,QCalendarWidget *calendar)
     QNetworkRequest req(url);
     req.setRawHeader("Authorization", "Bearer "+m_token.toUtf8());
     auto *reply = m_manager->deleteResource(req);
-    connect(reply,&QNetworkReply::finished,this,[=](){
 
-        //bool ok = reply->error()==QNetworkReply::NoError;
-       // QMessageBox::information(nullptr, ok?"OK":"Error", reply->errorString());
-        int year = calendar->yearShown();
-        int month = calendar->monthShown();
-        QDate firstDateOfMonth(year, month, 1);
-        fetchEvents(firstDateOfMonth, calendar);
+    connect(reply,&QNetworkReply::finished,this,[=](){
+  
+        if (reply->error() == QNetworkReply::NoError) {  
+          //  QMessageBox::information(parentWidget, "OK", "Delete completed.");  
+        } else {  
+           // QMessageBox::critical(parentWidget, "Error", "Operation failed: " + reply->errorString());  
+        } 
+
+        int year = calendar->yearShown();  
+        int month = calendar->monthShown();  
+        QDate firstDateOfMonth(year, month, 1);  
+        fetchEvents(firstDateOfMonth, calendar);  
         reply->deleteLater();
     });
 }
@@ -265,4 +282,9 @@ void GoogleClient::fetchEventsForDate(const QDate &date, std::function<void(cons
         reply->deleteLater();
         callback(events);
     });
+}
+
+void GoogleClient::setTokenManager(TokenManager* tokenManager)
+{
+	m_tokenManager = tokenManager;
 }

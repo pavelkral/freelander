@@ -27,14 +27,16 @@ MainWidget::MainWidget(QWidget *parent)
     googleClient(new GoogleClient(this))
 
 {
-    ui->setupUi(this);
+    ui->setupUi(this); 
+    googleClient->setTokenManager(tokenManager);
+
     setWindowTitle("Freelander");
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint );   //| Qt::WindowStaysOnTopHint
 
     QSettings settings(settingsFilePath, QSettings::IniFormat);
     restoreGeometry(settings.value("geometry").toByteArray());
-
+   
     trayIcon = new QSystemTrayIcon(this);
     QIcon icon(":/icons/micon.png");
     trayIcon->setIcon(icon);
@@ -127,6 +129,7 @@ MainWidget::MainWidget(QWidget *parent)
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
+
     connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);  
     connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
