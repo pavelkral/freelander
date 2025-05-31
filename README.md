@@ -1,9 +1,9 @@
 <!-- PROJECT SHIELDS -->
-[![Build status][build-shield]][build-url]
+
 [![License][license-shield]][license-url]
 
 [license-shield]: https://img.shields.io/github/license/UserName/Repo
-[license-url]: https://github.com/UserName/Repo/blob/main/LICENSE
+[license-url]: https://github.com/pavelkral/Freelander?tab=GPL-2.0-1-ov-file
 
 # Freelander 
 
