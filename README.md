@@ -2,7 +2,7 @@
 
 [![License][license-shield]][license-url]
 
-[license-shield]: https://img.shields.io/github/license/
+[license-shield]: https://img.shields.io/github/license/UserName/Repo
 [license-url]: https://github.com/pavelkral/Freelander/blob/main/LICENSE.txt
 
 # Freelander 
