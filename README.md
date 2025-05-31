@@ -1,8 +1,9 @@
 <!-- PROJECT SHIELDS -->
 [![Build status][build-shield]][build-url]
+[![License][license-shield]][license-url]
 
-[build-shield]: https://img.shields.io/github/actions/workflow/status/VášUserName/VášRepo/build.yml?branch=main 
-[build-url]: https://github.com/VášUserName/VášRepo/actions/workflows/build.yml  
+[license-shield]: https://img.shields.io/github/license/UserName/Repo
+[license-url]: https://github.com/UserName/Repo/blob/main/LICENSE
 
 # Freelander 
 
