@@ -10,6 +10,7 @@
 #include <QTextCharFormat>
 #include <QMessageBox>
 #include <QCalendarWidget>
+#include "utils.h"
 
 GoogleClient::GoogleClient(QObject *parent)
     : QObject(parent), m_manager(new QNetworkAccessManager(this)) {
@@ -122,12 +123,17 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
 
         if (reply->error() == QNetworkReply::NoError) {  
             emit eventsFetched(lines.join("\n"), dates);
+           
+            Utils::Log("API call successful! Data received", Qt::red);
            // QMessageBox::information(parentWidget, "API", "Fetch completed.");
-            //qDebug() << "API call successful! Data received.";
-            //qDebug() << "Response:" << reply->readAll();
+            
+            qDebug() << "Response:" << reply->readAll();
           
         } else {  
-            QMessageBox::critical(parentWidget, "Error", "Fetch failed: " + reply->errorString());
+           // QMessageBox::critical(parentWidget, "Error", "Fetch failed: " + reply->errorString());
+            QMessageBox::critical(0, QString("Event fetch error") + reply->errorString(),
+                qApp->tr("need refresh token.\n"
+                    "Click Cancel to exit."), QMessageBox::Cancel);
         } 
         
         reply->deleteLater();
