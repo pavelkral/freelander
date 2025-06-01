@@ -43,6 +43,8 @@ protected:
 
 private slots:
     void onTokenReady(const QString &token);
+	void onApiRequestFailed(const QString& errormessage);
+    void onApiRequestSuccess(const QString& message);
     void onEventsFetched(const QString &text, const QSet<QDate> &dates);
     void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en,const QString &eventId);
     void onCalendarPageChanged(int y,int m);

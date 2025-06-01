@@ -124,16 +124,14 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
         if (reply->error() == QNetworkReply::NoError) {  
             emit eventsFetched(lines.join("\n"), dates);
            
-            Utils::Log("API call successful! Data received", Qt::red);
+            Utils::Log("API call successful! Data received", Qt::green);
            // QMessageBox::information(parentWidget, "API", "Fetch completed.");
-            
-            qDebug() << "Response:" << reply->readAll();
+            emit apiRequestSucceeded(reply->readAll());
+          //  qDebug() << "Response:" << reply->readAll();
           
         } else {  
-           // QMessageBox::critical(parentWidget, "Error", "Fetch failed: " + reply->errorString());
-            QMessageBox::critical(0, QString("Event fetch error") + reply->errorString(),
-                qApp->tr("need refresh token.\n"
-                    "Click Cancel to exit."), QMessageBox::Cancel);
+       
+            emit apiRequestFailed(reply->errorString());
         } 
         
         reply->deleteLater();
@@ -182,12 +180,13 @@ void GoogleClient::createEvent(const QString &summary, const QDateTime &start, c
     auto *reply = m_manager->post(req, QJsonDocument(event).toJson());
 
     connect(reply, &QNetworkReply::finished, this, [=]() {  
+
            if (reply->error() == QNetworkReply::NoError) {  
                int year = calendar->yearShown();  
                int month = calendar->monthShown();  
                QDate firstDateOfMonth(year, month, 1);  
                fetchEvents(firstDateOfMonth, calendar);
-               //QMessageBox::information(parentWidget, "Success", "Add completed.");
+              
            } else {  
                qDebug() << "Error occurred:" << reply->errorString();  
            }  
@@ -220,7 +219,14 @@ void GoogleClient::updateEvent(const QString &eventId, const QString &summary, c
     connect(reply,&QNetworkReply::finished,this,[=](){
         bool ok = reply->error()==QNetworkReply::NoError;
        // emit operationFinished(ok, ok?"Updated":"Update failed: "+reply->errorString());
-      //  QMessageBox::information(nullptr, ok?"OK":"Error", reply->errorString());
+		/*if (ok) {
+			Utils::Log("API call successful! Data received", Qt::red);
+			emit apiRequestSucceeded(reply->readAll());
+		}
+		else {
+			Utils::Log("API call failed: " + reply->errorString(), Qt::red);
+			emit apiRequestFailed(reply->errorString());
+		}*/
         int year = calendar->yearShown();
         int month = calendar->monthShown();
         QDate firstDateOfMonth(year, month, 1);

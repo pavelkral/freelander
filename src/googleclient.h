@@ -32,6 +32,8 @@ public:
     
 signals:
     void eventsFetched(const QString &text, const QSet<QDate> &dates);
+    void apiRequestFailed(const QString& errorMessage);
+    void apiRequestSucceeded(const QString& message);
     void eventDetailsFetched(const QString &summary, const QDateTime &start, const QDateTime &end,const QString &enventId);
 
 private:

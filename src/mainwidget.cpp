@@ -129,7 +129,8 @@ MainWidget::MainWidget(QWidget *parent)
     connect(tokenManager, &TokenManager::authenticationFailed,this, [&](const QString &err){ QMessageBox::warning(this,"Auth failed",err); });
     connect(googleClient, &GoogleClient::eventsFetched,this, &MainWidget::onEventsFetched);
     connect(googleClient, &GoogleClient::eventDetailsFetched,this, &MainWidget::onEventDetailsFetched);
-
+    connect(googleClient, &GoogleClient::apiRequestFailed, this, &MainWidget::onApiRequestFailed);
+	connect(googleClient, &GoogleClient::apiRequestSucceeded, this, &MainWidget::onApiRequestSuccess);
     connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);  
     connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
@@ -160,6 +161,20 @@ void MainWidget::onTokenReady(const QString &token) {
     //qDebug() << "Access token ready:" << token;
     googleClient->setAccessToken(token);
     googleClient->fetchEvents(calendar->selectedDate(), calendar);
+}
+
+
+
+void MainWidget::onApiRequestFailed(const QString& errormessage)
+{
+	qDebug() << "API request failed:" << errormessage;
+	QMessageBox::warning(this, "API Request Failed", "API request failed: " + errormessage);
+}
+
+void MainWidget::onApiRequestSuccess(const QString& message)
+{
+	qDebug() << "API request successful:" << message;
+	
 }
 
 void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) {
@@ -250,7 +265,9 @@ void MainWidget::closeEvent(QCloseEvent *event) {
 }
 
 void MainWidget::handleDateClicked(const QDate &date) {
-     qDebug() << "Click to Set Date:" << date;
+     Utils::Log("LEFT click", Qt::red);
+     qDebug() << " Set last clicked Date:" << date;
+
     lastClickedDate = date; // Store the clicked date
 }
 void MainWidget::handleLineClick() {
@@ -323,7 +340,7 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
         QDateTime enddt = dialog.dateEndTime();
         googleClient->updateEvent(eventId, summary, dt, enddt,calendar);
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
-        googleClient->fetchEvents(currentPage, calendar);
+        //googleClient->fetchEvents(currentPage, calendar);
     }
 }
 
@@ -381,7 +398,7 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
         }
 
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
-        googleClient->fetchEvents(currentPage, calendar);
+       // googleClient->fetchEvents(currentPage, calendar);
     }
 }
     //need fix rclick set lastclicked
