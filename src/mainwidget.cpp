@@ -19,7 +19,8 @@
 #include <QTableView>
 #include <QHeaderView>
 #include <QLabel>
-
+#include <QTimer>
+#include <chrono> 
 
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent),ui(new Ui::MainWidget),
@@ -165,10 +166,64 @@ void MainWidget::onTokenReady(const QString &token) {
 
 
 
-void MainWidget::onApiRequestFailed(const QString& errormessage)
+void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::NetworkError errorType)
 {
+
 	qDebug() << "API request failed:" << errormessage;
+
 	QMessageBox::warning(this, "API Request Failed", "API request failed: " + errormessage);
+
+    if (errorType == QNetworkReply::AuthenticationRequiredError) {
+		//401: // 
+        // S autoRefresh(true)  QOAuth2AuthorizationCodeFlow postarat sám. 
+        qWarning() << "Authentication required error (401). Auto-refresh might have failed or refresh token is invalid.";
+        //  m_oauth->refreshTokens()   
+        // or fully reset the flow
+        // m_oauth->grant();
+        m_retryCount = 0; // Reset retry count pro tento typ chyby, protože je to jiný problém
+        return;
+    }
+
+    bool shouldRetry = false;
+
+    switch (errorType) {
+    case QNetworkReply::ConnectionRefusedError:
+    case QNetworkReply::RemoteHostClosedError:
+    case QNetworkReply::HostNotFoundError:
+    case QNetworkReply::TimeoutError:
+	case QNetworkReply::TemporaryNetworkFailureError:
+	case QNetworkReply::NetworkSessionFailedError:
+	case QNetworkReply::ProxyConnectionRefusedError:
+	case QNetworkReply::ProxyConnectionClosedError:
+	case QNetworkReply::ProxyNotFoundError:
+	case QNetworkReply::ProxyTimeoutError:
+	case QNetworkReply::ContentAccessDenied:
+	case QNetworkReply::ContentOperationNotPermittedError:
+	case QNetworkReply::ContentNotFoundError:
+	case QNetworkReply::UnknownNetworkError:
+
+         qDebug() << "Transient network error detected. Retrying...";
+        shouldRetry = true;
+        break;
+    default:
+        shouldRetry = false;
+        break;
+    }
+
+    if (shouldRetry && m_retryCount < MAX_RETRIES) {
+        m_retryCount++;
+        qDebug() << "Detected network error. Retrying API call in " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
+
+        QTimer::singleShot(std::chrono::seconds(RETRY_DELAY_SECONDS), [this, date = calendar->selectedDate()] {
+            googleClient->fetchEvents(date, calendar);
+            });
+    
+    }
+    else {
+        qWarning() << "Max retries reached or unrecoverable error. Data fetch failed.";
+
+        m_retryCount = 0; 
+    }
 }
 
 void MainWidget::onApiRequestSuccess(const QString& message)
@@ -231,7 +286,7 @@ void MainWidget::onEventClicked() {
 
 
 void MainWidget::onDeleteClickedId(QString id) {
-   // QString id = googleClient->eventIdMap.value(selectedLine);
+;
     if (!id.isEmpty()) googleClient->deleteEvent(id,calendar);
 }
 
@@ -279,28 +334,7 @@ void MainWidget::handleLineClick() {
     if (!id.isEmpty()) googleClient->fetchEventDetails(id);
 }
 
-void MainWidget::openSettings(){
 
-    SettingsDialog settingsDialog(this);
-
-    int result = settingsDialog.exec();
-
-    if (result == QDialog::Accepted) {
-
-        bool finalFeatureState = settingsDialog.isFeatureEnabled();
-
-        qDebug() << "Save after System Startup =" << finalFeatureState;
-        settingsDialog.applySettings();
-
-    } else if (result == QDialog::Rejected) {
-
-        qDebug() << "Dialog Rejected.";
-
-    } else {
-
-        qDebug() << "Dialog not Accepted/Rejected.";
-    }
-}
 void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en , const QString &eventId) {
 
 
@@ -311,12 +345,13 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
     dialog.setEndDateTime(en);
     dialog.setText(sum);
     dialog.setEditMode(!eventId.isEmpty());
-   // dialog.restoreGeometry(settings.value("dlggeometry").toByteArray());
     QByteArray loadedGeometry = settings.value("dlggeometry").toByteArray();
-    //qDebug() << "Nacitam geometrii: " << loadedGeometry.toHex();
-    dialog.restoreGeometry(loadedGeometry);
-
-
+  
+    if (!loadedGeometry.isEmpty())
+    {
+        dialog.restoreGeometry(loadedGeometry);
+    }
+   
     if (!eventId.isEmpty()) {
         dialog.setEventId(eventId);
         dialog.setWidget(this);
@@ -505,4 +540,29 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
         qDebug() << "Menu execution finished.";
     });
+}
+
+void MainWidget::openSettings() {
+
+    SettingsDialog settingsDialog(this);
+
+    int result = settingsDialog.exec();
+
+    if (result == QDialog::Accepted) {
+
+        bool finalFeatureState = settingsDialog.isFeatureEnabled();
+
+        qDebug() << "Save after System Startup =" << finalFeatureState;
+        settingsDialog.applySettings();
+
+    }
+    else if (result == QDialog::Rejected) {
+
+        qDebug() << "Dialog Rejected.";
+
+    }
+    else {
+
+        qDebug() << "Dialog not Accepted/Rejected.";
+    }
 }

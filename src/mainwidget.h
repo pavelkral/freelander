@@ -13,12 +13,14 @@
 #include <QCloseEvent>
 #include <QPainter>
 #include <QDir>
+#include <QNetworkReply>
 
 class QCalendarWidget;
 class QTextEdit;
 class QLineEdit;
 class QDateTimeEdit;
 class QPushButton;
+class QNetworkReply;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,11 +29,16 @@ class MainWidget;
 QT_END_NAMESPACE
 
 class MainWidget : public QWidget {
+
     Q_OBJECT
+
 public:
      MainWidget(QWidget *parent=nullptr);
     ~MainWidget();
     void onDeleteClickedId(QString id);
+    int m_retryCount = 0;
+    const int MAX_RETRIES = 3; 
+    const int RETRY_DELAY_SECONDS = 5; 
     QSettings settings;
     QString settingsFilePath = QCoreApplication::applicationDirPath() + QDir::separator() + "settings.ini";
 
@@ -43,7 +50,7 @@ protected:
 
 private slots:
     void onTokenReady(const QString &token);
-	void onApiRequestFailed(const QString& errormessage);
+	void onApiRequestFailed(const QString& errormessage, QNetworkReply::NetworkError errorType);
     void onApiRequestSuccess(const QString& message);
     void onEventsFetched(const QString &text, const QSet<QDate> &dates);
     void onEventDetailsFetched(const QString &sum, const QDateTime &st, const QDateTime &en,const QString &eventId);

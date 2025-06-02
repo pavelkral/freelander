@@ -8,6 +8,7 @@
 #include <QSet>
 #include <QMap>
 #include <QOAuth2AuthorizationCodeFlow>
+#include <QNetworkReply>
 #include "tokenmanager.h"
 
 class QTextEdit;
@@ -32,7 +33,7 @@ public:
     
 signals:
     void eventsFetched(const QString &text, const QSet<QDate> &dates);
-    void apiRequestFailed(const QString& errorMessage);
+    void apiRequestFailed(const QString& errorMessage, QNetworkReply::NetworkError errorType);
     void apiRequestSucceeded(const QString& message);
     void eventDetailsFetched(const QString &summary, const QDateTime &start, const QDateTime &end,const QString &enventId);
 
