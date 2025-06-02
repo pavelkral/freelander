@@ -1,5 +1,3 @@
-
-
 # Freelander 
 
 Alternative for Rainlendar which use Google Calendar api.
