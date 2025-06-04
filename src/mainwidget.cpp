@@ -501,7 +501,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
 
                 // Edit Action
-                QAction *editAction = new QAction(QIcon::fromTheme("document-edit", QIcon(":/icons/edit.png")), "Edit " + event.first, &menu);
+                QAction *editAction = new QAction(QIcon(":/icons/b_edit.png"), "Edit " + event.first, &menu);
                 editAction->setData(event.second); // Store event ID
 
                 QObject::connect(editAction, &QAction::triggered, [&, this]() {
@@ -519,7 +519,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
                 // delete action
                 qDebug() << "Adding event to menu:" << event.first << "(" << event.second << ")";
-                QAction *eventAction = new QAction(QIcon::fromTheme("edit-delete", QIcon(":/icons/delete.png")),"Delete " + event.first, &menu);
+                QAction *eventAction = new QAction( QIcon(":/icons/b_drop.png"),"Delete " + event.first, &menu);
                 eventAction->setData(event.second); // Store event ID in action data
 
                 QObject::connect(eventAction, &QAction::triggered, [&,this]() {

@@ -22,8 +22,8 @@ EventDialog::EventDialog(QWidget *parent)
 
     auto *mainLayout = new QVBoxLayout(this);
     auto *datesLayout = new QHBoxLayout;
-    auto *startDateLayout = new QHBoxLayout;
-    auto* endDateLayout = new QHBoxLayout;
+    auto *startDateLayout = new QVBoxLayout;
+    auto* endDateLayout = new QVBoxLayout;
 
     startDateLayout->addWidget(new QLabel("Start Date & Time:", this));
     startDateLayout->addWidget(m_dateEdit); 
@@ -31,10 +31,10 @@ EventDialog::EventDialog(QWidget *parent)
     endDateLayout->addWidget(m_dateEndEdit);
     datesLayout->addLayout(startDateLayout);
     datesLayout->addLayout(endDateLayout);
-    datesLayout->addStretch();
+    //datesLayout->addStretch();
 
     mainLayout->addLayout(datesLayout);
-    mainLayout->addWidget(new QLabel("Event Description:", this));
+    mainLayout->addWidget(new QLabel("Event Sumary:", this));
     mainLayout->addWidget(m_textEdit);
 
     auto *btnLayout = new QHBoxLayout;

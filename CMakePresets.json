@@ -3,7 +3,8 @@
   "configurePresets": [
     {
       "hidden": true,
-      "name": "Qt",
+        "name": "Qt",
+      
       "cacheVariables": {
         "CMAKE_PREFIX_PATH": "$env{QTDIR}"
       },
