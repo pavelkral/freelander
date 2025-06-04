@@ -229,7 +229,8 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
-	qDebug() << "API request successful:" << message;
+    //  qDebug() << "Response:" << reply->readAll();
+    //qDebug() << "API request successful:" << message;
 	
 }
 
