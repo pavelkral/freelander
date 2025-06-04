@@ -53,7 +53,7 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
     request.setRawHeader("Authorization", "Bearer " + m_token.toUtf8());
     //qDebug() << "Google req:" << request.url();
     const QString RESULT_FILE = "result.json";
-
+   // oauth->networkAccessManager()->get(request);
     QNetworkReply *reply = m_manager->get(request);
 
     connect(reply, &QNetworkReply::finished, [=]() {
@@ -125,7 +125,7 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
             emit eventsFetched(lines.join("\n"), dates);
            
             Utils::Log("API call successful! Data received", Qt::green);
-            emit apiRequestSucceeded(reply->readAll());
+            emit apiRequestSucceeded(data);
           //  qDebug() << "Response:" << reply->readAll();
           
         } else {  

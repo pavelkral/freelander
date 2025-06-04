@@ -12,6 +12,7 @@ public:
     explicit TokenManager(QObject *parent = nullptr);
     void initialize();
     QString accessToken() const;
+    void refreshTokens();
 
 signals:
     void tokenReady(const QString &accessToken);

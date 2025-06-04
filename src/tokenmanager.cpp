@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include "utils.h"
 #include <chrono>
+
 TokenManager::TokenManager(QObject *parent)
     : QObject(parent),
     m_oauth(new QOAuth2AuthorizationCodeFlow(this)),
@@ -102,6 +103,21 @@ void TokenManager::initialize() {
 
 QString TokenManager::accessToken() const {
     return m_accessToken;
+}
+
+void TokenManager::refreshTokens()
+{
+    if (!m_refreshToken.isEmpty()) {
+        m_oauth->setRefreshToken(m_refreshToken);
+        m_oauth->refreshTokens();
+        m_accessToken = m_oauth->token();
+        m_refreshToken = m_oauth->refreshToken();
+        saveTokens();
+        emit tokenReady(m_accessToken);
+    }
+    else {
+        qWarning() << "No refresh token available!";
+    }
 }
 
 void TokenManager::onGranted() {

@@ -133,6 +133,7 @@ MainWidget::MainWidget(QWidget *parent)
     connect(googleClient, &GoogleClient::apiRequestFailed, this, &MainWidget::onApiRequestFailed);
 	connect(googleClient, &GoogleClient::apiRequestSucceeded, this, &MainWidget::onApiRequestSuccess);
     connect(calendar, &QCalendarWidget::activated, this, &MainWidget::onCalendarDateActivated);  
+   
     connect(calendar, &QCalendarWidget::currentPageChanged,this, &MainWidget::onCalendarPageChanged);
     connect(calendar, &QCalendarWidget::clicked, this, &MainWidget::handleDateClicked);
     connect(calendar ,&QCalendarWidget::customContextMenuRequested, this, &MainWidget::calendarContextMenuRequested);
@@ -175,11 +176,11 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
     if (errorType == QNetworkReply::AuthenticationRequiredError) {
 		//401: // 
+        // if (reply->error() == QNetworkReply::AuthenticationRequiredError ||
+       //reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 401) {
         // S autoRefresh(true)  QOAuth2AuthorizationCodeFlow postarat sám. 
         qWarning() << "Authentication required error (401). Auto-refresh might have failed or refresh token is invalid.";
-        //  m_oauth->refreshTokens()   
-        // or fully reset the flow
-        // m_oauth->grant();
+		tokenManager->refreshTokens(); // Attempt to refresh tokens
         m_retryCount = 0; // Reset retry count pro tento typ chyby, protože je to jiný problém
         return;
     }
