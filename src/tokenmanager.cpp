@@ -84,8 +84,8 @@ TokenManager::TokenManager(QObject *parent)
 
     connect(m_oauth, &QOAuth2AuthorizationCodeFlow::tokenChanged,
         [](const QString& accessToken) {
-            qDebug() << "Access Token changed (likely refreshed):" << accessToken;
-        //    QMessageBox::critical(this->parentWidget(), "Error", "Fetch failed: " + r));
+            qDebug() << "Access Token changed (refreshed)";
+
             // Update client objects that use the access token here
         });
 
@@ -146,11 +146,10 @@ void TokenManager::saveTokens() {
     bool success = Utils::saveJsonDocumentToFile(TOKEN_FILE, jsonDocument, QJsonDocument::Indented);
 
     if (success) {
-        //QMessageBox::information(nullptr,"Token"," saved",QMessageBox::Ok);
-        qDebug() << "Tokens saved:" << TOKEN_FILE;
+       // qDebug() << "Tokens saved:" << TOKEN_FILE;
     } else {
-       // QMessageBox::information(nullptr,"Token","not saved",QMessageBox::Ok);
-        qWarning() << "Tokens not saved:" << TOKEN_FILE;
+       
+      //  qWarning() << "Tokens not saved:" << TOKEN_FILE;
     }
 
 

@@ -38,7 +38,6 @@ QPair<QDateTime,QDateTime> GoogleClient::monthRange(const QDate &monthDate) cons
 void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar) {
     if (m_token.isEmpty()) return;
 
-    //qDebug() << "Token:" << m_token;
     auto [start, end] = monthRange(monthDate);
 
     QUrl url("https://www.googleapis.com/calendar/v3/calendars/primary/events");
@@ -51,9 +50,7 @@ void GoogleClient::fetchEvents(const QDate &monthDate, QCalendarWidget *calendar
 
     QNetworkRequest request(url);
     request.setRawHeader("Authorization", "Bearer " + m_token.toUtf8());
-    //qDebug() << "Google req:" << request.url();
     const QString RESULT_FILE = "result.json";
-   // oauth->networkAccessManager()->get(request);
     QNetworkReply *reply = m_manager->get(request);
 
     connect(reply, &QNetworkReply::finished, [=]() {
@@ -215,6 +212,7 @@ void GoogleClient::updateEvent(const QString &eventId, const QString &summary, c
     event["end"] = endObj;
 
     auto *reply = m_manager->sendCustomRequest(req, "PATCH", QJsonDocument(event).toJson());
+
     connect(reply,&QNetworkReply::finished,this,[=](){
         bool ok = reply->error()==QNetworkReply::NoError;
        // emit operationFinished(ok, ok?"Updated":"Update failed: "+reply->errorString());
@@ -249,10 +247,8 @@ void GoogleClient::deleteEvent(const QString &eventId,QCalendarWidget *calendar)
             int month = calendar->monthShown();  
             QDate firstDateOfMonth(year, month, 1);  
             fetchEvents(firstDateOfMonth, calendar);  
-       
-           // QMessageBox::information(parentWidget, "Success", "Delete completed.");
         } else {  
-           // QMessageBox::critical(parentWidget, "Error", "Operation failed: " + reply->errorString());  
+           
         } 
 
         reply->deleteLater();
@@ -293,7 +289,7 @@ void GoogleClient::fetchEventsForDate(const QDate &date, std::function<void(cons
                 events.append(qMakePair(summary, id));
             }
         } else {
-            qDebug() << "Error fetching events for date:" << reply->errorString();
+            qDebug() << "Error fetching for date:" << reply->errorString();
         }
         reply->deleteLater();
         callback(events);

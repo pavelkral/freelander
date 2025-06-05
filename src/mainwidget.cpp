@@ -177,7 +177,7 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
     if (errorType == QNetworkReply::AuthenticationRequiredError) {
 		//401: // 
         // if (reply->error() == QNetworkReply::AuthenticationRequiredError ||
-       //reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 401) {
+        //reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 401) {
         // S autoRefresh(true)  QOAuth2AuthorizationCodeFlow postarat sám. 
         qWarning() << "Authentication required error (401). Auto-refresh might have failed or refresh token is invalid.";
 		tokenManager->refreshTokens(); // Attempt to refresh tokens
@@ -188,22 +188,23 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
     bool shouldRetry = false;
 
     switch (errorType) {
-    case QNetworkReply::ConnectionRefusedError:
-    case QNetworkReply::RemoteHostClosedError:
-    case QNetworkReply::HostNotFoundError:
-    case QNetworkReply::TimeoutError:
-	case QNetworkReply::TemporaryNetworkFailureError:
-	case QNetworkReply::NetworkSessionFailedError:
-	case QNetworkReply::ProxyConnectionRefusedError:
-	case QNetworkReply::ProxyConnectionClosedError:
-	case QNetworkReply::ProxyNotFoundError:
-	case QNetworkReply::ProxyTimeoutError:
-	case QNetworkReply::ContentAccessDenied:
-	case QNetworkReply::ContentOperationNotPermittedError:
-	case QNetworkReply::ContentNotFoundError:
-	case QNetworkReply::UnknownNetworkError:
 
-         qDebug() << "Transient network error detected. Retrying...";
+        case QNetworkReply::ConnectionRefusedError:
+        case QNetworkReply::RemoteHostClosedError:
+        case QNetworkReply::HostNotFoundError:
+        case QNetworkReply::TimeoutError:
+	    case QNetworkReply::TemporaryNetworkFailureError:
+	    case QNetworkReply::NetworkSessionFailedError:
+	    case QNetworkReply::ProxyConnectionRefusedError:
+	    case QNetworkReply::ProxyConnectionClosedError:
+	    case QNetworkReply::ProxyNotFoundError:
+	    case QNetworkReply::ProxyTimeoutError:
+	    case QNetworkReply::ContentAccessDenied:
+	    case QNetworkReply::ContentOperationNotPermittedError:
+	    case QNetworkReply::ContentNotFoundError:
+	    case QNetworkReply::UnknownNetworkError:
+
+        qDebug() << "Network error detected. Retrying...";
         shouldRetry = true;
         break;
     default:
@@ -213,16 +214,15 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
     if (shouldRetry && m_retryCount < MAX_RETRIES) {
         m_retryCount++;
-        qDebug() << "Detected network error. Retrying API call in " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
+        qDebug() << "Network error detected. Retrying API call in " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
 
         QTimer::singleShot(std::chrono::seconds(RETRY_DELAY_SECONDS), [this, date = calendar->selectedDate()] {
             googleClient->fetchEvents(date, calendar);
-            });
+        });
     
     }
     else {
-        qWarning() << "Max retries reached or unrecoverable error. Data fetch failed.";
-
+        qWarning() << "Max retries reached fetch failed.";
         m_retryCount = 0; 
     }
 }
@@ -235,7 +235,7 @@ void MainWidget::onApiRequestSuccess(const QString& message)
 }
 
 void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) {
-    // qDebug() << "Events:" << text;
+
     //for (const QDate &date : dates) {
     //   qDebug() << "Datum:" << date.toString();
     //}
@@ -370,14 +370,12 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
     //qDebug() << "save : " << geometryData.toHex();
 
     if (result == QDialog::Accepted) {
-        //dialog.restoreGeometry(settings.value("dlggeometry").toByteArray());
 
         QString summary = dialog.text();
         QDateTime dt = dialog.dateTime();
         QDateTime enddt = dialog.dateEndTime();
         googleClient->updateEvent(eventId, summary, dt, enddt,calendar);
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
-        //googleClient->fetchEvents(currentPage, calendar);
     }
 }
 
