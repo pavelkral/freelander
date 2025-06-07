@@ -13,7 +13,7 @@ public:
     void initialize();
     QString accessToken() const;
     void refreshTokens();
-
+    void checkHostAvailability(const QString& hostname);
 signals:
     void tokenReady(const QString &accessToken);
     void authenticationFailed(const QString &error);

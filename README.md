@@ -3,7 +3,9 @@
 Alternative for Rainlendar which use Google Calendar api.
 
 > [!WARNING]
-> This application is still in development. 
+> This application is still in development.I wrote it because Google Calendar api is just in pro version which is not free .
+
+It is not feature complete and it is not tested on all platforms. 
 
 
 ## Download Binaries

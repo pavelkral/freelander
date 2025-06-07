@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include "utils.h"
 #include <chrono>
+#include <QHostInfo>
 
 TokenManager::TokenManager(QObject *parent)
     : QObject(parent),
@@ -34,7 +35,6 @@ TokenManager::TokenManager(QObject *parent)
                 clientId = oauthSettings["client_id"].toString();
             } else {
                 qWarning() << "'client_id' is missing or not a string in 'oauth_settings' in file:" << CONFIG_FILE;
-                 // QMessageBox::information(nullptr,"Client","not saved",QMessageBox::Ok);
                 QMessageBox::critical(0, qApp->tr("Cannot read client id"),
                                       qApp->tr("Please setup your id in config.json.\n"
                                                "Click Cancel to exit."), QMessageBox::Cancel);
@@ -54,7 +54,7 @@ TokenManager::TokenManager(QObject *parent)
             qWarning() << "Error: Object 'oauth_settings' is missing in configuration file:" << CONFIG_FILE;
         }
     }
-
+    checkHostAvailability("oauth2.googleapis.com");
     m_oauth->setReplyHandler(m_replyHandler);
     m_oauth->setAuthorizationUrl(QUrl("https://accounts.google.com/o/oauth2/auth"));
     m_oauth->setTokenUrl(QUrl("https://oauth2.googleapis.com/token"));
@@ -84,7 +84,7 @@ TokenManager::TokenManager(QObject *parent)
 
     connect(m_oauth, &QOAuth2AuthorizationCodeFlow::tokenChanged,
         [](const QString& accessToken) {
-            qDebug() << "Access Token changed (refreshed)";
+            qDebug() << "Access Token refreshed";
 
             // Update client objects that use the access token here
         });
@@ -120,11 +120,28 @@ void TokenManager::refreshTokens()
     }
 }
 
+void TokenManager::checkHostAvailability(const QString& hostname) {
+    QHostInfo::lookupHost(hostname, nullptr, [](const QHostInfo& info) {
+        if (info.error() != QHostInfo::NoError) {
+            qWarning() << "DNS lookup failed for" << info.hostName() << ":" << info.errorString();
+            QMessageBox::critical(0, qApp->tr("Error"),
+                qApp->tr("DNS lookup failed.\n"
+                    "Click Cancel to exit."), QMessageBox::Cancel);
+            qApp->quit();
+
+        }
+        else {
+            qDebug() << "Host resolved:" << info.hostName() << "->" << info.addresses();
+        }
+        });
+}
+
 void TokenManager::onGranted() {
     m_accessToken = m_oauth->token();
     m_refreshToken = m_oauth->refreshToken();
     saveTokens();
     emit tokenReady(m_accessToken);
+	//emit authenticationFailed(QString("on grant called")); // Clear any previous error message
 }
 
 void TokenManager::loadTokens() {

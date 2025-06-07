@@ -14,6 +14,8 @@ EventDialog::EventDialog(QWidget *parent)
 {
 
     ui->setupUi(this);
+    this->setStyleSheet(R"(QLabel {font-weight: bold;font-size: 14px;})");
+	pointerToMainWidget = nullptr;
     setWindowTitle("Event");
     m_dateEdit->setCalendarPopup(true);
     m_dateEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
@@ -45,13 +47,6 @@ EventDialog::EventDialog(QWidget *parent)
     btnLayout->addWidget(deleteButton);
     btnLayout->addWidget(saveButton);
     mainLayout->addLayout(btnLayout);
-
-    this->setStyleSheet(R"(
-        QLabel {
-            font-weight: bold;
-            font-size: 14px;
-        }
-        )");
 
     connect(saveButton, &QPushButton::clicked, this, &QDialog::accept);
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);

@@ -3,6 +3,7 @@
 #include "eventdialog.h"
 #include "settingsdialog.h"
 #include "utils.h"
+#include "utils.h"
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -98,11 +99,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
     QWidget *navBar = calendar->findChild<QWidget *>("qt_calendar_navigationbar");
     if (navBar) {
-        navBar->setStyleSheet(R"(
-        background: transparent;
-            color: white;
-            font-size: 12pt;
-    )");
+        navBar->setStyleSheet(R"(background: transparent;color: white;font-size: 12pt;)");
     }
     QIcon prevIcon(":/icons/left-icon.png");
     QIcon nextIcon(":/icons/right-icon.png");
@@ -120,7 +117,7 @@ MainWidget::MainWidget(QWidget *parent)
    // label->setAttribute(Qt::WA_TranslucentBackground);
     textEdit   = new ClickableTextEdit(this);
     textEdit->setReadOnly(true);
-    textEdit->setStyleSheet("QTextEdit { background-color: transparent;font-size: 14px; }");
+    textEdit->setStyleSheet("QTextEdit { background-color: transparent;font-size: 15px; }");
 
     lay->addWidget(calendar);
     lay->addWidget(label);
@@ -170,18 +167,16 @@ void MainWidget::onTokenReady(const QString &token) {
 void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::NetworkError errorType)
 {
 
-	qDebug() << "API request failed:" << errormessage;
-
-	QMessageBox::warning(this, "API Request Failed", "API request failed: " + errormessage);
+	//qDebug() << "API request failed:" << errormessage;
+    Utils::Log("Network error " + errormessage, Qt::red);
+	QMessageBox::warning(this, "Network error", "API call failed." + errormessage);
 
     if (errorType == QNetworkReply::AuthenticationRequiredError) {
 		//401: // 
-        // if (reply->error() == QNetworkReply::AuthenticationRequiredError ||
-        //reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 401) {
-        // S autoRefresh(true)  QOAuth2AuthorizationCodeFlow postarat sám. 
-        qWarning() << "Authentication required error (401). Auto-refresh might have failed or refresh token is invalid.";
-		tokenManager->refreshTokens(); // Attempt to refresh tokens
-        m_retryCount = 0; // Reset retry count pro tento typ chyby, protože je to jiný problém
+        
+        qWarning() << "Authentication required error (401). refresh token is invalid.";
+		tokenManager->refreshTokens(); 
+        m_retryCount = 0; 
         return;
     }
 
@@ -193,18 +188,18 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
         case QNetworkReply::RemoteHostClosedError:
         case QNetworkReply::HostNotFoundError:
         case QNetworkReply::TimeoutError:
-	    case QNetworkReply::TemporaryNetworkFailureError:
-	    case QNetworkReply::NetworkSessionFailedError:
-	    case QNetworkReply::ProxyConnectionRefusedError:
-	    case QNetworkReply::ProxyConnectionClosedError:
-	    case QNetworkReply::ProxyNotFoundError:
-	    case QNetworkReply::ProxyTimeoutError:
-	    case QNetworkReply::ContentAccessDenied:
-	    case QNetworkReply::ContentOperationNotPermittedError:
-	    case QNetworkReply::ContentNotFoundError:
-	    case QNetworkReply::UnknownNetworkError:
+        case QNetworkReply::TemporaryNetworkFailureError:
+        case QNetworkReply::NetworkSessionFailedError:
+        case QNetworkReply::ProxyConnectionRefusedError:
+        case QNetworkReply::ProxyConnectionClosedError:
+        case QNetworkReply::ProxyNotFoundError:
+        case QNetworkReply::ProxyTimeoutError:
+        case QNetworkReply::ContentAccessDenied:
+        case QNetworkReply::ContentOperationNotPermittedError:
+        case QNetworkReply::ContentNotFoundError:
+        case QNetworkReply::UnknownNetworkError:
 
-        qDebug() << "Network error detected. Retrying...";
+        qDebug() << "Network error detected.";
         shouldRetry = true;
         break;
     default:
@@ -214,11 +209,12 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
     if (shouldRetry && m_retryCount < MAX_RETRIES) {
         m_retryCount++;
-        qDebug() << "Network error detected. Retrying API call in " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
 
-        QTimer::singleShot(std::chrono::seconds(RETRY_DELAY_SECONDS), [this, date = calendar->selectedDate()] {
-            googleClient->fetchEvents(date, calendar);
-        });
+        qDebug() << " Retrying after " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
+
+      //  QTimer::singleShot(std::chrono::seconds(RETRY_DELAY_SECONDS), [this, date = calendar->selectedDate()] {
+      //      googleClient->fetchEvents(date, calendar);
+      //  });
     
     }
     else {
@@ -229,8 +225,9 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
-    //  qDebug() << "Response:" << reply->readAll();
+    Utils::Log("API " + message, Qt::green);
     //qDebug() << "API request successful:" << message;
+    //QMessageBox::warning(this, "API call successful!", "" + message);
 	
 }
 
@@ -357,10 +354,10 @@ void MainWidget::onEventDetailsFetched(const QString &sum, const QDateTime &st, 
     if (!eventId.isEmpty()) {
         dialog.setEventId(eventId);
         dialog.setWidget(this);
-        qDebug() << "id :" << eventId;
+        qDebug() << "load event id=" << eventId;
     } else {
 
-        qDebug() << "id is null:" << eventId;
+        qDebug() << "new event";
     }
    // settings.setValue("dlggeometry", dialog.saveGeometry());
     int result = dialog.exec();
@@ -407,12 +404,12 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
     if (!existingEventId.isEmpty()) {
         //dialog.setEventId(existingEventId);
         dialog.setWidget(this);
-        qDebug() << "id exist:" << existingEventId;
+        qDebug() << "load event id" << existingEventId;
 
     } else {
 
         dialog.hideDeleteButton();
-        qDebug() << "id is null:" << existingEventId;
+        qDebug() << "new event:" << existingEventId;
     }
 
     int result = dialog.exec();
@@ -433,10 +430,10 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
         }
 
         QDate currentPage(calendar->yearShown(), calendar->monthShown(), 1);
-       // googleClient->fetchEvents(currentPage, calendar);
+      
     }
 }
-    //need fix rclick set lastclicked
+    //TODO need fix rclick set lastclicked
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
     //qDebug().noquote()  << pos << " call \033[0m";
