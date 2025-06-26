@@ -160,6 +160,7 @@ void GoogleClient::createEvent(const QString &summary, const QDateTime &start, c
     QNetworkRequest req(url);
     req.setRawHeader("Authorization", "Bearer "+m_token.toUtf8());
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
     QJsonObject event;
     event["summary"] = summary;
     QJsonObject startObj;
@@ -195,6 +196,7 @@ void GoogleClient::updateEvent(const QString &eventId, const QString &summary, c
     QNetworkRequest req(url);
     req.setRawHeader("Authorization", "Bearer "+m_token.toUtf8());
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
     QJsonObject event;
     event["summary"] = summary;
 
