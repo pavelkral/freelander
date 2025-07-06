@@ -7,7 +7,9 @@
 #include <QDir>
 
 class TokenManager : public QObject {
+
     Q_OBJECT
+
 public:
     explicit TokenManager(QObject *parent = nullptr);
     void initialize();
@@ -19,6 +21,7 @@ signals:
     void authenticationFailed(const QString &error);
 
 private slots:
+
     void onGranted();
 
 private:
