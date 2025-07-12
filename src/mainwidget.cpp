@@ -169,7 +169,7 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 	//qDebug() << "API request failed:" << errormessage;
     Utils::Log("Network error " + errormessage, Qt::red);
-	QMessageBox::warning(this, "Network error", "API call failed." + errormessage);
+	//QMessageBox::warning(this, "Network error", "API call failed." + errormessage);
 
     if (errorType == QNetworkReply::AuthenticationRequiredError) {
 		//401: // 
