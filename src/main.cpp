@@ -2,7 +2,9 @@
 #include <QMessageBox>
 #include <QStyleFactory>
 #include "MainWidget.h"
+#include "logger.h"
 
+extern void myMessageHandler(QtMsgType, const QMessageLogContext&, const QString&);
 int main(int argc, char *argv[])
 {
     qputenv("QT_SCALE_FACTOR", QByteArray("0.9"));
@@ -14,7 +16,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
-
+    qInstallMessageHandler(myMessageHandler);
     a.setStyle(QStyleFactory::create("Fusion"));
 
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {

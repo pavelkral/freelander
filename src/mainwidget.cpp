@@ -3,7 +3,7 @@
 #include "eventdialog.h"
 #include "settingsdialog.h"
 #include "utils.h"
-#include "utils.h"
+#include "logger.h"
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -226,7 +226,11 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
     Utils::Log("API " + message, Qt::green);
-    //qDebug() << "API request successful:" << message;
+
+   // Logger::instance().log("Custom log message");
+
+ 
+    qDebug() << "API request successful:" << message;
     //QMessageBox::warning(this, "API call successful!", "" + message);
 	
 }

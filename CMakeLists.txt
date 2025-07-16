@@ -39,6 +39,8 @@ qt_add_executable(freelander
     src/settingsdialog.h
     src/tokenmanager.h
     src/utils.h
+    src/logger.h
+	src/logger.cpp
     src/forms/eventdialog.ui
     src/forms/mainwidget.ui
     src/forms/settingsdialog.ui
