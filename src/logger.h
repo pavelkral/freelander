@@ -9,14 +9,12 @@
 class Logger {
 public:
     static Logger& instance();
-
     void log(const QString& message);
     void setEnabled(bool enabled);
     bool isEnabled() const;
 	void setDebug(bool debug) { this->debug = debug; }
     bool isDebug() const { return debug; }
  
-
 private:
     Logger();
     ~Logger();

@@ -4,7 +4,6 @@
 #include "MainWidget.h"
 #include "logger.h"
 
-//extern void myMessageHandler(QtMsgType, const QMessageLogContext&, const QString&);
 int main(int argc, char* argv[])
 {
 	qputenv("QT_SCALE_FACTOR", QByteArray("0.9"));
@@ -18,7 +17,6 @@ int main(int argc, char* argv[])
 	QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
 	qInstallMessageHandler(myMessageHandler);
-
 	Logger::instance().setEnabled(true);
 	Logger::instance().setDebug(true);
 
