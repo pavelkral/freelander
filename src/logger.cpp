@@ -75,14 +75,21 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
     if (!Logger::instance().isEnabled())
         return;
 
-    QString level;
-    switch (type) {
-    case QtDebugMsg:    level = "[DEBUG]"; break;
-    case QtInfoMsg:     level = "[INFO]"; break;
-    case QtWarningMsg:  level = "[WARNING]"; break;
-    case QtCriticalMsg: level = "[CRITICAL]"; break;
-    case QtFatalMsg:    level = "[FATAL]"; break;
-    }
+	if (!Logger::instance().isDebug() ){
+        if (type == QtDebugMsg || type == QtInfoMsg)
+            return; // pouze warning/critical
+	}
+
+      QString level;
+            switch (type) {
+            case QtDebugMsg:    level = "[DEBUG]"; break;
+            case QtInfoMsg:     level = "[INFO]"; break;
+            case QtWarningMsg:  level = "[WARNING]"; break;
+            case QtCriticalMsg: level = "[CRITICAL]"; break;
+            case QtFatalMsg:    level = "[FATAL]"; break;
+        }
+
+
 
     QString file = context.file ? context.file : "unknown";
     QString function = context.function ? context.function : "unknown";

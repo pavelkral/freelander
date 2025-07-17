@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
 	qInstallMessageHandler(myMessageHandler);
 
 	Logger::instance().setEnabled(true);
+	Logger::instance().setDebug(true);
 
 	a.setStyle(QStyleFactory::create("Fusion"));
 

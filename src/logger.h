@@ -13,6 +13,8 @@ public:
     void log(const QString& message);
     void setEnabled(bool enabled);
     bool isEnabled() const;
+	void setDebug(bool debug) { this->debug = debug; }
+    bool isDebug() const { return debug; }
  
 
 private:
@@ -26,7 +28,8 @@ private:
     QFile logFile;
     QTextStream logStream;
     QMutex mutex;
-    bool enabled = true; 
+    bool enabled = true;
+    bool debug = false;
 };
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
