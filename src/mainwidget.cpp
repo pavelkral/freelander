@@ -199,7 +199,7 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
         case QNetworkReply::ContentNotFoundError:
         case QNetworkReply::UnknownNetworkError:
 
-        qDebug() << "Network error detected.";
+        qWarning() << "Network error detected.";
         shouldRetry = true;
         break;
     default:
@@ -225,12 +225,10 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
-    Utils::Log("API " + message, Qt::green);
+   // Utils::Log("API " + message, Qt::green);
 
-   // Logger::instance().log("Custom log message");
-
- 
-    qDebug() << "API request successful:" << message;
+    Logger::instance().log("Custom log message");
+    qWarning() << "API request successful:" << message;
     //QMessageBox::warning(this, "API call successful!", "" + message);
 	
 }

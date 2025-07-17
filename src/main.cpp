@@ -1,31 +1,35 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QMessageBox>
 #include <QStyleFactory>
 #include "MainWidget.h"
 #include "logger.h"
 
-extern void myMessageHandler(QtMsgType, const QMessageLogContext&, const QString&);
-int main(int argc, char *argv[])
+//extern void myMessageHandler(QtMsgType, const QMessageLogContext&, const QString&);
+int main(int argc, char* argv[])
 {
-    qputenv("QT_SCALE_FACTOR", QByteArray("0.9"));
-    qputenv("QT_ENABLE_HIGHDPI_SCALING", QByteArray("1"));
+	qputenv("QT_SCALE_FACTOR", QByteArray("0.9"));
+	qputenv("QT_ENABLE_HIGHDPI_SCALING", QByteArray("1"));
 
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+	QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    QApplication a(argc, argv);
+	QApplication a(argc, argv);
 
-    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
-    qInstallMessageHandler(myMessageHandler);
-    a.setStyle(QStyleFactory::create("Fusion"));
+	QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
-    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        QMessageBox::critical(nullptr, "Error", "System try not found.");
-        return 1;
-    }
+	qInstallMessageHandler(myMessageHandler);
 
-    MainWidget w;
-    w.resize(200,380);
-    w.show();
-    return a.exec();
+	Logger::instance().setEnabled(true);
+
+	a.setStyle(QStyleFactory::create("Fusion"));
+
+	if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+		QMessageBox::critical(nullptr, "Error", "System try not found.");
+		return 1;
+	}
+
+	MainWidget w;
+	w.resize(200, 380);
+	w.show();
+	return a.exec();
 }
