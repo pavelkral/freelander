@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
 	QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
 	qInstallMessageHandler(myMessageHandler);
+
 	Logger::instance().setEnabled(true);
 	Logger::instance().setDebug(true);
 
