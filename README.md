@@ -1,6 +1,10 @@
 # Freelander 
 
-Alternative for Rainlendar which use Google Calendar api.
+Alternative for Rainlendar calendar widget which use Google Calendar api.
+
+<p align=center>
+  <img src="https://github.com/pavelkral/Freelander/raw/main/media/freelander-alpha.png">
+</p>
 
 > [!WARNING]
 > This application is still in development.I it wrote for myself because Google Calendar api is just in pro version which is not free .
@@ -21,11 +25,12 @@ It is not feature complete and it is not tested on all platforms.
 
 ### Build Steps
 ```
-qmake
+mkdir build
+cd build
+cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="C:/Qt/6.9/msvc2019_64" -DCMAKE_BUILD_TYPE=Release
+cmake --build . -- -j8
 ```
-```
-make (by platform)
-```
+
 
 ### Run
 ```
@@ -33,9 +38,7 @@ Update your Google id in config.json in root directory and start app.
 ```
 
 
-<p align=center>
-  <img src="https://github.com/pavelkral/Freelander/raw/main/media/freelander-alpha.png">
-</p>
+
 
 
 ![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander2.png)

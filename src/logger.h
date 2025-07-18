@@ -9,7 +9,7 @@
 class Logger {
 public:
     static Logger& instance();
-    void log(const QString& message);
+    void log(const QString& message, const QColor& col);
     void setEnabled(bool enabled);
     bool isEnabled() const;
 	void setDebug(bool debug) { this->debug = debug; }

@@ -168,7 +168,7 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 {
 
 	//qDebug() << "API request failed:" << errormessage;
-    Utils::Log("Network error " + errormessage, Qt::red);
+    Logger::instance().log("Network error " + errormessage, Qt::red);
 	//QMessageBox::warning(this, "Network error", "API call failed." + errormessage);
 
     if (errorType == QNetworkReply::AuthenticationRequiredError) {
@@ -225,8 +225,8 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
-    Utils::Log("API " + message, Qt::green);
-    //Logger::instance().log("Custom log message");
+    //Utils::Log("API " + message, Qt::green);
+    Logger::instance().log("API " + message, Qt::green);
     qDebug() << "API request successful:" << message;
     //QMessageBox::warning(this, "API call successful!", "" + message);
 	
@@ -320,7 +320,8 @@ void MainWidget::closeEvent(QCloseEvent *event) {
 }
 
 void MainWidget::handleDateClicked(const QDate &date) {
-     Utils::Log("LEFT click", Qt::red);
+    
+     Logger::instance().log("LEFT click", Qt::red);
      qDebug() << " Set last clicked Date:" << date;
 
     lastClickedDate = date; // Store the clicked date
@@ -438,7 +439,8 @@ void MainWidget::onCalendarDateActivated(const QDate &date) {
 void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
     //qDebug().noquote()  << pos << " call \033[0m";
-    Utils::Log("Right click",Qt::red);
+  
+    Logger::instance().log("RIGHT click",Qt::red);
    // QPoint globalPos = QCursor::pos();
     QPoint globalPos = calendar->mapToGlobal(QCursor::pos());
     QDate date;

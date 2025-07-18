@@ -51,31 +51,4 @@ bool Utils::saveJsonDocumentToFile(const QString &filePath, const QJsonDocument 
     return true;
 }
 
-void Utils::Log(const QString &str,const QColor &col)
-{
 
-    if (col == Qt::red) {
-       
-        qDebug().noquote() << "\033[1;31m"<< str << " \033[0m";
-    } else if (col == Qt::green) {
-        
-        qDebug().noquote() << "\033[1;32m" << str << " \033[0m";
-    } else if (col == Qt::blue) {
-        
-        qDebug().noquote() << "\033[1;34m" << str << " \033[0m";
-    } else if (col == Qt::yellow) {
-      
-        qDebug().noquote() << "\033[1;33m" << str << " \033[0m";
-    } else if (col == Qt::cyan) {
-     
-        qDebug().noquote() << "\033[1;36m" << str << " \033[0m";
-    } else if (col == Qt::magenta) {
-        
-        qDebug().noquote() << "\033[1;35m" << str << " \033[0m";
-    }
-
-    else {
-
-        qDebug().noquote() << "\033[1;37m" << str << " \033[0m";
-    }
-}
