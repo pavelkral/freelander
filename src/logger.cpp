@@ -35,13 +35,19 @@ bool Logger::isEnabled() const {
 }
 
 void Logger::log(const QString& message, const QColor& col) {
+
 	QMutexLocker locker(&mutex);
+
 	if (!enabled) return;
 
+	//QString timeStampedMessage = QDateTime::currentDateTime()
+		//.toString("yyyy-MM-dd HH:mm:ss.zzz") + " - " + message;
+	
 	QString timeStampedMessage = QDateTime::currentDateTime()
-		.toString("yyyy-MM-dd HH:mm:ss.zzz") + " - " + message;
+		.toString("yyyy-MM-dd HH:mm") + " - " + message;
 
 	const qint64 maxSize = 1024 * 1024;
+
 	if (logFile.size() > maxSize) {
 		rotateLogFile();
 	}
@@ -118,13 +124,16 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
 			return; // warning/critical
 	}
 
+
+	QColor color(Qt::white);
+
 	QString level;
 	switch (type) {
-		case QtDebugMsg:    level = "[DEBUG]"; break;
-		case QtInfoMsg:     level = "[INFO]"; break;
-		case QtWarningMsg:  level = "[WARNING]"; break;
-		case QtCriticalMsg: level = "[CRITICAL]"; break;
-		case QtFatalMsg:    level = "[FATAL]"; break;
+		case QtDebugMsg:    level = "[DEBUG]"; color = Qt::green; break;
+		case QtInfoMsg:     level = "[INFO]"; color = Qt::blue; break;
+		case QtWarningMsg:  level = "[WARNING]"; color = Qt::yellow; break;
+		case QtCriticalMsg: level = "[CRITICAL]"; color = Qt::red; break;
+		case QtFatalMsg:    level = "[FATAL]"; color = Qt::red; break;
 	}
 
 
@@ -139,7 +148,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
 		.arg(context.line)
 		.arg(function);
 
-	Logger::instance().log(fullMessage,Qt::white);
+	Logger::instance().log(fullMessage, color);
 
 	if (type == QtFatalMsg) {
 		abort();
