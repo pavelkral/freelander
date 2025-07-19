@@ -162,18 +162,14 @@ void MainWidget::onTokenReady(const QString &token) {
     googleClient->fetchEvents(calendar->selectedDate(), calendar);
 }
 
-
-
 void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::NetworkError errorType)
 {
-
-	//qDebug() << "API request failed:" << errormessage;
-    Logger::instance().log("Network error " + errormessage, Qt::red);
+	qWarning() << "API request failed:" << errormessage;
+   // Logger::instance().log("API call failed : " + errormessage, Qt::red);
 	//QMessageBox::warning(this, "Network error", "API call failed." + errormessage);
 
     if (errorType == QNetworkReply::AuthenticationRequiredError) {
-		//401: // 
-        
+		//401: //   
         qWarning() << "Authentication required error (401). refresh token is invalid.";
 		tokenManager->refreshTokens(); 
         m_retryCount = 0; 
@@ -225,7 +221,6 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
-    //Utils::Log("API " + message, Qt::green);
    //Logger::instance().log("API " + message, Qt::green);
    CUSTOM_WARNING(QString("API: %1").arg(message));
     //qDebug() << "API request successful:" << message;
@@ -265,7 +260,6 @@ void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) 
         calendar->setDateTextFormat(d, fmt);
     }
 
-
     //QMap<QDate, QString> highlighted; 
     //QString highlightMessage = "Speciální datum";
     //for (const QDate &date : dates) {
@@ -288,7 +282,6 @@ void MainWidget::onEventClicked() {
     QString id = googleClient->eventIdMap.value(selectedLine);
     if (!id.isEmpty()) googleClient->fetchEventDetails(id);
 }
-
 
 void MainWidget::onDeleteClickedId(QString id) {
 ;
