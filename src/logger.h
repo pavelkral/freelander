@@ -30,6 +30,8 @@ private:
     bool debug = false;
 };
 
+#define CUSTOM_WARNING(msg) \
+    myMessageHandler(QtWarningMsg, QMessageLogContext(__FILE__, __LINE__, Q_FUNC_INFO, nullptr), msg)
 void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
 
 #endif // LOGGER_H

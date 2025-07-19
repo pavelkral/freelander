@@ -42,7 +42,7 @@ void Logger::log(const QString& message, const QColor& col) {
 
 	//QString timeStampedMessage = QDateTime::currentDateTime()
 		//.toString("yyyy-MM-dd HH:mm:ss.zzz") + " - " + message;
-	
+
 	QString timeStampedMessage = QDateTime::currentDateTime()
 		.toString("yyyy-MM-dd HH:mm") + " - " + message;
 
@@ -53,41 +53,33 @@ void Logger::log(const QString& message, const QColor& col) {
 	}
 
 	if (col == Qt::red) {
-
 		fprintf(stdout, "\033[1;31m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
 	else if (col == Qt::green) {
-
 		//qDebug().noquote() << "\033[1;32m" << str << " \033[0m";
 		fprintf(stdout, "\033[1;32m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
 	else if (col == Qt::blue) {
-
 		//qDebug().noquote() << "\033[1;34m" << message << " \033[0m";
 		fprintf(stdout, "\033[1;34m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
 	else if (col == Qt::yellow) {
-
 		//qDebug().noquote() << "\033[1;33m" << str << " \033[0m";
 		fprintf(stdout, "\033[1;33m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
 	else if (col == Qt::cyan) {
-
 		//qDebug().noquote() << "\033[1;36m" << str << " \033[0m";
 		fprintf(stdout, "\033[1;36m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
 	else if (col == Qt::magenta) {
-
 		//qDebug().noquote() << "\033[1;35m" << str << " \033[0m";
 		fprintf(stdout, "\033[1;35m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
-
 	else {
-
 		//qDebug().noquote() << "\033[1;37m" << str << " \033[0m";
 		fprintf(stdout, "\033[1;37m %s \033[0m\n", timeStampedMessage.toUtf8().constData());
 	}
-	
+
 	fflush(stdout);
 
 	if (logFile.isOpen()) {
@@ -97,6 +89,7 @@ void Logger::log(const QString& message, const QColor& col) {
 }
 
 void Logger::rotateLogFile() {
+
 	if (logFile.isOpen()) {
 		logStream.flush();
 		logFile.close();
@@ -129,14 +122,12 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
 
 	QString level;
 	switch (type) {
-		case QtDebugMsg:    level = "[DEBUG]"; color = Qt::green; break;
-		case QtInfoMsg:     level = "[INFO]"; color = Qt::blue; break;
-		case QtWarningMsg:  level = "[WARNING]"; color = Qt::yellow; break;
-		case QtCriticalMsg: level = "[CRITICAL]"; color = Qt::red; break;
-		case QtFatalMsg:    level = "[FATAL]"; color = Qt::red; break;
+	case QtDebugMsg:    level = "[DEBUG]"; color = Qt::green; break;
+	case QtInfoMsg:     level = "[INFO]"; color = Qt::blue; break;
+	case QtWarningMsg:  level = "[WARNING]"; color = Qt::yellow; break;
+	case QtCriticalMsg: level = "[CRITICAL]"; color = Qt::red; break;
+	case QtFatalMsg:    level = "[FATAL]"; color = Qt::red; break;
 	}
-
-
 
 	QString file = context.file ? context.file : "unknown";
 	QString function = context.function ? context.function : "unknown";

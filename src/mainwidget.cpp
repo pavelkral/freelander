@@ -226,7 +226,8 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
     //Utils::Log("API " + message, Qt::green);
-   Logger::instance().log("API " + message, Qt::green);
+   //Logger::instance().log("API " + message, Qt::green);
+   CUSTOM_WARNING(QString("API: %1").arg(message));
     //qDebug() << "API request successful:" << message;
     //qWarning() << "API request successful:" << message;
     //qCritical() << "API request successful:" << message;

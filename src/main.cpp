@@ -21,6 +21,15 @@ int main(int argc, char* argv[])
 	Logger::instance().setEnabled(true);
 	Logger::instance().setDebug(true);
 
+	#ifndef QT_DEBUG
+		qDebug() << "Release mode";
+		Logger::instance().setDebug(false);
+		//todo: add release mode specific settings or optimizations here
+	#else
+		qDebug() << "Debug mode";
+		Logger::instance().setDebug(true);
+	#endif
+
 	a.setStyle(QStyleFactory::create("Fusion"));
 
 	if (!QSystemTrayIcon::isSystemTrayAvailable()) {
