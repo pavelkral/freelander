@@ -13,21 +13,25 @@ Alternative for Rainlendar desktop calendar widget which use Google Calendar api
 
 ## Download Binaries
 
-- Windows: [freelander-alpha-win64.zip](https://github.com/pavelkral/Freelander/releases/tag/Alpha)
+- Windows: [freelander-win64.zip](https://github.com/pavelkral/Freelander/releases/tag/Alpha)
 - Linux: *in progress*
 
 ## Build from Source
 
 ### Build Dependencies
 
-- Qt (min version 5.15), Qt 6 is recommended
+- Qt (min 5.15), Qt 6 is recommended
 
-### Build Steps
+### Build Steps camke
 ```
-mkdir build
-cd build
-cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="C:/Qt/6.9/msvc2019_64" -DCMAKE_BUILD_TYPE=Release
-cmake --build . -- -j8
+$ mkdir build
+$ cd build
+$ cmake --build . -- -j8
+```
+### Build Steps qmake
+```
+$ qmake
+$ make
 ```
 
 
