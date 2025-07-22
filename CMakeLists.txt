@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS src/forms)
 
+
+
 find_package(Qt6 6.5 REQUIRED COMPONENTS
     Core
     Gui
@@ -16,10 +18,9 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     NetworkAuth
 )
 
-qt_standard_project_setup()
 
 qt_add_executable(freelander
-    WIN32 MACOSX_BUNDLE
+    #WIN32 MACOSX_BUNDLE
     src/calendartabledelegate.cpp
     src/clickabletextedit.cpp
     src/eventdialog.cpp
