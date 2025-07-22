@@ -1,7 +1,15 @@
-# Freelander 
+<table style="border-collapse: collapse;">
+  <tr>
+    <td style="padding-right: 12px;">
+      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 64px; height: 64px; object-fit: cover;">
+    </td>
+    <td>
+      <h2 style="margin: 0;"> Freelander </h2>
+    </td>
+  </tr>
+</table>
 
 Alternative for Rainlendar desktop calendar widget which use Google Calendar api.
-
 
 ![Image](https://github.com/pavelkral/Freelander/raw/main/media/freelander2.png)
 
