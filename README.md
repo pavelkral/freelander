@@ -5,10 +5,10 @@
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" alt="Avatar">
+      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="48" height="48" alt="Avatar">
     </td>
     <td valign="middle">
-      <strong style="font-size: 20px;">Nadpis vedle obrázku</strong>
+      <strong style="font-size: 30px;">Nadpis vedle obrázku</strong>
     </td>
   </tr>
 </table>
