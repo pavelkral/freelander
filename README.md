@@ -1,6 +1,6 @@
 <p align="left" style="display: flex; align-items: center;">
-  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" style="vertical-align: middle; margin-right: 10px;">
-  <span style="font-size: 20px; line-height: 64px; vertical-align: middle;"><strong>Nadpis vedle obrázku</strong></span>
+  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" style="float:left; margin-right: 10px;">
+  <span style="font-size: 20px; "><strong>Nadpis vedle obrázku</strong></span>
 </p>
 <table>
   <tr>
@@ -8,7 +8,7 @@
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="48" height="48" alt="Avatar">
     </td>
     <td valign="middle">
-      <strong style="font-size: 30px;">Nadpis vedle obrázku</strong>
+      <h2 style="margin: 0;"> Freelander </h2>
     </td>
   </tr>
 </table>
@@ -18,7 +18,7 @@
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 48px; height: 48px; object-fit: cover;">
       </td>
        <td style="border: none; ">
-      <h1 style="margin: 0;"> Freelander </h1>
+      <h2 style="margin: 0;"> Freelander </h2>
     </td>
   </tr>
 </table>
