@@ -1,7 +1,4 @@
-<p align="left" style="display: flex; align-items: center;">
-  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" style="float:left; margin-right: 10px;">
-  <span style="font-size: 20px; "><strong>Nadpis vedle obrázku</strong></span>
-</p>
+
 <table>
   <tr>
     <td>
@@ -12,16 +9,7 @@
     </td>
   </tr>
 </table>
-<table style="border: none; border-collapse: collapse;">
-  <tr>
-     <td style="border: none; padding-right: 12px;">
-      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 48px; height: 48px; object-fit: cover;">
-      </td>
-       <td style="border: none; ">
-      <h2 style="margin: 0;"> Freelander </h2>
-    </td>
-  </tr>
-</table>
+
 
 Alternative for Rainlendar desktop calendar widget which use Google Calendar api.
 
