@@ -4,7 +4,7 @@
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 48px; height: 48px; object-fit: cover;">
     </td>
     <td>
-      <h2 style="margin: 0;"> Freelander </h2>
+      <h1 style="margin: 0;"> Freelander </h1>
     </td>
   </tr>
 </table>
