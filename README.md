@@ -1,8 +1,13 @@
+<p>
+  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" style="vertical-align: middle; margin-right: 10px;">
+  <strong style="font-size: 1.2em;">Nadpis vedle obrázku</strong>
+</p>
+
 <table style="border: none; border-collapse: collapse;">
   <tr>
      <td style="border: none; padding-right: 12px;">
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 48px; height: 48px; object-fit: cover;">
-    </td>
+      </td>
        <td style="border: none; ">
       <h1 style="margin: 0;"> Freelander </h1>
     </td>
