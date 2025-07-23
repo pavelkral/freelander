@@ -1,6 +1,6 @@
-<table style="border:1px solid black;">
+<table style="border:1px solid black;width:100%;">
   <tr>
-    <td style="padding-right: 5px;">
+    <td style="padding-right: 5px;border:1px solid black;">
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 48px; height: 48px; object-fit: cover;">
     </td>
     <td>
