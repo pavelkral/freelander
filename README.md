@@ -2,7 +2,16 @@
   <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" style="vertical-align: middle; margin-right: 10px;">
   <span style="font-size: 20px; line-height: 64px; vertical-align: middle;"><strong>Nadpis vedle obrázku</strong></span>
 </p>
-
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" alt="Avatar">
+    </td>
+    <td valign="middle">
+      <strong style="font-size: 20px;">Nadpis vedle obrázku</strong>
+    </td>
+  </tr>
+</table>
 <table style="border: none; border-collapse: collapse;">
   <tr>
      <td style="border: none; padding-right: 12px;">
