@@ -1,9 +1,9 @@
-<table style="border:1px solid black;width:100%;">
+<table style="border: none; border-collapse: collapse;">
   <tr>
-    <td style="padding-right: 5px;border:1px solid black;">
+     <td style="border: none; padding-right: 12px;">
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 48px; height: 48px; object-fit: cover;">
     </td>
-    <td>
+       <td style="border: none; ">
       <h1 style="margin: 0;"> Freelander </h1>
     </td>
   </tr>
