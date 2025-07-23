@@ -1,6 +1,6 @@
-<p>
+<p align="left" style="display: flex; align-items: center;">
   <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="64" height="64" style="vertical-align: middle; margin-right: 10px;">
-  <strong style="font-size: 1.2em;">Nadpis vedle obrázku</strong>
+  <span style="font-size: 20px; line-height: 64px; vertical-align: middle;"><strong>Nadpis vedle obrázku</strong></span>
 </p>
 
 <table style="border: none; border-collapse: collapse;">
