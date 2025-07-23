@@ -1,15 +1,13 @@
-
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="48" height="48" alt="Avatar">
+      <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" width="48" height="48">
     </td>
-    <td valign="middle">
-      <h2 style="margin: 0;"> Freelander </h2>
+    <td>
+      <h2> Freelander </h2>
     </td>
   </tr>
 </table>
-
 
 Alternative for Rainlendar desktop calendar widget which use Google Calendar api.
 
