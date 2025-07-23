@@ -1,4 +1,4 @@
-<table style="border:0px;">
+<table style="border:1px solid black;">
   <tr>
     <td style="padding-right: 12px;">
       <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/resource/icons/micon.png" style="width: 64px; height: 64px; object-fit: cover;">
