@@ -28,7 +28,8 @@ Alternative for Rainlendar desktop calendar widget which use Google Calendar api
 
 ### Build Dependencies
 
-- Qt (min 5.15), Qt 6 is recommended
+- Qt6
+- CMAKE
 
 ### Build Steps camke
 ```

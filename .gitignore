@@ -1,5 +1,7 @@
 freelander.pro.user
 CMakeLists.txt.user
+CMakePresets.json
+CMakeUserPresets.json
 **/build/
 **/out/
 .vs/
