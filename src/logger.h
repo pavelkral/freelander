@@ -12,9 +12,10 @@ public:
     void log(const QString& message, const QColor& col);
     void setEnabled(bool enabled);
     bool isEnabled() const;
-	void setDebug(bool debug) { this->debug = debug; }
-    bool isDebug() const { return debug; }
- 
+    void setDebug(bool debug);
+    bool isDebug() const;
+    void reopenLogFile();
+
 private:
     Logger();
     ~Logger();

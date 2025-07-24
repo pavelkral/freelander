@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <QColor>
 #include <QFileInfo>
+#include <QGuiApplication>
 
 Logger::Logger()
 	: logFile("log.txt")
@@ -13,6 +14,7 @@ Logger::Logger()
 	else {
 		fprintf(stderr, "Failed to open log file!\n");
 	}
+
 }
 
 Logger::~Logger() {
@@ -35,6 +37,29 @@ bool Logger::isEnabled() const {
 	return enabled;
 }
 
+void Logger::setDebug(bool debug) {
+    this->debug = debug;
+}
+
+bool Logger::isDebug() const {
+    return debug;
+}
+
+void Logger::reopenLogFile()
+{
+    if (logFile.isOpen()) {
+        logFile.close();
+    }
+
+    logFile.setFileName("log.txt");
+    if (!logFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+        qWarning() << "Failed to reopen log file";
+        return;
+    }
+
+    logStream.setDevice(&logFile);
+}
+
 void Logger::log(const QString& message, const QColor& col) {
 
 	QMutexLocker locker(&mutex);
@@ -44,10 +69,21 @@ void Logger::log(const QString& message, const QColor& col) {
 	//QString timeStampedMessage = QDateTime::currentDateTime()
 		//.toString("yyyy-MM-dd HH:mm:ss.zzz") + " - " + message;
 
-    //QString timeStampedMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm") + " - " + message;
-    QString timeStampedMessage =  message;
+    QString timeStampedMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm") + " - " + message;
+   // QString timeStampedMessage =  message;
 
 	const qint64 maxSize = 1024 * 1024;
+
+    if (!logFile.isOpen()) {
+        reopenLogFile();
+    }
+
+    if (logStream.device()) {
+        //textStream << msg << '\n';
+        //textStream.flush();
+    } else {
+        qWarning() << "Log stream not available!";
+    }
 
 	if (logFile.size() > maxSize) {
 		rotateLogFile();

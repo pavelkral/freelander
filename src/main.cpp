@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
 
 	QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
+
 	qInstallMessageHandler(myMessageHandler);
 
 	Logger::instance().setEnabled(true);
@@ -23,7 +24,7 @@ int main(int argc, char* argv[])
 
 #ifndef QT_DEBUG
 	qDebug() << "Release mode";
-	Logger::instance().setDebug(false);
+    Logger::instance().setDebug(true);
 	//todo: add release mode specific settings or optimizations here
 #else
 	qDebug() << "Debug mode";
@@ -40,5 +41,16 @@ int main(int argc, char* argv[])
 	MainWidget w;
 	w.resize(200, 380);
 	w.show();
+
+    // QObject::connect(qApp, &QGuiApplication::applicationStateChanged,
+    //                  [&](Qt::ApplicationState state) {
+    //                      if (state == Qt::ApplicationActive) {
+    //                          qDebug() << "System probably woke up";
+    //                          Logger::instance().reopenLogFile();  // obnovíme handle
+    //                          Logger::instance().log("Resumed from sleep",Qt::green);
+    //                      }
+    //                  });
+
+
 	return a.exec();
 }
