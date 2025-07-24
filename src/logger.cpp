@@ -2,6 +2,7 @@
 #include <QDateTime>
 #include <cstdio>
 #include <QColor>
+#include <QFileInfo>
 
 Logger::Logger()
 	: logFile("log.txt")
@@ -43,8 +44,8 @@ void Logger::log(const QString& message, const QColor& col) {
 	//QString timeStampedMessage = QDateTime::currentDateTime()
 		//.toString("yyyy-MM-dd HH:mm:ss.zzz") + " - " + message;
 
-	QString timeStampedMessage = QDateTime::currentDateTime()
-		.toString("yyyy-MM-dd HH:mm") + " - " + message;
+    //QString timeStampedMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm") + " - " + message;
+    QString timeStampedMessage =  message;
 
 	const qint64 maxSize = 1024 * 1024;
 
@@ -122,22 +123,30 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
 
 	QString level;
 	switch (type) {
-	case QtDebugMsg:    level = "[DEBUG]"; color = Qt::green; break;
-	case QtInfoMsg:     level = "[INFO]"; color = Qt::blue; break;
-	case QtWarningMsg:  level = "[WARNING]"; color = Qt::yellow; break;
-	case QtCriticalMsg: level = "[CRITICAL]"; color = Qt::red; break;
-	case QtFatalMsg:    level = "[FATAL]"; color = Qt::red; break;
+        case QtDebugMsg:    level = "[DEBUG]"; color = Qt::green; break;
+        case QtInfoMsg:     level = "[INFO]"; color = Qt::blue; break;
+        case QtWarningMsg:  level = "[WARNING]"; color = Qt::yellow; break;
+        case QtCriticalMsg: level = "[CRITICAL]"; color = Qt::red; break;
+        case QtFatalMsg:    level = "[FATAL]"; color = Qt::red; break;
 	}
 
 	QString file = context.file ? context.file : "unknown";
 	QString function = context.function ? context.function : "unknown";
+    QString fileName = QFileInfo(file).fileName();
 
-	QString fullMessage = QString("%1 %2 (%3:%4, %5)")
-		.arg(level)
-		.arg(msg)
-		.arg(file)
-		.arg(context.line)
-		.arg(function);
+    // QString fullMessage = QString("%1 %2 (%3:%4), %5)")
+    // 	.arg(level)
+    // 	.arg(msg)
+    //   .arg(file)
+    // 	.arg(context.line)
+    // 	.arg(function);
+
+    QString fullMessage = QString("%1 %2 (%3:%4)")
+                              .arg(level)
+                              .arg(msg)
+                              .arg(fileName)
+                              .arg(context.line);
+
 
 	Logger::instance().log(fullMessage, color);
 
