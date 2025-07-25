@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
     // QObject::connect(qApp, &QGuiApplication::applicationStateChanged,
     //                  [&](Qt::ApplicationState state) {
     //                      if (state == Qt::ApplicationActive) {
-    //                          qDebug() << "System probably woke up";
-    //                          Logger::instance().reopenLogFile();  // obnovíme handle
+    //                          //qDebug() << "System probably woke up";
+    //                          //Logger::instance().reopenLogFile();
     //                          Logger::instance().log("Resumed from sleep",Qt::green);
     //                      }
     //                  });

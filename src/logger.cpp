@@ -8,18 +8,23 @@
 Logger::Logger()
 	: logFile("log.txt")
 {
-	if (logFile.open(QIODevice::Append | QIODevice::Text)) {
+    if (logFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
 		logStream.setDevice(&logFile);
 	}
-	else {
-		fprintf(stderr, "Failed to open log file!\n");
+    else {
+        //qWarning() << "Failed to open log file:" << "Error:" << logFile.errorString();
+        fprintf(stderr, "Failed to open log file: %s\n",
+                logFile.errorString().toLocal8Bit().constData());
 	}
 
 }
 
 Logger::~Logger() {
 	if (logFile.isOpen()) {
+
+        logStream.flush();
 		logFile.close();
+       // logStream.end
 	}
 }
 
@@ -74,16 +79,7 @@ void Logger::log(const QString& message, const QColor& col) {
 
 	const qint64 maxSize = 1024 * 1024;
 
-    if (!logFile.isOpen()) {
-        reopenLogFile();
-    }
 
-    if (logStream.device()) {
-        //textStream << msg << '\n';
-        //textStream.flush();
-    } else {
-        qWarning() << "Log stream not available!";
-    }
 
 	if (logFile.size() > maxSize) {
 		rotateLogFile();

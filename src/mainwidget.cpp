@@ -32,14 +32,6 @@ MainWidget::MainWidget(QWidget *parent)
     ui->setupUi(this); 
     googleClient->setTokenManager(tokenManager);
 
-    connect(qApp, &QGuiApplication::applicationStateChanged, this, [&](Qt::ApplicationState state) {
-        if (state == Qt::ApplicationActive) {
-            qDebug() << "System woke up!";
-            Logger::instance().log("Resumed from sleep",Qt::green);
-            Logger::instance().reopenLogFile();
-        }
-    });
-
 
     setWindowTitle("Freelander");
     setAttribute(Qt::WA_TranslucentBackground);
