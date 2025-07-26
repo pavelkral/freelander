@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMutex>
+#include <QDir>
+#include <QApplication>
 
 class Logger {
 public:
@@ -23,7 +25,8 @@ private:
     Logger& operator=(const Logger&) = delete;
 
     void rotateLogFile();
-
+    QString FilePath = QApplication::applicationDirPath() + QDir::separator() + "log.txt";
+    QString OldFilePath = QApplication::applicationDirPath() + QDir::separator() + "log_old.txt";
     QFile logFile;
     QTextStream logStream;
     QMutex mutex;

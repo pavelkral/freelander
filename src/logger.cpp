@@ -4,10 +4,13 @@
 #include <QColor>
 #include <QFileInfo>
 #include <QGuiApplication>
+#include <QDir>
 
 Logger::Logger()
-	: logFile("log.txt")
 {
+
+
+    logFile.setFileName(FilePath);
     if (logFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
 		logStream.setDevice(&logFile);
 	}
@@ -18,6 +21,7 @@ Logger::Logger()
 	}
 
 }
+
 
 Logger::~Logger() {
 	if (logFile.isOpen()) {
@@ -56,7 +60,7 @@ void Logger::reopenLogFile()
         logFile.close();
     }
 
-    logFile.setFileName("log.txt");
+    logFile.setFileName(FilePath);
     if (!logFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
         qWarning() << "Failed to reopen log file";
         return;
@@ -79,7 +83,9 @@ void Logger::log(const QString& message, const QColor& col) {
 
 	const qint64 maxSize = 1024 * 1024;
 
-
+    if (!logFile.isOpen()) {
+        reopenLogFile();
+    }
 
 	if (logFile.size() > maxSize) {
 		rotateLogFile();
@@ -128,10 +134,10 @@ void Logger::rotateLogFile() {
 		logFile.close();
 	}
 
-	QFile::remove("log_old.txt");
-	QFile::rename("log.txt", "log_old.txt");
+    QFile::remove(OldFilePath);
+    QFile::rename(FilePath, OldFilePath);
 
-	logFile.setFileName("log.txt");
+    logFile.setFileName(FilePath);
 	if (logFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		logStream.setDevice(&logFile);
 	}
