@@ -2,7 +2,6 @@
 #include "ui_mainwidget.h"
 #include "eventdialog.h"
 #include "settingsdialog.h"
-#include "utils.h"
 #include "logger.h"
 
 #include <QVBoxLayout>
@@ -223,15 +222,14 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
 
 void MainWidget::onApiRequestSuccess(const QString& message)
 {
-   //Logger::instance().log("API " + message, Qt::green);
-   CUSTOM_WARNING(QString("API: %1").arg(message));
-    //qDebug() << "API request successful:" << message;
+    qDebug() << "API request successful:" << message;
+    //Logger::instance().log("API " + message, Qt::green);
+    //CUSTOM_WARNING(QString("API: %1").arg(message));
     //qWarning() << "API request successful:" << message;
     //qCritical() << "API request successful:" << message;
     //qInfo() << "API request successful:" << message;
-   // qFatal() << "API request successful:" << message;
-    //QMessageBox::warning(this, "API call successful!", "" + message);
-	
+    // qFatal() << "API request successful:" << message;
+
 }
 
 void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) {
@@ -321,7 +319,7 @@ void MainWidget::closeEvent(QCloseEvent *event) {
 
 void MainWidget::handleDateClicked(const QDate &date) {
     
-     Logger::instance().log("LEFT click", Qt::red);
+     Logger::instance().log("LEFT click", Qt::cyan);
      qDebug() << " Set last clicked Date:" << date;
 
     lastClickedDate = date; // Store the clicked date
@@ -440,7 +438,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
 
     //qDebug().noquote()  << pos << " call \033[0m";
   
-    Logger::instance().log("RIGHT click",Qt::red);
+    Logger::instance().log("RIGHT click",Qt::cyan);
    // QPoint globalPos = QCursor::pos();
     QPoint globalPos = calendar->mapToGlobal(QCursor::pos());
     QDate date;
@@ -465,21 +463,22 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                 }
             }
         } else {
-            qDebug() << "No valid model index found at pos.";
+            qWarning() << "No valid model index found at pos.";
         }
     } else {
-        qDebug() << "Internal calendar view (QTableView) not found. Falling back to selectedDate.";
+        qWarning() << "Internal calendar view (QTableView) not found. Falling back to selectedDate.";
     }
 
     if (!date.isValid()) {
-        qDebug() << "Date not obtained from view. Falling back to selectedDate.";
+        qWarning() << "Date not obtained from view. Falling back to selectedDate.";
         date = calendar->selectedDate();
         qDebug() << "Using selectedDate:" << date << "isValid:" << date.isValid();
 
+
     }
 
     if (!date.isValid()) {
-        qDebug() << "No valid date found. Returning from context menu slot.";
+        qWarning() << "No valid date found. Returning from context menu slot.";
         return; // Still no valid date, exit
     }
 
@@ -490,7 +489,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
         QMenu menu;
         // If no events found, add a disabled action
         if (events.isEmpty()) {
-            qDebug() << "No events found for date:" << date;
+            qWarning() << "No events found for date:" << date;
             QAction *noEventAction = new QAction("Žádné události", &menu);
             noEventAction->setEnabled(false);
             menu.addAction(noEventAction);
@@ -512,7 +511,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                         // For example:
                         googleClient->fetchEventDetails(eventId);
                     } else {
-                        qDebug() << "Event ID is empty, cannot edit.";
+                        qWarning() << "Event ID is empty, cannot edit.";
                     }
                 });
                 menu.addAction(editAction);
@@ -528,7 +527,7 @@ void MainWidget::calendarContextMenuRequested(const QPoint &pos) {
                     if (!eventId.isEmpty()) {
                         googleClient->deleteEvent(eventId,calendar);
                     } else {
-                        qDebug() << "Event ID is empty, cannot delete.";
+                        qWarning() << "Event ID is empty, cannot delete.";
                     }
                 });
                 menu.addAction(eventAction);

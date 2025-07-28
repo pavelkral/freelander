@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <QColor>
 #include <QFileInfo>
-#include <QGuiApplication>
 #include <QDir>
 
 Logger::Logger()
@@ -153,7 +152,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
 
 	if (!Logger::instance().isDebug()) {
 		if (type == QtDebugMsg || type == QtInfoMsg)
-			return; // warning/critical
+            return; // not warning/critical
 	}
 
 
