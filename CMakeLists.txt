@@ -20,7 +20,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
 
 
 qt_add_executable(freelander
-    WIN32 MACOSX_BUNDLE
+    #WIN32 MACOSX_BUNDLE
     src/calendartabledelegate.cpp
     src/clickabletextedit.cpp
     src/eventdialog.cpp

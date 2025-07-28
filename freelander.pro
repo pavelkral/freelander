@@ -27,7 +27,7 @@ HEADERS += \
     src/settingsdialog.h \
     src/tokenmanager.h \
     src/utils.h \
-    ser/logger.h
+    src/logger.h
 
 FORMS += \
     src/forms/eventdialog.ui \
