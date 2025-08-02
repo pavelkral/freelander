@@ -8,8 +8,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS src/ui)
 
-
-
 find_package(Qt6 6.5 REQUIRED COMPONENTS
     Core
     Gui
@@ -18,9 +16,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     NetworkAuth
 )
 
-
 qt_add_executable(freelander
-    #WIN32 MACOSX_BUNDLE
     src/calendartabledelegate.cpp
     src/clickabletextedit.cpp
     src/eventdialog.cpp
@@ -38,7 +34,7 @@ qt_add_executable(freelander
     src/googleclient.h
     src/mainwidget.h
     src/settingsdialog.h
-    src/tokenmanager.h#
+    src/tokenmanager.h
     src/utils/utils.h
     src/utils/logger.h
     src/utils/logger.cpp
@@ -49,8 +45,14 @@ qt_add_executable(freelander
     resource/calendar.rc
     README.md
     .gitignore LICENSE.txt
-
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_target_properties(freelander PROPERTIES
+        WIN32_EXECUTABLE ON
+        MACOSX_BUNDLE ON
+    )
+endif()
 
 target_link_libraries(freelander
     PRIVATE
@@ -77,7 +79,18 @@ qt_generate_deploy_app_script(
 )
 install(SCRIPT ${deploy_script})
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  
+    message(STATUS "Debug build - including extra debug libraries.")
 
+elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+  
+    message(STATUS "Release build - optimizing for performance.")
+
+else()
+
+    message(STATUS "Other build type: ${CMAKE_BUILD_TYPE}")
+endif()
 # libs debug
 # message(STATUS "Qt6_DIR: ${Qt6_DIR}")
 # message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
