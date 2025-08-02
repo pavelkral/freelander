@@ -13,8 +13,8 @@ SOURCES += \
     src/mainwidget.cpp \
     src/settingsdialog.cpp \
     src/tokenmanager.cpp \
-    src/utils.cpp \
-    src/logger.cpp
+    src/utils/utils.cpp \
+    src/utils/logger.cpp
     
 
 HEADERS += \
@@ -26,13 +26,13 @@ HEADERS += \
     src/mainwidget.h \
     src/settingsdialog.h \
     src/tokenmanager.h \
-    src/utils.h \
-    src/logger.h
+    src/utils/utils.h \
+    src/utils/logger.h
 
 FORMS += \
-    src/forms/eventdialog.ui \
-    src/forms/mainwidget.ui \
-    src/forms/settingsdialog.ui 
+    src/ui/eventdialog.ui \
+    src/ui/mainwidget.ui \
+    src/ui/settingsdialog.ui 
 
 RESOURCES += resource/calendar.qrc
 
