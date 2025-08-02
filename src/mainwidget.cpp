@@ -2,7 +2,7 @@
 #include "ui_mainwidget.h"
 #include "eventdialog.h"
 #include "settingsdialog.h"
-#include "logger.h"
+#include "utils/logger.h"
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -58,9 +58,15 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, [=](QSystemTrayIcon::ActivationReason reason) {
         if (reason == QSystemTrayIcon::Trigger) {
-             if (isVisible()) hide();
-             else
+
+    #ifndef QT_DEBUG
+        showNormal();
+    #else
+        if (isVisible()) hide();
+        else
             showNormal();
+    #endif
+
         }
     });
 
@@ -207,7 +213,7 @@ void MainWidget::onApiRequestFailed(const QString& errormessage, QNetworkReply::
     if (shouldRetry && m_retryCount < MAX_RETRIES) {
         m_retryCount++;
 
-        qDebug() << " Retrying after " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
+        qWarning() << " Retrying after " << RETRY_DELAY_SECONDS << " seconds. (Attempt " << m_retryCount << "/" << MAX_RETRIES << ")";
 
       //  QTimer::singleShot(std::chrono::seconds(RETRY_DELAY_SECONDS), [this, date = calendar->selectedDate()] {
       //      googleClient->fetchEvents(date, calendar);
@@ -225,11 +231,6 @@ void MainWidget::onApiRequestSuccess(const QString& message)
     qDebug() << "API request successful:" << message;
     //Logger::instance().log("API " + message, Qt::green);
     //CUSTOM_WARNING(QString("API: %1").arg(message));
-    //qWarning() << "API request successful:" << message;
-    //qCritical() << "API request successful:" << message;
-    //qInfo() << "API request successful:" << message;
-    // qFatal() << "API request successful:" << message;
-
 }
 
 void MainWidget::onEventsFetched(const QString &text, const QSet<QDate> &dates) {

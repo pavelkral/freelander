@@ -2,7 +2,7 @@
 #include <QMessageBox>
 #include <QStyleFactory>
 #include "MainWidget.h"
-#include "logger.h"
+#include "utils/logger.h"
 
 int main(int argc, char* argv[])
 {
@@ -13,24 +13,19 @@ int main(int argc, char* argv[])
 	QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
 	QApplication a(argc, argv);
-
 	QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
-
-
 	qInstallMessageHandler(myMessageHandler);
-
 	Logger::instance().setEnabled(true);
-	Logger::instance().setDebug(true);
 
 #ifndef QT_DEBUG
 	qDebug() << "Release mode";
-    Logger::instance().setDebug(true);
+    Logger::instance().setDebug(false);
 	//todo: add release mode specific settings or optimizations here
 #else
 	qDebug() << "Debug mode";
 	Logger::instance().setDebug(true);
 #endif
-
+    //Logger::instance().setDebug(true);
 	a.setStyle(QStyleFactory::create("Fusion"));
 
 	if (!QSystemTrayIcon::isSystemTrayAvailable()) {
