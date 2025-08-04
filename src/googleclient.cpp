@@ -10,7 +10,7 @@
 #include <QTextCharFormat>
 #include <QMessageBox>
 #include <QCalendarWidget>
-#include "utils/utils.h"
+#include "utils/jsonutils.h"
 
 GoogleClient::GoogleClient(QObject *parent)
     : QObject(parent), m_manager(new QNetworkAccessManager(this)) {

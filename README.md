@@ -11,12 +11,14 @@
 
 Alternative for Rainlendar desktop calendar widget which use Google Calendar api.
 
-![Image](https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander2.png)
+ [!WARNING]
+This application is still in development. I wrote it for myself because Google Calendar api is just in pro version which is not free. 
+It is not feature complete and it is not tested on all platforms. 
 
-
-> [!WARNING]
-> This application is still in development. I wrote it for myself because Google Calendar api is just in pro version which is not free. 
-> It is not feature complete and it is not tested on all platforms. 
+<p align=center>
+  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander-alpha.png">
+  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander1.png">
+</p>
 
 
 ## Download Binaries
@@ -49,11 +51,8 @@ $ make
 Update your Google id in config.json in root directory and start app.
 ```
 
-<p align=center>
-  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander-alpha.png">
-  <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander1.png">
-</p>
 
+![Image](https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander2.png)
 
 
 ## References

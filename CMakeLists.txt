@@ -26,7 +26,7 @@ qt_add_executable(freelander
     src/mainwidget.cpp
     src/settingsdialog.cpp
     src/tokenmanager.cpp
-    src/utils/utils.cpp
+    src/utils/jsonutils.cpp
     src/calendartabledelegate.h
     src/clickabletextedit.h
     src/eventdialog.h
@@ -35,7 +35,7 @@ qt_add_executable(freelander
     src/mainwidget.h
     src/settingsdialog.h
     src/tokenmanager.h
-    src/utils/utils.h
+    src/utils/jsonutils.h
     src/utils/logger.h
     src/utils/logger.cpp
     src/ui/eventdialog.ui

@@ -7,7 +7,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QMessageBox>
-#include "utils/utils.h"
+#include "utils/jsonutils.h"
 #include <chrono>
 #include <QHostInfo>
 
@@ -17,7 +17,7 @@ TokenManager::TokenManager(QObject *parent)
     m_replyHandler(new QOAuthHttpServerReplyHandler(8080, this))
 {
 
-    QJsonDocument configDoc = Utils::loadJsonDocumentFromFile(CONFIG_FILE);
+    QJsonDocument configDoc = JsonUtils::loadJsonDocumentFromFile(CONFIG_FILE);
     QString clientId;
     QString clientSecret;
 
@@ -140,7 +140,7 @@ void TokenManager::onGranted() {
 
 void TokenManager::loadTokens() {
 
-    auto doc = Utils::loadJsonDocumentFromFile(TOKEN_FILE);
+    auto doc = JsonUtils::loadJsonDocumentFromFile(TOKEN_FILE);
     if (!doc.isNull()) {
         auto obj = doc.object();
         m_accessToken  = obj.value("access_token").toString();
@@ -154,7 +154,7 @@ void TokenManager::saveTokens() {
     obj["access_token"]  = m_accessToken;
     obj["refresh_token"] = m_refreshToken;
     QJsonDocument jsonDocument(obj);
-    bool success = Utils::saveJsonDocumentToFile(TOKEN_FILE, jsonDocument, QJsonDocument::Indented);
+    bool success = JsonUtils::saveJsonDocumentToFile(TOKEN_FILE, jsonDocument, QJsonDocument::Indented);
 
     if (success) {
        // qDebug() << "Tokens saved:" << TOKEN_FILE;

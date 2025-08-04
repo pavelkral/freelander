@@ -1,11 +1,11 @@
-#include "utils.h"
+#include "jsonutils.h"
 #include <QFile>
 #include <QIODevice>
 #include <QJsonParseError>
 #include <QDebug>
 #include <QColor>
 
-QJsonDocument Utils::loadJsonDocumentFromFile(const QString &filePath)
+QJsonDocument JsonUtils::loadJsonDocumentFromFile(const QString &filePath)
 {
 
     QFile file(filePath);
@@ -29,7 +29,7 @@ QJsonDocument Utils::loadJsonDocumentFromFile(const QString &filePath)
     return jsonDoc;
 }
 
-bool Utils::saveJsonDocumentToFile(const QString &filePath, const QJsonDocument &jsonDocument, QJsonDocument::JsonFormat format)
+bool JsonUtils::saveJsonDocumentToFile(const QString &filePath, const QJsonDocument &jsonDocument, QJsonDocument::JsonFormat format)
 {
 
     QFile file(filePath);
