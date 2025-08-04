@@ -9,11 +9,11 @@
   </tr>
 </table>
 
-Alternative for Rainlendar desktop calendar widget which use Google Calendar api.
+Alternative for Rainlendar desktop calendar which use Google Calendar api.
 
- [!WARNING]
-This application is still in development. I wrote it for myself because Google Calendar api is just in pro version which is not free. 
-It is not feature complete and it is not tested on all platforms. 
+> [!WARNING]
+>This application is still in development. I wrote it for myself because Google Calendar api is just in pro version which is not free. 
+>It is not feature complete and it is not tested on all platforms. 
 
 <p align=center>
   <img src="https://raw.githubusercontent.com/pavelkral/freelander/refs/heads/main/media/freelander-alpha.png">
