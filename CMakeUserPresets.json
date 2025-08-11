@@ -22,6 +22,14 @@
       }
     },
     {
+      "name": "Qt-Install",
+      "inherits": "Qt-Default",
+      "binaryDir": "${sourceDir}/build/install",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
       "hidden": true,
       "name": "Qt-Default",
       "inherits": "6.9.0_msvc2022_64",
